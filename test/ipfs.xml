@@ -1,0 +1,1058 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title></title>
+    <link>https://blog.ipfs.io/</link>
+    <image>
+      <url>https://blog.ipfs.io/img/ipfs-logo-256-ice.png</url>
+      <title></title>
+      <link>https://blog.ipfs.io/</link>
+    </image>
+    <description>Recent content on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 11 Jun 2020 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://blog.ipfs.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Decentralized Identity, IPFS and ION</title>
+      <link>https://blog.ipfs.io/2020-06-11-identity-ipfs-ion/</link>
+      <pubDate>Thu, 11 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ipfs.io/2020-06-11-identity-ipfs-ion/</guid>
+      <description>Identity is a key part of how we all interact with each other on the internet every day—sometimes every moment of every day.</description>
+      <content:encoded><![CDATA[
+
+<p style="text-align: center;">
+  <img src="../img/099-identity-ipfs-ion/ipfs-ion-header.png" alt="IPFS logo and ION logo">
+</p>
+
+<p>Identity is a key part of how we all interact with each other on the internet every day—sometimes every moment of every day. And sometimes each raging moment as we do the “forgot your password?” dance yet again. Regardless, forging a path forward for user-controlled online identity is a table-stakes requirement for the dweb to succeed.</p>
+
+<p>But, identity is hard. There are no easy solutions for interoperable decentralized digital assertions of self. Privacy, security, validity, access control, surveillance, GDPR, KYC, anonymity. It’s like Inception but each nested dream level is the same minefield, and those minefields are littered with projects that’ve tilted at the identity windmill, leaving naught behind but vinyl stickers slowly being covered up on our laptops.</p>
+
+<p>Hope has not forsaken this land. The <a href="https://identity.foundation/">Decentralized Identity Foundation</a> has been plugging away at this challenge for many years, as have groups like <a href="https://www.weboftrust.info/">Rebooting the Web of Trust</a>. And there’ve been efforts to build decentralized identity systems on top of IPFS, such as <a href="https://github.com/johnnycrunch/ipid">IPID</a>, <a href="https://nomios.io/">Nomios.io</a>, <a href="https://github.com/ipfs-shipyard/pm-idm">the IPFS IDM</a>, and most recently the <a href="https://www.ceramic.network/">Ceramic Network</a>.</p>
+
+<p>However, today we’re celebrating the launch of a decentralized identity protocol and service from an unlikely place: Microsoft.</p>
+
+<p>Microsoft has been increasingly present in open-source tools and services in the past few years, and has now <a href="https://techcommunity.microsoft.com/t5/identity-standards-blog/ion-booting-up-the-network/ba-p/1441552">launched a standards-based decentralized identity service called ION</a>.</p>
+
+<p style="text-align: center;">
+  <img src="../img/099-identity-ipfs-ion/ion-logo.png" alt="ION logo">
+</p>
+
+<p>ION has been under development for over a year, and is an instance implementation of <a href="https://github.com/decentralized-identity/sidetree">Sidetree (a blockchain-agnostic distributed PKI protocol)</a> that runs on the Bitcoin blockchain.</p>
+
+<p>And it stores transaction data on IPFS.</p>
+
+<p style="text-align: center;">
+  <img src="../img/099-identity-ipfs-ion/ion-architecture.png" alt="ION architecture diagram">
+</p>
+
+<p>Like HTTP, IPFS does not have user identity built into the protocol. However, IPFS provides resiliency, validation, and future-proofing features that HTTP cannot:</p>
+
+<ul>
+<li>The content addressability of IPFS means that ION nodes who are pulling the CIDs off a blockchain or other underlying public network don’t need to care <em>where</em> the transaction data resides. This means they can switch servers or datacenters, or new storage nodes can come online without requiring any code or infrastructure changes and without the addresses needing to change.</li>
+<li>ION nodes also don’t need to worry about the data being manipulated or tampered with, because hash-based addressing means the cryptographic verification of the data is built into the network request itself.</li>
+</ul>
+
+<h2 id="ipfs-in-ion">IPFS in ION</h2>
+
+<p>The ION implementation is in JavaScript (specifically, TypeScript) so it made sense for them to use js-ipfs as a Node.js service. ION rolls up batches of identity transactions, publishes it through their IPFS node, and then writes the address (CID) of that batch to the Bitcoin blockchain.</p>
+
+<p>In order to meet Microsoft’s needs for using js-ipfs as a long-running process we added cancelable requests to all APIs, ensuring that as requests were being made and handled, the underlying objects, memory, file handles, and other resources created up and down the stack are cleaned up properly. Huge thanks goes to <a href="https://github.com/achingbrain">Alex Potsides (@achingbrain)</a> for implementing this long-needed feature, which shipped in <a href="https://blog.ipfs.io/2020-05-21-js-ipfs-0-44/">js-ipfs 0.44.0</a>.</p>
+
+<p>What this looks like for developers is the ability to set timeouts on requests:</p>
+
+<pre><code class="language-javascript">const cid = new CID('QmWillNeverResolve')
+
+try {
+  await ipfs.get(cid, {
+    timeout: 1000 // abort after 1000ms
+  })
+} catch (err) {
+  console.err(err) // err is a TimeoutError
+}
+</code></pre>
+
+<h2 id="try-ion-now">Try ION Now!</h2>
+
+<p>This is the public beta of ION, and it is now running live on the Bitcoin blockchain.</p>
+
+<p>In the launch post, Microsoft’s ION project lead Daniel Buchner explains <a href="https://techcommunity.microsoft.com/t5/identity-standards-blog/ion-booting-up-the-network/ba-p/1441552">how to run a node and use decentralized identities in your apps and services today</a>.</p>
+
+<p>The project is open source, built on open standards, and you can run your own node—so try it out or contribute to the project today!</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>IPFS Weekly 92</title>
+      <link>https://blog.ipfs.io/weekly-92/</link>
+      <pubDate>Wed, 10 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ipfs.io/weekly-92/</guid>
+      <description>Welcome to IPFS Weekly #92 Here’s what’s happening in the InterPlanetary File System galaxy! 🚀
+Join us next Wednesday for our June meetup Next week the IPFS community will be gathering for a virtual meetup on June 17th.</description>
+      <content:encoded><![CDATA[
+
+<h1 id="welcome-to-ipfs-weekly-92">Welcome to IPFS Weekly #92</h1>
+
+<p>Here’s what’s happening in the <a href="https://ipfs.io/">InterPlanetary File System</a> galaxy! 🚀</p>
+
+<h2 id="join-us-next-wednesday-for-our-june-meetup">Join us next Wednesday for our June meetup</h2>
+
+<p>Next week the IPFS community will be gathering for a virtual meetup on June 17th. Join us for a deeper dive into our latest releases, meet the IPFS core developers, and sign up to give a demo of your own!</p>
+
+<p><a href="https://www.meetup.com/San-Francisco-IPFS/events/271042788/"><strong>Register to attend</strong></a></p>
+
+<h2 id="js-ipfs-0-46-0-released">js-ipfs 0.46.0 released</h2>
+
+<p>The JavaScript implementation of IPFS recently shared their latest progress on the IPFS blog. Goodies include Bitswap 1.2.0, much faster file transfers, and go-ipfs 0.5.x compatibility.</p>
+
+<p><a href="https://blog.ipfs.io/2020-06-08-js-ipfs-0-46/"><strong>Read the release notes</strong></a></p>
+
+<h2 id="powering-through-the-api-gateway-enabling-ipfs-and-filecoin-data-management">Powering through the API gateway enabling IPFS and Filecoin data management</h2>
+
+<p>Earlier this month, Powergate, Textile’s API driven solution to deploying multi-tiered storage based on IPFS and Filecoin into systems and applications, shared some insight into the project’s development progress. Up next? The JavaScript Powergate Client.</p>
+
+<p><a href="https://blog.textile.io/filecoin-tools-progress-update-june-2/"><strong>Learn more about Powergate</strong></a></p>
+
+<h2 id="quote-of-the-week">Quote of the week</h2>
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">The 2 tech projects I&#39;m most curious about right now are <a href="https://twitter.com/AnytypeLabs?ref_src=twsrc%5Etfw">@AnytypeLabs</a> (a self-hosted Notion) + <a href="https://twitter.com/IPFS?ref_src=twsrc%5Etfw">@IPFS</a> (a decentralized HTTP alternative). Worth looking into if you&#39;re a tech/web/UX enthusiast! <a href="https://t.co/0iMMvgCtFN">https://t.co/0iMMvgCtFN</a></p>&mdash; Lazlo (@__lazlo) <a href="https://twitter.com/__lazlo/status/1270018093952176130?ref_src=twsrc%5Etfw">June 8, 2020</a></blockquote> 
+
+<h2 id="brand-new-on-ipfs">Brand new on IPFS</h2>
+
+<ul>
+<li><a href="https://www.youtube.com/watch?time_continue=3&amp;v=7JW5Mms6DR4&amp;feature=emb_logo">Recommended viewing</a>: Learn how to deploy a decentralized React app on IPFS using Fleek.</li>
+<li><a href="https://github.com/textileio/go-threads/releases">Textile’s threads implementation in Go</a> released version 0.1.19. now with custom collection indexing.</li>
+<li><a href="https://github.com/nos/orbitdb-nos-identity-provider/">nOS releases OrbitDB and AvionDB</a> Identity Provider for nOS Network and ARK Core-based blockchains, adding BIP39 passphrase-based access control to IPFS.</li>
+<li><a href="https://discourse.nixos.org/t/obsidian-systems-is-excited-to-bring-ipfs-support-to-nix/7375">Obsidian Systems brings IPFS support to Nix</a>, a package manager for Linux and Unix systems making package management reliable and reproducible.</li>
+</ul>
+
+<h2 id="people-build-the-coolest-stuff-with-ipfs">People build the coolest stuff with IPFS</h2>
+
+<ul>
+<li><a href="https://github.com/2020PB/police-brutality">This repository</a> exists to accumulate and contextualize evidence of police brutality during the 2020 George Floyd protests, and has an open PR to create a public IPFS Follow Cluster.</li>
+<li><a href="https://github.com/miguelmota/ipdr">IPDR</a> is a Docker Registry tool that proxies Docker registry requests to IPFS for pushing and pulling images.</li>
+<li><a href="https://git-lfs.github.com/">Git Large File Storage</a> offers custom transfer and extension implementation that makes using IPFS for storage easy.</li>
+<li><a href="https://ipfs.io/ipfs/QmV3SzLWyTHdMStxeRyvLnLteujLNwNVM5821QsxZVerZL">Check out IPIDE</a>, an extensible IDE hosted on IPFS.</li>
+</ul>
+
+<h2 id="job-hunting-work-on-ipfs">Job hunting? Work on IPFS!</h2>
+
+<p><a href="https://jobs.lever.co/protocol/0afd449f-b292-42b4-abfd-af26415b796b">Community Engineer, libp2p</a>: Help introduce new open source projects to libp2p and clear hurdles for them to adopt the libp2p stack for the networking layer of their system. Protocol Labs, Remote</p>
+
+<p><a href="https://jobs.lever.co/protocol/3f0787e8-58b3-4122-a1ea-424561d2658f">Engineering Manager, IPFS</a>: Engineering managers have the challenging and exciting task of supporting and empowering engineering teams to deliver complex internet-scale systems in an environment defined by curiosity, passion, and a love for open source. Protocol Labs, Remote</p>
+
+<p><a href="https://jobs.lever.co/protocol/71c4a9b9-af90-4ce9-9dba-8b72507997bf">IPFS Community Lead</a>: Provide tactical support for the IPFS community, creating a global community strategy, and executing this strategy on the ground! Protocol Labs, Remote</p>
+
+<p><a href="https://www.notion.so/Hiring-Senior-Software-Engineer-Rust-Go-e6c94ccc261f426c80a483c7fc642412">Senior Software Engineer Rust/Go</a>: You would be working with our distributed team of engineers on new products, core protocols or client projects. Most of the work we do is or will eventually be open source. Equilibrium, Remote</p>
+
+<p><a href="https://notes.knowledgefutures.org/pub/si1okbw9">Software Engineer, the Underlay Project</a>: Strong full-stack web developer with an interest in semantic web and decentralized web technologies. The Knowledge Futures Group, Remote</p>
+
+<p><a href="https://jobs.lever.co/protocol"><strong>View our job postings</strong></a></p>
+
+<p>Take care of yourselves and each other. ❤️</p>
+
+<p>Get involved with IPFS by checking us out on <a href="https://github.com/ipfs">GitHub</a>, joining discussions on <a href="https://discuss.ipfs.io/">our community forum</a>, or hitting us up <a href="https://riot.im/app/#/room/#ipfs:matrix.org">in chat</a>. Have a suggestion? <a href="mailto:newsletter@ipfs.io">Email us.</a></p>
+
+<p>Get the <a href="https://ipfs.us4.list-manage.com/subscribe?u=25473244c7d18b897f5a1ff6b&amp;id=cad54b2230">IPFS Weekly in your inbox</a>, each Tuesday.</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>libp2p in 2020</title>
+      <link>https://blog.ipfs.io/2020-06-09-libp2p-in-2020/</link>
+      <pubDate>Tue, 09 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ipfs.io/2020-06-09-libp2p-in-2020/</guid>
+      <description>If you’re doing anything in the decentralized, peer-to-peer space, you’ve probably heard of libp2p - a modular networking stack for peer-to-peer applications.</description>
+      <content:encoded><![CDATA[
+
+<p>If you’re doing anything in the decentralized, peer-to-peer space, you’ve probably heard of libp2p - a modular networking stack for peer-to-peer applications. libp2p consists of many modular libraries from which p2p network developers can select and reuse just the protocols they need, while making it easy to upgrade and interoperate between applications. This helps web3 developers get up and running <strong>faster</strong>, build <strong>more resilient</strong> decentralized applications, and utilize <strong>advanced features</strong> like decentralized publish-subscribe and a distributed hash table.</p>
+
+<p>What makes libp2p different from the networking stack of today is its focus on <strong>transport agnosticism</strong>, <strong>modularity</strong>, and <strong>portable encodings</strong> (like <a href="https://github.com/multiformats/multiaddr">multiaddr</a>). These properties make libp2p the networking layer of choice for most new dweb projects, blockchains, and peer-to-peer applications. Read more about <a href="https://medium.com/paritytech/why-libp2p-13085ed0c9c8">why projects are choosing to build on libp2p</a>, or watch the <a href="https://www.youtube.com/watch?v=B7ecKMtNkXs">recent talk from Tech Lead Raul Kripalani at DevCon5</a>.</p>
+
+<h2 id="2019-growth">2019 Growth</h2>
+
+<p>The past year has seen amazing improvements to libp2p with the protocol quickly becoming the de facto web3 networking layer for a huge swath of projects.</p>
+
+<p>Probably the most significant news on that front is the official adoption of libp2p as the networking layer for the <a href="https://github.com/ethereum/eth2.0-specs/pull/1328">Ethereum 2.0 Network Specification</a>. Ethereum 2.0 is the next generation of Ethereum, with a large and thriving network of clients, dapps, and developers. A big focus for libp2p in 2019 was leveling up stability, scalability, and ease of use to meet the requirements of such a large scale blockchain.</p>
+
+<p><img src="/img/098_devcon.png" alt="libp2p at DevConV" /></p>
+
+<p>libp2p now has 7 language implementations:</p>
+
+<ul>
+<li><a href="https://github.com/libp2p/go-libp2p">go-libp2p</a> by Protocol Labs</li>
+<li><a href="https://github.com/libp2p/rust-libp2p">rust-libp2p</a> by the Web3 Foundation</li>
+<li><a href="https://github.com/libp2p/js-libp2p">js-libp2p</a> by Protocol Labs</li>
+<li><a href="https://github.com/soramitsu/kagome/tree/master/core/libp2p">cpp-libp2p</a> by Soramitsu</li>
+<li><a href="https://github.com/soramitsu/kagome/tree/master/core/libp2p">jvm-libp2p</a> by Harmony, PegaSys, and Web3 Labs</li>
+<li><a href="https://github.com/status-im/nim-libp2p">nim-libp2p</a> by Status.im</li>
+<li><a href="https://github.com/libp2p/py-libp2p">py-libp2p</a> by the Ethereum Foundation</li>
+</ul>
+
+<p><center><iframe width="780" height="438" src="https://www.youtube.com/embed/B7ecKMtNkXs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center></p>
+
+<p><nbsp;></p>
+
+<p>The other major new blockchain building on libp2p is <strong>Filecoin</strong> which plans to launch their public storage and retrieval network this summer. With over 7.5 PB of storage already live across an active community of testnet miners, a big focus for libp2p in 2019 was landing the performance and hardening improvements to meet Filecoin’s needs.</p>
+
+<p>In addition to Filecoin and Ethereum 2, there are now <strong>more than two dozen</strong> projects building directly on libp2p, including: <a href="https://www.youtube.com/watch?v=mRlLSByFxCQ&amp;index=8&amp;list=PLhuBigpl7lqvIymGaM7A_VT4CYZW3R_4Q&amp;t=0s">Polkadot and Parity Substrate</a>, <a href="https://www.nervos.org/">Nervos</a>, <a href="https://status.im/">Status.im</a>, <a href="https://www.youtube.com/watch?v=QKFOWdOTrpo&amp;index=4&amp;list=PLhuBigpl7lqvIymGaM7A_VT4CYZW3R_4Q&amp;t=0s">Paratii</a>, <a href="https://0x.org/">0x</a>, <a href="https://codaprotocol.com/">Coda</a>, <a href="https://www.enigma.co/">Enigma</a>, <a href="https://www.onflow.org/">Flow</a>, <a href="https://www.harmony.one/">Harmony</a>, <a href="https://golem.network/">Golem</a>, <a href="https://keep.network/">Keep Network</a> and <a href="https://validitylabs.org/">Validity Labs</a>. Groups like <a href="https://matrix.org/">Matrix</a>.org are also in the early stages of adding libp2p support to their applications, helping their users benefit from the resilience and openness of p2p networking.</p>
+
+<p>These newcomers to the libp2p ecosystem are a <strong>big deal</strong> - but they actually still make up less than half of all active libp2p nodes! The vast majority of libp2p end users come from dapps, tools, and projects using libp2p through <strong>IPFS</strong>, the InterPlanetary File System!</p>
+
+<p><strong>Millions of end users</strong> and over <strong>100,000 libp2p nodes</strong> participate in the IPFS network every week. Organizations like <a href="https://blog.ipfs.io/2020-03-30-ipfs-in-opera-for-android/">Opera</a>, <a href="https://medium.com/the-ethereum-name-service/all-the-ways-you-can-surf-the-decentralized-web-today-bf8e7a42fa27">Ethereum</a>, <a href="https://u.today/brave-browser-in-2020-new-ad-blocks-filters-sdk-and-ipfs">Brave</a>, <a href="https://blog.ipfs.io/2020-02-14-improved-bitswap-for-container-distribution/">Netflix</a>, <a href="https://techcommunity.microsoft.com/t5/azure-active-directory-identity/toward-scalable-decentralized-identifier-systems/ba-p/560168">Microsoft</a>, and <a href="https://www.cloudflare.com/distributed-web-gateway/">Cloudflare</a> have joined the IPFS ecosystem, and hundreds of nascent community-owned projects like <a href="https://audius.co/">Audius</a>, <a href="https://fleek.co/">Fleek</a>, <a href="http://textile.io/">Textile</a>, <a href="http://qri.io/">Qri</a>, <a href="http://pinata.cloud">Pinata</a>, <a href="https://openbazaar.org/">OpenBazaar</a>, <a href="http://berty.tech/">Berty</a>, <a href="http://infura.io">Infura</a> and <a href="http://3box.io">3Box</a> are building their businesses with IPFS.</p>
+
+<h2 id="2019-and-early-2020-features">2019 and early 2020 features</h2>
+
+<p>The focus for the year was hardening and evolving the stack - and we blew that out of the water! Here are some of the features the core team and our community have contributed to libp2p:</p>
+
+<ul>
+<li>In 2019, we added AutoRelay, a feature that ensures any user can launch a libp2p node easily without having to open ports on their router or do anything technically complicated. Relay nodes will handle the relaying of traffic. Coming soon is an automatic upgrade to direct connections from relayed connections.</li>
+<li>We added better connection management, with decaying tags and connection gating.</li>
+<li>We built and released Gossipsub, wrote a <a href="https://github.com/libp2p/specs/tree/master/pubsub/gossipsub">new explainer</a>, and later <a href="https://blog.ipfs.io/2020-05-20-gossipsub-v1.1/">enhanced with security extensions</a> including peer scoring, opportunistic grafting, peer exchange, and other features.</li>
+<li>Specs improvement in 2019 has made a night-and-day difference for cross language compatibility and the ease of implementing libp2p in new languages.</li>
+<li>We simplified the go-libp2p codebase by centralizing abstractions and interfaces under the <a href="https://blog.ipfs.io/2020-05-20-gossipsub-v1.1/">go-libp2p-core module</a>, decommissioning 12+ repos along the way. Further codebase simplification is on the roadmap for 2020.</li>
+<li>A huge focus for the year was the Async Await refactor in js-libp2p - enabling the use of streaming iterables instead of pullstreams, along with some <a href="https://github.com/libp2p/js-interfaces/tree/master/src/connection#interface-connection">interface refactors</a>.</li>
+<li>The libp2p core team has launched a massive documentation overhaul. Check out <a href="https://docs.libp2p.io/">docs site</a> and the new <a href="https://github.com/libp2p/js-libp2p/blob/master/doc/GETTING_STARTED.md">Getting Started guide</a>.</li>
+<li>We’ve completed a major DHT improvement project. Queries to the DHT are much faster, thus better supporting DHT-intensive applications like <a href="https://docs.ipfs.io/concepts/ipns/">IPFS’s name resolver</a>.</li>
+<li>Support for Noise handshakes has been spec’ed, and is now available in all 7 implementations of libp2p.</li>
+<li>We’ve continued to update our QUIC implementation to keep pace with new releases of the QUIC standard. We’ve also made progress on implementing QUIC in js.</li>
+<li>We introduced certified peer records to enhance foundational protocol security. They’re used by gossipsub and the DHT, and are available to application protocols too.</li>
+<li>We have prototyped an <a href="https://github.com/libp2p/go-libp2p-core/blob/master/introspection/pb/introspection.proto">introspection protocol</a>, with <a href="https://github.com/libp2p/go-libp2p/pull/964">a reference implementation in go-libp2p</a>. We’ll soon release a framework and UI shell that will interoperate with all libp2p implementations.</li>
+</ul>
+
+<p>Releases</p>
+
+<ul>
+<li>go-libp2p had <a href="https://github.com/libp2p/go-libp2p/releases">19 releases</a> including <a href="https://github.com/libp2p/go-libp2p/releases/tag/v0.9.5">v0.9.5</a>.</li>
+<li>js-libp2p had <a href="https://github.com/libp2p/js-libp2p/releases">41 releases</a> including <a href="https://github.com/libp2p/js-libp2p/releases/tag/v0.28.0">v0.28.0</a>.</li>
+<li>rust-libp2p had <a href="https://github.com/libp2p/rust-libp2p/releases">10 releases</a> including <a href="https://github.com/libp2p/rust-libp2p/releases/tag/v0.1.0">v0.19.1</a>.</li>
+<li>cpp-libp2p had <a href="https://github.com/soramitsu/cpp-libp2p/releases">2 releases</a> including <a href="https://github.com/soramitsu/cpp-libp2p/releases/tag/v0.0.1-p0">v0.0.1-p0</a>.</li>
+<li>py-libp2p had <a href="https://github.com/libp2p/py-libp2p/releases">6 releases</a> including <a href="https://github.com/libp2p/py-libp2p/releases/tag/v0.1.5">v0.1.5</a>.</li>
+<li>jvm-libp2p had <a href="https://github.com/libp2p/jvm-libp2p">3 releases</a> including <a href="https://github.com/libp2p/jvm-libp2p/releases/tag/0.2.0">v0.2.0</a>.</li>
+</ul>
+
+<h2 id="community">Community</h2>
+
+<p>We saw huge growth in the libp2p team and community this year, with presentations and workshops at a variety of conferences including <a href="https://www.youtube.com/watch?v=yPOROKQRFPQ">EthCC 2</a>, <a href="https://www.youtube.com/watch?v=SWdMdN9eGqU">Web3 2019</a>, <a href="https://ethberlinzwei.github.io/KnowledgeBase/resources/libp2p.html">EthBerlin Zwei</a>, <a href="https://camp.ipfs.io/">IPFS Camp</a>, <a href="https://www.youtube.com/watch?v=p1c4l0xOnFI">ReadyLayerOne</a>, DevCon V (talks: <a href="https://www.youtube.com/watch?v=NZL7XBxTI_s">state of libp2p</a>, <a href="https://www.youtube.com/watch?v=b8AZBVdrCC0">gossipsub</a>), and more.</p>
+
+<p>The libp2p project also launched <a href="https://github.com/libp2p/devgrants">a development grants program</a>. The initial kickoff for the program at EthBerlinZwei led to several significant features being implemented by the community, including <a href="https://github.com/libp2p/devgrants/blob/master/004-noise-handshake-implementations.md">Noise handshakes in Go</a> and <a href="https://github.com/ethberlinzwei/Bounties/issues/20">Lua Wireshark dissectors</a>. The bounties program is a great way to get involved in the libp2p project. <a href="https://github.com/libp2p/devgrants">Check it out on GitHub</a>!</p>
+
+<h2 id="2020-h1-in-review">2020 H1 in review</h2>
+
+<p>Throughout the first half of the year, our top focus was supporting the needs of current and in-flight adopters, especially IPFS, Eth2, and Filecoin. So far, we have delivered on the following.</p>
+
+<h3 id="content-routing-and-connectivity">Content routing and connectivity</h3>
+
+<p>To support IPFS and all our other dapp users out there, we’ve improved libp2p’s content routing and connectivity to make finding and sharing content in distributed networks fast and reliable. This meant we needed to dive deep into major systems like the libp2p DHT, providing subsystem, NAT traversal, and more to optimize and refactor for performance. We’ve been collaborating closely with Protocol Labs’ IPFS and Testground teams to make this a reality. Read more about our progress in the <a href="https://blog.ipfs.io/2020-04-28-go-ipfs-0-5-0/">IPFS 0.5 launch</a> post, and our path to get there in the <a href="https://blog.ipfs.io/2020-05-19-road-to-dht/">Road to the New DHT</a> post!</p>
+
+<p><img src="/098-libp2p-in-2020/find-perf.png" alt="Content Routing Speed" /></p>
+
+<h3 id="launching-testground-to-the-world">Launching Testground to the world</h3>
+
+<p>What is <a href="https://blog.ipfs.io/2020-05-06-launching-testground/">Testground</a> you ask? Only the coolest new testing tool for large-scale p2p networks! When starting our network upgrade plans, it was clear that the scope and complexity of changes we’d need to make to core IPFS network functions would be impossible to optimize without powerful testing tools to simulate each change to network performance at scale. We couldn’t find a tool with the scale and configurability we needed, so we built the testing tool we needed, and made it modular and system agnostic just like libp2p so other p2p networks can take advantage of this new OSS infrastructure too!</p>
+
+<p><img src="/header_images/092-launching-testground.png" alt="Launching Testground" /></p>
+
+<h3 id="gossipsub-security-enhancements">Gossipsub security enhancements</h3>
+
+<p>For our large blockchain users, the focus of Q1 was stability, scalability, and security hardening. We designed and implemented <a href="https://blog.ipfs.io/2020-05-20-gossipsub-v1.1/">a new version for the Gossipsub protocol, v1.1</a>. This new P2P PubSub router includes several security extensions that add a protection to Sybil, eclipse, and spam attacks.</p>
+
+<p>This work is of extreme importance as our adopters (e.g., Filecoin and Ethereum 2.0) require a secure messaging layer to distribute their time sensitive and valuable data, without being vulnerable to malicious actors.</p>
+
+<p>You can find the <a href="https://github.com/libp2p/specs/tree/master/pubsub/gossipsub">specification</a> and <a href="https://github.com/libp2p/go-libp2p-pubsub/">implementation</a> on GitHub. We will be releasing a report that fully describes how we identified the attack vectors, developed the motivations and went through implementing, testing, evaluating under multiple network conditions and got it audited. Stay tuned.</p>
+
+<p><img src="/header_images/094-gossipsub-v1.1-headerimage+grid.jpeg" alt="Gossipsub v1.1" /></p>
+
+<h3 id="going-forward">Going forward</h3>
+
+<p>Both of these workstreams (content routing performance and gossipsub hardening) continue to be top priorities with IPFS having launched go-ipfs 0.5 (their largest network upgrade in years), and Ethereum and Filecoin gearing up for Q3 mainnet launches, as well as other adopters such as Polkadot (who <a href="https://twitter.com/polkadotnetwork/status/1265334623086751745">went live</a> recently!), Flow, Coda, 0x, Matrix, Keep Network, Enigma, Harmony, Golem, Validity Labs, etc., reaching new milestones.</p>
+
+<p>Furthermore, in H2 we plan to work on protocol negotiation enhancements, a more efficient connection boostrapping flow, an implementation alignment framework (including a long-awaited conformance test kit), code refactors, and a lot more!</p>
+
+<h2 id="growing-the-team">Growing the team</h2>
+
+<p>Protocol Labs’s small and scrappy libp2p core team transformed into a true force of nature with some great additions last year. Our doors will continue to be open for great people from both inside and outside of the ecosystem.</p>
+
+<p>In particular, <strong>we’re looking for a new Project Lead</strong> to help grow and steward the libp2p project and ecosystem to new heights in 2020. Check out the <a href="https://jobs.lever.co/protocol/27ff3891-6e13-4aa8-b43a-734715e85a26">role description</a> for more specific details and information on where you can apply. In particular, we’re looking for candidates with proven leadership experience, a passion for p2p tech, and an interest in scaling the libp2p community as it becomes critical infrastructure for new, large users such as Ethereum (with launch of the Beacon chain) and Filecoin.</p>
+
+<p>Excited about building the networking stack for a more resilient, upgradeable, open network for humanity’s knowledge? We’d love to get in touch! Apply, or just shoot <a href="mailto:mike@libp2p.io">mike@libp2p.io</a> a quick email with your thoughts or questions!</p>
+
+<h2 id="thank-you">Thank you</h2>
+
+<p>2019 was a fantastic, high growth year for the libp2p project and 2020 is already well on track to be even more exciting. Huge thank you to the thousands of community members who contributed to all the new language implementations, feature improvements, performance speedups, and amazing projects bringing libp2p directly to end users.</p>
+
+<p>Thank you for your support! We’re excited to continue working with you to build libp2p.</p>
+
+<h2 id="appendix">Appendix</h2>
+
+<p>References:</p>
+
+<ul>
+<li><a href="https://filecoin.io/blog/update-2018-q3-q4/#8-libp2p-update-for-filecoin">https://filecoin.io/blog/update-2018-q3-q4/#8-libp2p-update-for-filecoin</a></li>
+<li><a href="https://filecoin.io/blog/update-2019-q2-q3/#9-libp2p-update-for-filecoin">https://filecoin.io/blog/update-2019-q2-q3/#9-libp2p-update-for-filecoin</a></li>
+<li><a href="https://blog.ipfs.io/2020-02-10-our-focus-for-2020/">https://blog.ipfs.io/2020-02-10-our-focus-for-2020/</a></li>
+<li><a href="https://medium.com/polkadot-network/polkadot-2019-year-in-review-8c852ef42668">https://medium.com/polkadot-network/polkadot-2019-year-in-review-8c852ef42668</a></li>
+</ul>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>js-IPFS 0.46.0 released with new faster bitswap and go-IPFS 0.5 compat</title>
+      <link>https://blog.ipfs.io/2020-06-08-js-ipfs-0-46/</link>
+      <pubDate>Mon, 08 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ipfs.io/2020-06-08-js-ipfs-0-46/</guid>
+      <description>🔦 Highlights  Bitswap 1.2.0, transfer speed improvements &amp;amp; go-IPFS 0.5.x compatibility
+ Blink and you’ll miss it, js-IPFS@0.45.0 js-IPFS@0.</description>
+      <content:encoded><![CDATA[
+
+<h1 id="highlights">🔦 Highlights</h1>
+
+<blockquote>
+<p>Bitswap 1.2.0, transfer speed improvements &amp; go-IPFS 0.5.x compatibility</p>
+</blockquote>
+
+<p>Blink and you’ll miss it, <del><code>js-IPFS@0.45.0</code></del> <code>js-IPFS@0.46.0</code> has been released; goodies include Bitswap 1.2.0, much faster file transfers, and go-IPFS 0.5.x compatibility!</p>
+
+<h2 id="bitswap-1-2-0">↔️ Bitswap 1.2.0</h2>
+
+<p>Version 1.2.0 of the Bitswap protocol has landed in <code>js-IPFS</code> and brings a host of performance improvements around coordinating the supply of blocks to peers across the network. For example, peers can now respond to <a href="https://github.com/ipfs/specs/blob/master/BITSWAP.md#bitswap-message">WANT</a>s with messages saying they have the block but not sending it, in order to later send multiple blocks in one message instead of many small messages resulting in less chatty network operations and faster overall transfer times.</p>
+
+<p>See <a href="https://github.com/ipfs/js-ipfs-bitswap/pull/204">ipfs/js-ipfs-bitswap#204</a> for more!</p>
+
+<h2 id="faster-file-transfers">💨 Faster file transfers</h2>
+
+<p>The Bitswap module has had a bit of an overhaul and is now much faster at pulling blocks from other nodes across the network.  Before, we waited a little while before sending our wantlist to newly connected peers—we’ve reduced that window and seen a massive speedup (smaller bars are better):</p>
+
+<p><img src="/097-js-ipfs-0.46/bitswap-speedup.png" alt="Graphs showing Bitswap speedups" /></p>
+
+<p>As you can see, the new js-IPFS is about 3x faster at pulling large files from other nodes on the network than the previous release, and that increases to about 5x as the files get smaller.</p>
+
+<p>We’re not stopping there though, there are plenty more performance improvements on the way!</p>
+
+<p>See <a href="https://github.com/ipfs/js-ipfs-bitswap/pull/224">ipfs/js-ipfs-bitswap#224</a> for all the details.</p>
+
+<h2 id="go-ipfs-v0-5-x-compatibility">🤝 go-IPFS v0.5.x compatibility</h2>
+
+<p>The new version of go-IPFS brought a whole slew of changes with it—check out our <a href="https://blog.ipfs.io/2020-04-28-go-ipfs-0-5-0/">blog post</a> for more details.</p>
+
+<p>The good news is js-IPFS has taken on a whole heap of these features and the <code>ipfs-http-client</code> is now 100% compatible with <code>go-ipfs@0.5.x</code>. Your <code>js-IPFS</code> nodes will now happily chat away to <code>go-IPFS</code> nodes over the network via Bitswap and <a href="https://blog.ipfs.io/2020-05-20-gossipsub-v1.1/">gossipsub</a> too.</p>
+
+<p>See <a href="https://github.com/ipfs/js-ipfs/pull/3013">ipfs/js-ipfs#3013</a> for the full rundown.</p>
+
+<h1 id="new-features">✨New features</h1>
+
+<ul>
+<li>Using an <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal">AbortSignal</a> to cancel a request to get a block (via <code>ipfs.dag.get</code> or <code>ipfs.cat</code> for example) will now cause those blocks to be removed from your wantlist (<a href="https://github.com/ipfs/js-ipfs-bitswap/pull/214">ipfs/js-ipfs-bitswap#214</a>)</li>
+<li><code>ipfs.dht.get(key, [options])</code> accepts a string or a buffer as <code>key</code> (<a href="https://github.com/ipfs/js-ipfs/issues/3013">#3013</a>) (<a href="https://github.com/ipfs/js-ipfs/commit/0900bb9b8123edb689a137a006c5507d8503f693">0900bb9</a>)</li>
+</ul>
+
+<h1 id="bugs-fixed">🦟 Bugs fixed</h1>
+
+<ul>
+<li>Decrease wantlist sending debounce time (<a href="https://github.com/ipfs/js-ipfs-bitswap/pull/224">ipfs/js-ipfs-bitswap#224</a>)</li>
+<li>Fix bitswap race conditions when requesting the same block twice (<a href="https://github.com/ipfs/js-ipfs-bitswap/pull/214">ipfs/js-ipfs-bitswap#214</a>)</li>
+<li>libp2p pubsub now creates two unidirectional streams to topic peers making message delivery more reliable (<a href="https://github.com/libp2p/go-libp2p-pubsub/issues/331">ipfs/go-ipfs-pubsub#331</a>)</li>
+<li><code>ipfs.config.get([key,] [options])</code> - <code>key</code> is optional again  (<a href="https://github.com/ipfs/js-ipfs/issues/3069">#3069</a>) (<a href="https://github.com/ipfs/js-ipfs/commit/d043138be2c0c7fd458131d56e235edec1504ca3">d043138</a>)</li>
+<li>extra mode bits passed to unixfs constructor are now ignored (<a href="https://github.com/ipfs/js-ipfs-unixfs/pull/53">ipfs/js-ipfs-unixfs#53</a>) (<a href="https://github.com/ipfs/js-ipfs-unixfs/pull/53/commits/65a040dadd68ca5cb6697c8fd15922f505833a19">65a040d</a>)</li>
+</ul>
+
+<h1 id="api-changes">🏗 API Changes</h1>
+
+<h2 id="core-api">Core API</h2>
+
+<ul>
+<li><code>ipfs.ls</code> no longer supports a <code>sort</code> option (<a href="https://github.com/ipfs/js-ipfs/issues/3013">#3013</a>) (<a href="https://github.com/ipfs/js-ipfs/commit/0900bb9b8123edb689a137a006c5507d8503f693">0900bb9</a>)</li>
+<li><code>ipfs.key.gen</code> defaults to 2048 bit RSA keys (<a href="https://github.com/ipfs/js-ipfs/issues/3013">#3013</a>) (<a href="https://github.com/ipfs/js-ipfs/commit/0900bb9b8123edb689a137a006c5507d8503f693">0900bb9</a>)</li>
+</ul>
+
+<h2 id="cli">CLI</h2>
+
+<ul>
+<li><code>ipfs files ls</code> no longer supports the <code>-U</code> (unsorted) flag (<a href="https://github.com/ipfs/js-ipfs/issues/3013">#3013</a>) (<a href="https://github.com/ipfs/js-ipfs/commit/0900bb9b8123edb689a137a006c5507d8503f693">0900bb9</a>)</li>
+</ul>
+
+<h2 id="http-api">HTTP API</h2>
+
+<ul>
+<li><code>POST /api/v0/pin/list</code> no longer supports non-streaming responses (<a href="https://github.com/ipfs/js-ipfs/issues/3013">#3013</a>) (<a href="https://github.com/ipfs/js-ipfs/commit/0900bb9b8123edb689a137a006c5507d8503f693">0900bb9</a>)</li>
+</ul>
+
+<h2 id="http-api-client">HTTP API Client</h2>
+
+<ul>
+<li><code>ipfs.dht.get</code> resolves to a Buffer in line with the core API (<a href="https://github.com/ipfs/js-ipfs/issues/3013">#3013</a>) (<a href="https://github.com/ipfs/js-ipfs/commit/0900bb9b8123edb689a137a006c5507d8503f693">0900bb9</a>)</li>
+</ul>
+
+<h1 id="what-s-next">🗺️ What’s next?</h1>
+
+<p>Check out the js-IPFS <a href="https://github.com/orgs/ipfs/projects/6">Project Roadmap</a> which contains headline features organised in the order we hope them to land.</p>
+
+<p>Only large features are called out in the roadmap, expect lots of small bugfix releases between the roadmapped items!</p>
+
+<h1 id="huge-thank-you-to-everyone-that-made-this-release-possible">😍 Huge thank you to everyone that made this release possible</h1>
+
+<ul>
+<li><a href="https://github.com/0xflotus">@0xflotus</a> (1 commit, 1 PR)</li>
+<li><a href="https://github.com/5310">@5310</a> (1 comment)</li>
+<li><a href="https://github.com/achingbrain">@achingbrain</a> (30 commits, 12 PRs, 1 issue, 55 comments)</li>
+<li><a href="https://github.com/aphelionz">@aphelionz</a> (1 PR, 1 comment)</li>
+<li><a href="https://github.com/AquiGorka">@AquiGorka</a> (1 comment)</li>
+<li><a href="https://github.com/Artod">@Artod</a> (1 comment)</li>
+<li><a href="https://github.com/autonome">@autonome</a> (11 comments)</li>
+<li><a href="https://github.com/bluelovers">@bluelovers</a> (1 commit)</li>
+<li><a href="https://github.com/bmann">@bmann</a> (1 comment)</li>
+<li><a href="https://github.com/carsonfarmer">@carsonfarmer</a> (1 issue, 4 comments)</li>
+<li><a href="https://github.com/chelneru">@chelneru</a> (1 comment)</li>
+<li><a href="https://github.com/codecov-commenter">@codecov-commenter</a> (9 comments)</li>
+<li><a href="https://github.com/danielrempe-ut">@danielrempe-ut</a> (1 issue, 1 comment)</li>
+<li><a href="https://github.com/dapplion">@dapplion</a> (2 comments)</li>
+<li><a href="https://github.com/daviddahl">@daviddahl</a> (1 issue, 5 comments)</li>
+<li><a href="https://github.com/dirkmc">@dirkmc</a> (1 comment)</li>
+<li><a href="https://github.com/domwoe">@domwoe</a> (1 comment)</li>
+<li><a href="https://github.com/DougAnderson444">@DougAnderson444</a> (4 comments)</li>
+<li><a href="https://github.com/Gozala">@Gozala</a> (2 PRs, 7 issues, 25 comments)</li>
+<li><a href="https://github.com/hacdias">@hacdias</a> (2 comments)</li>
+<li><a href="https://github.com/hugomrdias">@hugomrdias</a> (4 commits, 5 PRs, 1 issue, 26 comments)</li>
+<li><a href="https://github.com/jacobheun">@jacobheun</a> (4 commits, 3 PRs, 2 issues, 18 comments)</li>
+<li><a href="https://github.com/jakehemmerle">@jakehemmerle</a> (2 comments)</li>
+<li><a href="https://github.com/johnnymatthews">@johnnymatthews</a> (1 commit, 1 PR)</li>
+<li><a href="https://github.com/justinmchase">@justinmchase</a> (1 comment)</li>
+<li><a href="https://github.com/kumavis">@kumavis</a> (2 comments)</li>
+<li><a href="https://github.com/lazyweirdo">@lazyweirdo</a> (2 comments)</li>
+<li><a href="https://github.com/lidel">@lidel</a> (1 PR, 2 comments)</li>
+<li><a href="https://github.com/matrushka">@matrushka</a> (1 PR)</li>
+<li><a href="https://github.com/mburns">@mburns</a> (1 comment)</li>
+<li><a href="https://github.com/mdtanrikulu">@mdtanrikulu</a> (1 issue)</li>
+<li><a href="https://github.com/mikeal">@mikeal</a> (1 comment)</li>
+<li><a href="https://github.com/mitra42">@mitra42</a> (1 comment)</li>
+<li><a href="https://github.com/momack2">@momack2</a> (1 commit, 1 comment)</li>
+<li><a href="https://github.com/mpetrunic">@mpetrunic</a> (1 comment)</li>
+<li><a href="https://github.com/obo20">@obo20</a> (1 comment)</li>
+<li><a href="https://github.com/oed">@oed</a> (10 comments)</li>
+<li><a href="https://github.com/RenatoPerotti">@RenatoPerotti</a> (1 issue)</li>
+<li><a href="https://github.com/revolunet">@revolunet</a> (1 commit, 1 PR)</li>
+<li><a href="https://github.com/ribasushi">@ribasushi</a> (1 comment)</li>
+<li><a href="https://github.com/robert-cronin">@robert-cronin</a> (1 issue, 1 comment)</li>
+<li><a href="https://github.com/rohail411">@rohail411</a> (2 issues, 2 comments)</li>
+<li><a href="https://github.com/rumkin">@rumkin</a> (1 issue)</li>
+<li><a href="https://github.com/rvagg">@rvagg</a> (4 comments)</li>
+<li><a href="https://github.com/SignpostMarv">@SignpostMarv</a> (1 comment)</li>
+<li><a href="https://github.com/stasbar">@stasbar</a> (1 issue, 1 comment)</li>
+<li><a href="https://github.com/Stebalien">@Stebalien</a> (7 comments)</li>
+<li><a href="https://github.com/stensonb">@stensonb</a> (11 commits)</li>
+<li><a href="https://github.com/tabcat">@tabcat</a> (1 issue)</li>
+<li><a href="https://github.com/tarunbatra">@tarunbatra</a> (1 PR, 3 comments)</li>
+<li><a href="https://github.com/thattommyhall">@thattommyhall</a> (1 commit)</li>
+<li><a href="https://github.com/tymmesyde">@tymmesyde</a> (1 comment)</li>
+<li><a href="https://github.com/typhu-xyz">@typhu-xyz</a> (2 comments)</li>
+<li><a href="https://github.com/vasco-santos">@vasco-santos</a> (56 commits, 13 PRs, 8 issues, 66 comments)</li>
+<li><a href="https://github.com/vmx">@vmx</a> (2 commits, 5 comments)</li>
+<li><a href="undefined">@welcome</a> (5 comments)</li>
+<li><a href="https://github.com/wemeetagain">@wemeetagain</a> (38 commits, 9 PRs, 3 issues, 8 comments)</li>
+<li><a href="https://github.com/witten">@witten</a> (1 comment)</li>
+<li><a href="https://github.com/xinfushe-dev">@xinfushe-dev</a> (1 comment)</li>
+<li><a href="https://github.com/xmaysonnave">@xmaysonnave</a> (1 comment)</li>
+</ul>
+
+<h1 id="want-to-contribute">🙌🏽 Want to contribute?</h1>
+
+<p>Would you like to contribute to the IPFS project and don’t know how? Well, there are a few places you can get started:</p>
+
+<ul>
+<li>Check the issues with the <code>help wanted</code> label in the <a href="https://github.com/ipfs/js-ipfs/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22">js-IPFS repo</a></li>
+<li>Join an IPFS All Hands, introduce yourself and let us know where you would like to contribute: <a href="https://github.com/ipfs/team-mgmt/#weekly-ipfs-all-hands">https://github.com/ipfs/team-mgmt/#weekly-ipfs-all-hands</a></li>
+<li>Hack with IPFS and show us what you made! The All Hands call is also the perfect venue for demos, join in and show us what you built</li>
+<li>Join the discussion at <a href="https://discuss.ipfs.io/">https://discuss.ipfs.io/</a> and help users finding their answers.</li>
+<li>Join the <a href="https://github.com/ipfs/team-mgmt/issues/992">🚀 IPFS Core Implementations Weekly Sync 🛰</a> and be part of the action!</li>
+</ul>
+
+<h1 id="do-you-have-questions">⁉️ Do you have questions?</h1>
+
+<p>The best place to ask your questions about IPFS, how it works, and what you can do with it is at <a href="https://discuss.ipfs.io">discuss.ipfs.io</a>. We are also available at the <code>#ipfs</code> channel on Freenode.</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>IPFS Weekly 91</title>
+      <link>https://blog.ipfs.io/weekly-91/</link>
+      <pubDate>Wed, 27 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ipfs.io/weekly-91/</guid>
+      <description>Welcome to the IPFS Weekly Here’s what’s happening lately in the InterPlanetary File System galaxy and beyond! 🚀
+The Road to the New DHT At the end of April, we released our largest update yet: go-ipfs 0.</description>
+      <content:encoded><![CDATA[
+
+<h1 id="welcome-to-the-ipfs-weekly">Welcome to the IPFS Weekly</h1>
+
+<p>Here’s what’s happening lately in the <a href="https://ipfs.io/">InterPlanetary File System</a> galaxy and beyond! 🚀</p>
+
+<h2 id="the-road-to-the-new-dht">The Road to the New DHT</h2>
+
+<p>At the end of April, we released our largest update yet: go-ipfs 0.5.0. This upgrade brought major performance and reliability improvements to IPFS — especially on the content discovery and routing front. We’d like to take you through our journey to re-write the DHT. <a href="https://blog.ipfs.io/2020-05-19-road-to-dht/">Read the full story on the blog</a>. </p>
+
+<h2 id="js-ipfs-0-44-0-released">js-ipfs 0.44.0 released 🎉</h2>
+
+<p>Last week, we shipped the latest release for js-ipfs, version 0.44.0! Meaning, you can now use AbortControllers to cancel requests in js-ipfs! No more waiting around to see if your request ever completes. Read the changelog post for <a href="https://blog.ipfs.io/2020-05-21-js-ipfs-0-44/">full details on the release</a>.</p>
+
+<h2 id="it-s-true-gossipsub-v1-1-is-here">It’s true; Gossipsub v1.1 is here</h2>
+
+<p>The Gossipsub Task Force has been hard at work exploring and analyzing various attack vectors on public and permissionless messaging networks. With that knowledge, we’ve crafted and iterated on mitigating strategies to make our beloved libp2p PubSub Router work in adversarial environments. <a href="https://blog.ipfs.io/2020-05-20-gossipsub-v1.1">The result is Gossipsub v1.1</a>.</p>
+
+<h2 id="top-highlights-this-week">Top highlights this week</h2>
+
+<ul>
+<li><a href="https://github.com/orbitdb/orbit-db/issues/772#issuecomment-632357888">Orbit-db 0.24</a> is out with support for both go-ipfs 0.5 and js-ipfs 0.44</li>
+<li><a href="https://github.com/libp2p/go-libp2p/releases/tag/v0.9.0">go-libp2p v0.9.0</a> was released with some long-awaited features: connection gating to accept/deny connections at different stages, decaying peer scoring tags, signed peer records for enhanced security, and more.</li>
+<li><a href="https://medium.com/equilibriumco/the-road-to-unixfs-f3cf5222b2ef">The second rust-ipfs grant</a> has been approved, and work has begun on the UnixFS!</li>
+<li><a href="https://github.com/ipfs-shipyard/ipfs-desktop/releases/tag/v0.11.4">ipfs-desktop 0.11.4</a> is now here!</li>
+<li>Under the hood: <a href="https://simpleaswater.com/aviondb-p2p-sync/">AvionDB P2P Syncing</a></li>
+<li>Learn all about <a href="https://www.youtube.com/watch?time_continue=1&amp;v=K2MF4fvcl70&amp;feature=emb_logo">Offline Knowledge Hotspots</a> in the Local Offline Collaboration Monthly meeting</li>
+</ul>
+
+<h2 id="quote-of-the-week">Quote of the week</h2>
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">My portfolio now also runs on IPFS! <br><br>Thanks to the awesome people <a href="https://twitter.com/FleekHQ?ref_src=twsrc%5Etfw">@FleekHQ</a> my portfolio now has a version available that&#39;s <a href="https://twitter.com/hashtag/Decentralized?src=hash&amp;ref_src=twsrc%5Etfw">#Decentralized</a> at <a href="https://t.co/cA2pof8kjP">https://t.co/cA2pof8kjP</a><a href="https://twitter.com/hashtag/web?src=hash&amp;ref_src=twsrc%5Etfw">#web</a> <a href="https://twitter.com/hashtag/webdevelopment?src=hash&amp;ref_src=twsrc%5Etfw">#webdevelopment</a> <a href="https://twitter.com/hashtag/ipfs?src=hash&amp;ref_src=twsrc%5Etfw">#ipfs</a> <a href="https://twitter.com/hashtag/ipns?src=hash&amp;ref_src=twsrc%5Etfw">#ipns</a> <a href="https://twitter.com/hashtag/blockchain?src=hash&amp;ref_src=twsrc%5Etfw">#blockchain</a> <a href="https://twitter.com/hashtag/dweb?src=hash&amp;ref_src=twsrc%5Etfw">#dweb</a> <a href="https://twitter.com/hashtag/dapp?src=hash&amp;ref_src=twsrc%5Etfw">#dapp</a> <a href="https://twitter.com/hashtag/angular?src=hash&amp;ref_src=twsrc%5Etfw">#angular</a> <a href="https://twitter.com/hashtag/js?src=hash&amp;ref_src=twsrc%5Etfw">#js</a> <a href="https://twitter.com/hashtag/blog?src=hash&amp;ref_src=twsrc%5Etfw">#blog</a> <a href="https://twitter.com/hashtag/portfolio?src=hash&amp;ref_src=twsrc%5Etfw">#portfolio</a> <a href="https://twitter.com/hashtag/forhire?src=hash&amp;ref_src=twsrc%5Etfw">#forhire</a></p>&mdash; M Fletcher🧔🏽| MF Codeworks 🛰️💻 (@mfcodeworks) <a href="https://twitter.com/mfcodeworks/status/1264612556833910784?ref_src=twsrc%5Etfw">May 24, 2020</a></blockquote> 
+
+<h2 id="people-are-building-the-coolest-stuff-with-ipfs">People are building the coolest stuff with IPFS</h2>
+
+<ul>
+<li><a href="https://talk.fission.codes/t/how-zippie-uses-dynamic-ipfs-loading-for-a-seamless-mobile-web-experience-carsten-munk-cto-of-zippie/611">Zippie</a> uses dynamic IPFS loading for a seamless mobile web experience.</li>
+<li>Over <a href="https://cyber.page/brain/knowledge">125,000 IPFS CIDs</a> added to <a href="https://cyber.page/search/ipfs">Cybers network</a> as part of its incentivized tournament, <a href="https://cyber.page/gol">Game of Links</a>, in which users add IPFS CIDs to build a decentralized knowledge graph, which is used by the search engine<br /></li>
+<li><a href="https://github.com/propensive/fury">Fury</a> is an experimental dependency manager and build tool for Scala</li>
+<li><a href="https://github.com/textileio/github-action-buckets/runs/697220495?check_suite_focus=true">Textile</a> updated their GitHub Actions, so the Textile Hub is back on the Github Marketplace!</li>
+<li><a href="http://blog.almonit.eth.link/2020-05-21/Introduction_to_Dwebsitse.html">An Introduction to Dwebsites</a> built on IPFS</li>
+<li><a href="https://medium.com/@sapien.wallet/bash-script-light-wallet-case-624aa04cb216">Sapien Wallet</a>, built on Textile and IPFS</li>
+<li><a href="https://blog.fleek.co/posts/fleek-storage-sdk-guide">Fleek</a> releases their new Storage SDK Cookbook</li>
+</ul>
+
+<h2 id="join-us-at-distributed-camp-2020">Join us at Distributed Camp 2020</h2>
+
+<p>This Friday through Sunday, members of the IPFS, Dat, I2P, WebTorrent communities and more, will gather to talk all things distributed for a special hands-on event: <strong>Distributed Camp 2020</strong>. Enjoy two days of immersive, hands-on workshops where you get to try out some of the latest web technologies for yourself and a Sunday Unconference where you get to learn of other projects in this space as well as show off what you made! <a href="https://distributed.camp/">Registration is free</a>.</p>
+
+<h2 id="are-you-using-or-plan-to-use-js-ipfs-in-browser">Are you using (or plan to use) js-ipfs in browser?</h2>
+
+<p>Then we want to hear from you! Your input would really help to shape the plan for changes that we hope will improve your and your users&rsquo; experience. Check out the discussion on <a href="https://discuss.ipfs.io/t/reducing-js-ipfs-overhead-by-sharing-node-across-browser-tabs/8024">reducing js-ipfs overhead by sharing node across browser tabs</a> now!</p>
+
+<h2 id="missed-the-0-5-meetup-watch-the-videos-now">Missed the 0.5 Meetup? Watch the videos now</h2>
+
+<p><a href="https://www.youtube.com/watch?list=PLuhRWgmPaHtQ26F2MIuogvo0so9QUgH1r&amp;v=RxJSUBeqOKU&amp;feature=emb_logo">Check out the full playlist</a> of presentations from the event, from insights on content routing changes and improvements to the intricacies of Bitswap and subdomain gateways! And don’t forget to watch the lightning talks. Enjoy!</p>
+
+<p>Take care of yourselves and each other. ❤️</p>
+
+<p>Get involved with IPFS by checking us out on <a href="https://github.com/ipfs">GitHub</a>, joining discussions on <a href="https://discuss.ipfs.io/">our community forum</a>, or hitting us up <a href="https://riot.im/app/#/room/#ipfs:matrix.org">in chat</a>. Have a suggestion? <a href="mailto:newsletter@ipfs.io">Email us.</a></p>
+
+<p>Get the <a href="https://ipfs.us4.list-manage.com/subscribe?u=25473244c7d18b897f5a1ff6b&amp;id=cad54b2230">IPFS Weekly in your inbox</a>, each Tuesday.</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>js-ipfs 0.44.0 released</title>
+      <link>https://blog.ipfs.io/2020-05-21-js-ipfs-0-44/</link>
+      <pubDate>Thu, 21 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ipfs.io/2020-05-21-js-ipfs-0-44/</guid>
+      <description>🔦 Highlights  Cancellable requests and a new browser datastore
+ js-IPFS@0.44.0 is out of the door with support for cancelling requests and a leaner, meaner datastore for the browser!</description>
+      <content:encoded><![CDATA[
+
+<h1 id="highlights">🔦 Highlights</h1>
+
+<blockquote>
+<p>Cancellable requests and a new browser datastore</p>
+</blockquote>
+
+<p><code>js-IPFS@0.44.0</code> is out of the door with support for cancelling requests and a leaner, meaner datastore for the browser!</p>
+
+<h2 id="cancellable-requests">🤖 Cancellable requests</h2>
+
+<p>A user should be able to cancel long-lived asynchronous API operations. For example, if you are fetching the content for a <a href="https://docs.ipfs.io/guides/concepts/cid/">CID</a> from the network, and that <a href="https://docs.ipfs.io/guides/concepts/cid/">CID</a> is not resolveable, you should be able to set a timeout value for the request, after which the content would no longer be sought and control would be returned to your code with an error message describing what happened.</p>
+
+<p>This is not as straightforward as it seems in JavaScript because a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a> is returned from the API call to resolve a piece of content and the <a href="https://promisesaplus.com/">Promises spec</a> includes nothing about cancelling a Promise.</p>
+
+<p>However, the browser <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch API</a> has a notion of an <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal">AbortSignal</a> which can be used to abort web requests. They are interacted with via an <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController">AbortController</a>:</p>
+
+<pre><code class="language-javascript">const controller = new AbortController()
+
+setTimeout(() =&gt; {
+  controller.abort()
+}, 1000)
+
+try {
+  await result = fetch('http://example.com', {
+    signal: controller.signal
+  })
+} catch (err) {
+  console.err(err) // prints: user aborted the request
+}
+</code></pre>
+
+<p>We’ve taken this approach and integrated it into every API call, so you can now use AbortControllers to cancel requests! We’ve also used this mechanism to add a <code>timeout</code> option to every API call which internally uses an AbortSignal to stop the request and throw a <a href="https://github.com/ipfs/js-ipfs/blob/f954659f75b011b12f83ee176aec006ea70cc0d7/packages/ipfs/src/core/errors.js#L58-L67">TimeoutError</a> after the specified amount of time:</p>
+
+<pre><code class="language-javascript">const cid = new CID('QmWillNeverResolve')
+
+try {
+  await ipfs.get(cid, {
+    timeout: 1000 // abort after 1000ms
+  })
+} catch (err) {
+  console.err(err) // err is a TimeoutError
+}
+</code></pre>
+
+<p>You could also roll this yourself:</p>
+
+<pre><code class="language-javascript">const cid = new CID('QmWillNeverResolve')
+const controller = new AbortController()
+
+setTimeout(() =&gt; {
+  controller.abort()
+}, 1000)
+
+try {
+  await ipfs.get(cid, {
+    signal: controller.signal
+  })
+} catch (err) {
+  console.err(err)
+}
+</code></pre>
+
+<p>The AbortSignal is passed all the way down the call stack to the libp2p and ipld components that underpin IPFS. In this initial release, timeouts are supported by the IPFS layer and in future releases libp2p and ipld will use the AbortSignal to also free up resources and perform any other necessary cleanup that would have been done if the request had completed successfully.</p>
+
+<h2 id="new-browser-datastore">New browser datastore</h2>
+
+<p><code>js-IPFS@0.44.0</code> brings a new datastore to the browser. In the browser, all blocks and other repo data is currently stored in <a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API">IndexedDB</a>, given that it is the only way available to persist and query large amounts of user data at the time of writing.</p>
+
+<p>In node and go-ipfs, <a href="https://en.wikipedia.org/wiki/LevelDB">LevelDB</a> has been the datastore of choice for application data (though blocks have been stored on the filesystem) and go-IPFS is moving to <a href="https://dgraph.io/blog/post/badger/">Badger</a>).</p>
+
+<p>Out of this grew <a href="https://github.com/ipfs/interface-datastore">interface-datastore</a> — a spec for storing key/value pairs implemented by the datastores used by IPFS. In the browser this was <a href="https://github.com/ipfs/js-datastore-level">datastore-level</a> which was backed by <a href="https://www.npmjs.com/package/level-js">level-js</a>, which was backed by IndexedDB.</p>
+
+<p>Phew.</p>
+
+<p>To remove a few layers here, we’ve created the <a href="https://github.com/ipfs/js-datastore-idb">datastore-idb</a> which implements the interface-datastore spec, backed by IndexedDB without going via level.</p>
+
+<p>What does this mean?</p>
+
+<p>The new datastore is smaller and faster and the upgrade is seamless since it’s still IndexedDB under the hood:</p>
+
+<pre><code>datastore-idb up to 44% faster and 69% smaller
+
+batch idb x 5.26 ops/sec ±4.57% (29 runs sampled)
+batch level x 2.92 ops/sec ±3.76% (19 runs sampled)
+Fastest is batch idb
+
+size 37.32KB to 11.41KB
+</code></pre>
+
+<h2 id="new-features">✨New features</h2>
+
+<ul>
+<li>Cancellable API calls (<a href="https://github.com/ipfs/js-ipfs/issues/2993">#2993</a>) (<a href="https://github.com/ipfs/js-ipfs/commit/2b24f590041a0df9da87b75ae2344232fe22fe3a">2b24f59</a>), closes <a href="https://github.com/ipfs/js-ipfs/issues/3015">#3015</a></li>
+<li><code>ipfs.block.put</code> now accepts the <code>pin</code> argument in line with go-ipfs <a href="https://github.com/ipfs/js-ipfs/issues/3015">#3015</a></li>
+</ul>
+
+<h2 id="bugs-fixed">🦟 Bugs fixed</h2>
+
+<ul>
+<li>Fixes browser script tag example (<a href="https://github.com/ipfs/js-ipfs/issues/3034">#3034</a>) (<a href="https://github.com/ipfs/js-ipfs/commit/ee8b769b96f7e3c8414bbf85853ab4e21e8fd11c">ee8b769</a>), closes <a href="https://github.com/ipfs/js-ipfs/issues/3027">#3027</a></li>
+<li>No longer produces browser bundle with all IPLD formats in the browser (<a href="https://github.com/ipfs/js-ipfs/issues/3025">#3025</a>) (<a href="https://github.com/ipfs/js-ipfs/commit/e6079c17d5656e92dd5191f0581000c6a782c7ed">e6079c1</a>)</li>
+<li><code>typeof</code> bug when passing timeout to dag.get (<a href="https://github.com/ipfs/js-ipfs/issues/3035">#3035</a>) (<a href="https://github.com/ipfs/js-ipfs/commit/026a5423e00992968840c9236afe47bdab9ee834">026a542</a>)</li>
+<li>Removes use of node globals and built ins to prepare us for when browser bundlers <a href="https://github.com/webpack/changelog-v5/blob/master/README.md#automatic-nodejs-polyfills-removed">stop automatically including them</a> <a href="https://github.com/ipfs/js-ipfs/pull/2932">#2932</a></li>
+<li>Source maps are no longer included with production builds <a href="https://github.com/ipfs/aegir/pull/549">ipfs/aegir#549</a></li>
+</ul>
+
+<h2 id="what-s-next">🗺️ What’s next?</h2>
+
+<p>Check out the js-ipfs <a href="https://github.com/orgs/ipfs/projects/6">Project Roadmap</a> which contains headline features organised in the order we hope them to land.</p>
+
+<p>Only large features are called out in the roadmap, expect lots of small bugfix releases between the roadmapped items!</p>
+
+<h1 id="huge-thank-you-to-everyone-that-made-this-release-possible">😍 Huge thank you to everyone that made this release possible</h1>
+
+<ul>
+<li><a href="https://github.com/5310">@5310</a> (2 comments)</li>
+<li><a href="https://github.com/achingbrain">@achingbrain</a> (55 commits, 17 PRs, 3 issues, 33 comments)</li>
+<li><a href="https://github.com/alanshaw">@alanshaw</a> (1 issue, 3 comments)</li>
+<li><a href="https://github.com/aphelionz">@aphelionz</a> (2 comments)</li>
+<li><a href="https://github.com/AuHau">@AuHau</a> (1 comment)</li>
+<li><a href="https://github.com/autonome">@autonome</a> (1 comment)</li>
+<li><a href="https://github.com/bertrandfalguiere">@bertrandfalguiere</a> (1 comment)</li>
+<li><a href="https://github.com/betamos">@betamos</a> (1 PR, 1 issue, 7 comments)</li>
+<li><a href="https://github.com/bluelovers">@bluelovers</a> (1 PR, 1 comment)</li>
+<li><a href="https://github.com/carsonfarmer">@carsonfarmer</a> (1 commit)</li>
+<li><a href="https://github.com/codecov-io">@codecov-io</a> (1 comment)</li>
+<li><a href="https://github.com/corporatepiyush">@corporatepiyush</a> (1 issue)</li>
+<li><a href="https://github.com/dapplion">@dapplion</a> (2 comments)</li>
+<li><a href="https://github.com/dirkmc">@dirkmc</a> (2 commits)</li>
+<li><a href="https://github.com/Gozala">@Gozala</a> (5 issues, 15 comments)</li>
+<li><a href="https://github.com/hugomrdias">@hugomrdias</a> (11 commits, 4 PRs, 1 issue, 17 comments)</li>
+<li><a href="https://github.com/jacobheun">@jacobheun</a> (8 commits, 2 PRs, 1 issue, 8 comments)</li>
+<li><a href="https://github.com/jakehemmerle">@jakehemmerle</a> (3 comments)</li>
+<li><a href="https://github.com/koivunej">@koivunej</a> (1 comment)</li>
+<li><a href="https://github.com/lidel">@lidel</a> (1 commit, 2 comments)</li>
+<li><a href="https://github.com/mdtanrikulu">@mdtanrikulu</a> (1 issue, 1 comment)</li>
+<li><a href="https://github.com/mistakia">@mistakia</a> (1 PR)</li>
+<li><a href="https://github.com/npfoss">@npfoss</a> (1 commit, 1 PR, 1 issue)</li>
+<li><a href="https://github.com/obo20">@obo20</a> (1 commit, 1 PR, 1 comment)</li>
+<li><a href="https://github.com/oed">@oed</a> (1 comment)</li>
+<li><a href="https://github.com/RobertFischer">@RobertFischer</a> (1 comment)</li>
+<li><a href="https://github.com/robertkiel">@robertkiel</a> (1 comment)</li>
+<li><a href="https://github.com/rvagg">@rvagg</a> (1 PR, 1 comment)</li>
+<li><a href="https://github.com/spasimir21">@spasimir21</a> (1 issue, 3 comments)</li>
+<li><a href="https://github.com/stensonb">@stensonb</a> (1 commit, 13 PRs)</li>
+<li><a href="https://github.com/thattommyhall">@thattommyhall</a> (1 PR, 3 comments)</li>
+<li><a href="https://github.com/typhu-xyz">@typhu-xyz</a> (1 comment)</li>
+<li><a href="https://github.com/vasco-santos">@vasco-santos</a> (14 commits, 15 PRs, 2 issues, 16 comments)</li>
+<li><a href="https://github.com/vmx">@vmx</a> (5 commits, 1 PR, 2 comments)</li>
+<li><a href="undefined">@welcome</a> (19 comments)</li>
+<li><a href="https://github.com/wemeetagain">@wemeetagain</a> (2 commits, 1 PR, 3 comments)</li>
+</ul>
+
+<h1 id="want-to-contribute">🙌🏽 Want to contribute?</h1>
+
+<p>Would you like to contribute to the IPFS project and don’t know how? Well, there are a few places you can get started:</p>
+
+<ul>
+<li>Check the issues with the <code>help wanted</code> label in the <a href="https://github.com/ipfs/js-ipfs/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22">js-ipfs repo</a></li>
+<li>Join an IPFS All Hands, introduce yourself and let us know where you would like to contribute: <a href="https://github.com/ipfs/team-mgmt/#weekly-ipfs-all-hands">https://github.com/ipfs/team-mgmt/#weekly-ipfs-all-hands</a></li>
+<li>Hack with IPFS and show us what you made! The All Hands call is also the perfect venue for demos, join in and show us what you built</li>
+<li>Join the discussion at <a href="https://discuss.ipfs.io/">https://discuss.ipfs.io/</a> and help users finding their answers.</li>
+<li>Join the <a href="https://github.com/ipfs/team-mgmt/issues/992">🚀 IPFS Core Implementations Weekly Sync 🛰</a> and be part of the action!</li>
+</ul>
+
+<h1 id="do-you-have-questions">⁉️ Do you have questions?</h1>
+
+<p>The best place to ask your questions about IPFS, how it works, and what you can do with it is at <a href="https://discuss.ipfs.io">discuss.ipfs.io</a>. We are also available at the <code>#ipfs</code> channel on Freenode.</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Gossipsub v1.1 brings hardening extensions to PubSub</title>
+      <link>https://blog.ipfs.io/2020-05-20-gossipsub-v1.1/</link>
+      <pubDate>Wed, 20 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ipfs.io/2020-05-20-gossipsub-v1.1/</guid>
+      <description>The gossip you’ve heard on the streets is correct, Gossipsub v1.1 is here and it packs several security hardening extensions along with new testing, documentation, and an updated specification.</description>
+      <content:encoded><![CDATA[
+
+<p style="max-width:780px;margin-left:auto;margin-right:auto;">
+  <img src="/header_images/094-gossipsub-v1.1-headerimage+grid.jpeg">
+</p>
+
+<p>The gossip you’ve heard on the streets is correct, Gossipsub v1.1 is here and it packs several security hardening extensions along with new testing, documentation, and an updated specification.</p>
+
+<p>The Gossipsub Task Force has been hard at work exploring and analyzing various attack vectors on public and permissionless messaging networks. With that knowledge, we’ve crafted and iterated on mitigating strategies to make our beloved libp2p PubSub Router work in adversarial environments. The result is Gossipsub v1.1 🚀</p>
+
+<p>If you are new to <a href="https://libp2p.io/">libp2p PubSub</a> and especially Gossipsub, we recommend checking out the <a href="https://research.protocol.ai/blog/2020/gossipsub-v1.1-at-open-tech-will-save-us-virtual-event"><strong>Gossipsub v1.1 talk at the Matrix Virtual Meetup</strong></a>. It will give you the complete motivation and background of libp2p PubSub and introduce you to Gossipsub v1.1.</p>
+
+<h2 id="what-is-gossipsub-v1-1">🔍 What is Gossipsub v1.1</h2>
+
+<p>The main focus for Gossipsub v1.1 is <strong>security</strong>. In addition, to the speedy message propagation guarantees from v1.0, this new version features several hardening extensions that make Gossipsub more resilient to a wide range of attacks. Some highlights include:</p>
+
+<p><strong>1) <a href="https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#peer-scoring">Peer scoring</a></strong>: Peers now monitor their directly-connected neighbours using a score function that reflects the peer’s usefulness. Well-behaving peers are kept in the mesh, while badly-behaving ones are dropped in order to protect the network from malicious actors.</p>
+
+<p><strong>2) <a href="https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#adaptive-gossip-dissemination">Adaptive gossip dissemination</a></strong>: In this new version, you can adjust the <code>gossip factor</code> to control the number of peers your node gossips with. This enables you to increase/decrease the amount of gossip, while keeping a baseline.</p>
+
+<p><strong>3) <a href="https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#opportunistic-grafting">Opportunistic Grafting</a></strong>: A new mechanism used to cherry pick well-behaving peers that are currently not part of a node’s mesh. Those well-behaving peers are then opportunistically inserted into the mesh to improve the median score of participating peers.</p>
+
+<p><strong>4) <a href="https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#prune-backoff-and-peer-exchange">Prune Peer eXchange</a></strong>: Prune Peer exchange gives a node a set of recommended peers to connect when it gets dropped from another peer’s mesh, helping reduce the dependency on ambient peer discovery mechanisms.</p>
+
+<p><strong>5) <a href="https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#extended-validators">Extended Message Validators</a></strong>: You can now add your custom message validator so that you can instrument Gossipsub to recognize (accept/reject) which messages are valid/invalid within the context of your application.</p>
+
+<p><strong>6) <a href="https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#outbound-mesh-quotas">Outbound Mesh Quotas</a></strong>: In v1.0 mesh peers are randomly selected, without any weight given to the direction of the connection. In contrast,  v1.1 implements outbound connection quotas, so that a peer tries to always maintain a number of outbound connections in the mesh.</p>
+
+<p>The blend of these security measures, together with the properties of the “gossiping mesh” check the two most important boxes for message propagation protocols in permissionless networks, namely: i) fast message propagation, ii) security against attacks that attempt to degrade the quality of the service provided by the network.</p>
+
+<p>All of these upgrades can be consulted in the <a href="https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/README.md">Gossipsub v1.1 specification</a>, which if you ask us, it is a joy to read!</p>
+
+<p>Additionally, with the new release, the <a href="https://github.com/libp2p/go-libp2p-pubsub">reference implementation of Gossipsub</a> got additional documentation and test coverage.</p>
+
+<h2 id="give-gossipsub-v1-1-a-test-ride">🏎 Give Gossipsub v1.1 a test ride</h2>
+
+<h3 id="chat-application-example">Chat application example</h3>
+
+<p>We’ve prepared a brand new example for you to give the latest Gossipsub a try. In this example, you get to experiment with a chat application powered by libp2p. It will enable you to join different channels by subscribing to PubSub topics and see other peers joining the room as they subscribe to the topic.</p>
+
+<p style="max-width:780px;margin-left:auto;margin-right:auto;">
+  <img src="https://raw.githubusercontent.com/libp2p/go-libp2p-examples/master/pubsub/chat/chat-example.gif">
+</p>
+
+<p>You can find the code for this example at <a href="https://github.com/libp2p/go-libp2p-examples/tree/master/pubsub/chat">https://github.com/libp2p/go-libp2p-examples/tree/master/pubsub/chat</a></p>
+
+<h3 id="test-gossipsub-s-performance-with-testground">Test Gossipsub’s performance with Testground</h3>
+
+<p>We are also releasing a brand new libp2p Test Plan that uses <a href="https://github.com/testground/testground">Testground</a> to benchmark Gossipsub v1.1.</p>
+
+<p style="max-width:780px;margin-left:auto;margin-right:auto;">
+  <img src="/img/gossipsubv1.1-jupyter.gif">
+</p>
+
+<p>With this Test Plan, you can run an emulation (yes, it will run real Gossipsub nodes!) of a Gossipsub Network in which you can adjust:</p>
+
+<ul>
+<li>The number of nodes</li>
+<li>The latency of each link and the jitter %</li>
+<li>The length of the run</li>
+<li>The bandwidth available to each link</li>
+</ul>
+
+<p>To play with this Test Plan, check the instructions at <a href="https://github.com/libp2p/test-plans/tree/master/pubsub">https://github.com/libp2p/test-plans/tree/master/pubsub</a>.</p>
+
+<h2 id="we-are-preparing-something-more-for-you">🎁 We are preparing something more for you</h2>
+
+<p>We’ve worked with networking, P2P, and security researchers to create this iteration of Gossipsub v1.1 and we’ve been cooking a comprehensive analysis report to share with you on our approach and how we evaluated our mitigation strategies. We are shooting to share this report in June, stay tuned!</p>
+
+<p>That’s it for now. Hope you enjoy the release and happy gossiping!</p>
+
+<p><strong>The Gossipsub Task Force</strong> - David Dias, Dmitris Vyzovitis, Yiannis Psaras, Yusef Napora, Dirk McCormick</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>IPFS Weekly 90</title>
+      <link>https://blog.ipfs.io/weekly-90/</link>
+      <pubDate>Wed, 20 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ipfs.io/weekly-90/</guid>
+      <description>Welcome to the IPFS Weekly Here’s what’s happening lately in the InterPlanetary File System galaxy and beyond! 🚀
+The path to decentralization and go-ipfs 0.</description>
+      <content:encoded><![CDATA[
+
+<h1 id="welcome-to-the-ipfs-weekly">Welcome to the IPFS Weekly</h1>
+
+<p>Here’s what’s happening lately in the <a href="https://ipfs.io/">InterPlanetary File System</a> galaxy and beyond! 🚀</p>
+
+<h2 id="the-path-to-decentralization-and-go-ipfs-0-5-on-the-zero-knowledge-podcast">The path to decentralization and go-ipfs 0.5 on the Zero Knowledge Podcast</h2>
+
+<p>IPFS Project Lead Molly Mackinlay was recently a guest on the <a href="https://www.zeroknowledge.fm/129">Zero Knowledge Podcast</a> talk about her experience guiding the IPFS project, as well as libp2p, Bitswap, Testground, the use cases and projects working with these tools, and the specific upgrades made with the recent 0.5 IPFS release. Enjoy!</p>
+
+<h2 id="experience-the-ipfs-pinning-summit-again">Experience the IPFS Pinning Summit, again!</h2>
+
+<p>True, the IPFS Pinning Summit has come and gone, but if you missed it, we have you covered. <a href="https://www.youtube.com/playlist?list=PLuhRWgmPaHtTvsxuZ9T-tMlu_v0lja6v5">Watch all of the videos</a> from the event and be sure to <a href="https://blog.ipfs.io/2020-05-13-ipfs-pinning-summit-recap/">read our recap</a> from the two-day summit.</p>
+
+<h2 id="are-you-using-or-plan-to-use-js-ipfs-in-browser">Are you using (or plan to use) js-ipfs in browser?</h2>
+
+<p>Then we want to hear from you! Your input would really help to shape the plan for changes that we hope will improve your and your users&rsquo; experience. Check out the discussion on <a href="https://discuss.ipfs.io/t/reducing-js-ipfs-overhead-by-sharing-node-across-browser-tabs/8024">reducing js-ipfs overhead by sharing node across browser tabs</a> now!</p>
+
+<h2 id="top-highlights-this-week">Top highlights this week</h2>
+
+<ul>
+<li>Hot on the heels of go-ipfs 0.5.0 is <a href="https://github.com/ipfs/go-ipfs/releases/tag/v0.5.1">version 0.5.1</a> with some important but small bug fixes!</li>
+<li>Explore the <a href="https://hackernoon.com/exploring-libp2p-pubsub-protocol-implementations-891i32jq">libp2p PubSub protocol implementations</a> in this post from Hackernoon</li>
+<li>Pinata shared how to create a <a href="https://medium.com/pinata/how-to-create-a-vox-file-for-cryptovoxels-39768edd8622">Vox file for Cryptovoxels</a></li>
+<li>Learn all about publishing IPFS and IPNS links from React Native <a href="https://blog.textile.io/publishing-ipfs-and-ipns-links-from-react-native-using-textile-buckets/">using Textile Buckets</a></li>
+<li>Fleek announced the <a href="https://blog.fleek.co/posts/fleek-storage-nft">Fleek Storage SDK</a>: store NFT assets on IPFS!</li>
+</ul>
+
+<h2 id="quote-of-the-week">Quote of the week</h2>
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Using <a href="https://twitter.com/hashtag/ENS?src=hash&amp;ref_src=twsrc%5Etfw">#ENS</a> and <a href="https://twitter.com/hashtag/IPFS?src=hash&amp;ref_src=twsrc%5Etfw">#IPFS</a> to share our <a href="https://twitter.com/hashtag/Filecoin?src=hash&amp;ref_src=twsrc%5Etfw">#Filecoin</a> mining installation video provides us better robustness and censorship resistance. <a href="https://t.co/MoVtHqRocf">https://t.co/MoVtHqRocf</a></p>&mdash; Neo (@NeoGe_IPFSMain) <a href="https://twitter.com/NeoGe_IPFSMain/status/1261033267194499072?ref_src=twsrc%5Etfw">May 14, 2020</a></blockquote> 
+
+<h2 id="people-are-building-the-coolest-stuff-with-ipfs">People are building the coolest stuff with IPFS</h2>
+
+<ul>
+<li>Airalab introduced <a href="sensors.robonomics.network">pollution monitoring dapp service</a> over IPFS pubsub protocol with IoT sensors network built on the Robonomics platform</li>
+<li>The latest version of the <a href="https://github.com/ElrondNetwork/elrond-go/releases/tag/v1.0.115">Elrond Network testnet</a> recently updated their libp2p libraries, so take a look!</li>
+<li><a href="https://github.com/tycooperaow/ipfstagram">ipfstagram</a>: A blockchain powered version of Instagram</li>
+<li>cyb~Virus: a Firefox extension for <a href="https://github.com/cybercongress/go-cyber">cybers search engine</a> that allows users to download web pages to IPFS. New <a href="https://github.com/CipherDogs/cyb-virus/releases">v0.2.0 release</a>. Firefox <a href="https://addons.mozilla.org/en-US/firefox/addon/cyb-virus/">addons</a>.</li>
+</ul>
+
+<h2 id="have-you-shared-your-thoughts-on-ipfs-gui-tools">Have you shared your thoughts on IPFS GUI Tools?</h2>
+
+<p>In order to help prioritize future improvements to IPFS tooling and interfaces, we’d appreciate learning more about how the IPFS Desktop app and the in-browser IPFS GUI (also known as Web UI) fit into your overall workflow. <a href="https://forms.gle/c6gHP1pVtwtRpzdP7">This survey should take no more than 5 minutes</a>, and will make a big difference—so thank you in advance for your time!</p>
+
+<h2 id="job-hunting-work-on-ipfs">Job hunting? Work on IPFS!</h2>
+
+<ul>
+<li><a href="https://jobs.lever.co/protocol/0afd449f-b292-42b4-abfd-af26415b796b">Community Engineer, libp2p</a>: Help introduce new open source projects to libp2p and clear hurdles for them to adopt the libp2p stack for the networking layer of their system. Protocol Labs, Remote</li>
+<li><a href="https://jobs.lever.co/protocol/3f0787e8-58b3-4122-a1ea-424561d2658f">Engineering Manager, IPFS</a>: Engineering managers have the challenging and exciting task of supporting and empowering engineering teams to deliver complex internet-scale systems in an environment defined by curiosity, passion, and a love for open source. Protocol Labs, Remote</li>
+<li><a href="https://jobs.lever.co/protocol/71c4a9b9-af90-4ce9-9dba-8b72507997bf">IPFS Community Lead</a>: Provide tactical support for the IPFS community, creating a global community strategy, and executing this strategy on the ground! Protocol Labs, Remote</li>
+<li><a href="https://www.notion.so/Hiring-Senior-Software-Engineer-Rust-Go-e6c94ccc261f426c80a483c7fc642412">Senior Software Engineer Rust/Go</a>: You would be working with our distributed team of engineers on new products, core protocols or client projects. Most of the work we do is or will eventually be open source. Equilibrium, Remote.</li>
+<li><a href="https://notes.knowledgefutures.org/pub/si1okbw9">Software Engineer, the Underlay Project</a>: Strong full-stack web developer with an interest in semantic web and decentralized web technologies. The Knowledge Futures Group, Remote</li>
+</ul>
+
+<p>Take care of yourselves and each other. ❤️</p>
+
+<p>Get involved with IPFS by checking us out on <a href="https://github.com/ipfs">GitHub</a>, joining discussions on <a href="https://discuss.ipfs.io/">our community forum</a>, or hitting us up <a href="https://riot.im/app/#/room/#ipfs:matrix.org">in chat</a>. Have a suggestion? <a href="mailto:newsletter@ipfs.io">Email us.</a></p>
+
+<p><a href="https://ipfs.us4.list-manage.com/subscribe?u=25473244c7d18b897f5a1ff6b&amp;id=cad54b2230">Get the IPFS Weekly in your inbox</a>, each Tuesday.</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>The Road to the New DHT</title>
+      <link>https://blog.ipfs.io/2020-05-19-road-to-dht/</link>
+      <pubDate>Tue, 19 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ipfs.io/2020-05-19-road-to-dht/</guid>
+      <description>At the end of April, we released our largest update to go-ipfs to date: IPFS 0.5.0. This upgrade brings major performance and reliability improvements to IPFS — especially on the content discovery and routing front.</description>
+      <content:encoded><![CDATA[
+
+<p style="max-width:1000px;margin-left:auto;margin-right:auto;">
+  <img src="/header_images/095-road-to-dht.png">
+</p>
+
+<p>At the end of April, we released our largest update to go-ipfs to date: <a href="https://blog.ipfs.io/2020-04-28-go-ipfs-0-5-0/">IPFS 0.5.0</a>. This upgrade brings major performance and reliability improvements to IPFS — especially on the content discovery and routing front. These gains are brought to you largely by our rework of the Distributed Hash Table (DHT) which powers most peer and content discovery in the IPFS Public Network.</p>
+
+<p>We’d like to take you through our journey to <em>re-write</em> the DHT - from identifying the underlying issues, to how we approached designing a solution, to ensuring it would <strong>work</strong> in practice. Our work led to major performance gains, as well as a new development process and <a href="https://github.com/testground/testground">Testground</a>, a whole new tool for large-scale network testing <a href="https://blog.ipfs.io/2020-05-06-launching-testground/">(read more)</a>.</p>
+
+<p><strong>If you want to make use of these new improvements, please <a href="https://docs.ipfs.io/recent-releases/go-ipfs-0-5/update-procedure/#use-ipfs-update">upgrade IPFS now</a>!</strong>
+<br /></p>
+
+<p style="max-width:1000px;margin-left:auto;margin-right:auto;">
+  <img src="/095-road-to-dht/Brendan-quote.png">
+</p>
+
+<h2 id="first-a-refresher-what-s-the-dht">First a refresher:  What’s the DHT?</h2>
+
+<p>The <a href="https://docs.ipfs.io/guides/concepts/dht/">DHT, or distributed hash table</a>, acts like both a catalog and navigation system for IPFS, helping the network keep track of and find data. A regular hash table is a key-value store where the keys are hashed and stored in one place. In the case of IPFS, the keys are the Content Identifiers (CIDs) of a block of data, and the values are the set of peers who have each block.</p>
+
+<p>The DHT distributes and stores these pairs of keys and values in small tables across many nodes or peers throughout the network. Peers, in turn, store information about where to physically locate specific content. Kademlia, our DHT implementation, helps keep track of which nodes are <em>providing</em> what data to others in the network.</p>
+
+<p>In theory, the DHT should make finding, providing, and fetching data among nodes a well-orchestrated and very efficient affair. However, throw in real world conditions and a rapidly scaling network, and things can go awry.</p>
+
+<h2 id="let-s-rewind">Let’s rewind</h2>
+
+<p>The IPFS Public Network experienced substantial growth last year, quickly scaling 30x, with <strong>hundreds of thousands of nodes</strong> now participating in the network! Major software deployments and new decentralized apps came on board with expectations for a production-ready network with the reliability and performance to match. Many were using IPFS as a decentralized CDN (Content Delivery Network) to share and find content across the network. Unfortunately, due to a proliferation of new nodes unable to route peers to the desired content, the network was letting some of these users down.</p>
+
+<p>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="//www.youtube.com/embed/jpQnQbfhuBc" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<br /></p>
+
+<p>In early 2019, we started to hear rumblings around content routing issues, which were exacerbated as more and more nodes joined the network over Q1 and Q2 - many of them behind home firewalls or NATs. We were constantly bootstrapping and patching the network to remedy performance and reliability issues. But, we couldn’t really test the efficacy (or truly diagnose any regressions) of these patches until they were <em>in production</em>, making it hard to iterate and try out larger fixes to network configuration.</p>
+
+<p>We clearly had a problem, and we were hearing about it from the community. Our first step was to investigate thoroughly to determine what fixes we should prioritize first, and identify the tooling we needed to land our changes successfully.</p>
+
+<h2 id="narrowing-in">Narrowing in</h2>
+
+<p>After some investigation, it was clear that our DHT implementation, combined with the recent growth of undialable nodes, was the culprit behind the slow, unreliable content routing. We had a chance to investigate this more deeply while we were together at IPFS Camp, and discovered a few problem areas:</p>
+
+<ul>
+<li><strong>Peer Availability:</strong> As new peers joined the network we treated them equally, but most couldn’t actually be reached because they were behind firewalls or NATs. DHT query time was wasted trying to dial these peers that never got requests.</li>
+<li><strong>Query Termination:</strong> Even after a DHT query reached its target, it didn&rsquo;t stop - it continued querying additional peers to make sure it had reached its target. While robust to the many new undialable nodes in the network, this process was very time consuming.</li>
+<li><strong>Routing Table Maintenance:</strong> Routing tables were clogged with many undialable peers, resulting in searches that were linear in the number of peers they queried instead of the expected log-scale efficiency.</li>
+</ul>
+
+<h2 id="focus-and-go">Focus and go</h2>
+
+<p>With this analysis and the feedback synthesized from our core users and community, it was clear we needed to hone in on content routing performance as a core focus for the IPFS Project.</p>
+
+<p>This meant some hard calls on prioritization: focusing our working groups on a targeted set of improvements to the DHT and routing logic to ensure we resolved these underlying performance and reliability concerns. In turn, we adjusted our product roadmap and stood up new core working groups, including one focused strictly on content routing and another on a new test infrastructure: <a href="https://docs.testground.ai/">Testground</a>.</p>
+
+<p style="max-width:1000px;margin-left:auto;margin-right:auto;">
+  <img src="/header_images/092-launching-testground.png">
+</p>
+
+<h2 id="test-test-test">Test, test, test</h2>
+
+<p>We’d learned from our early patches that a network of our size <strong>needs</strong> to be able to test changes in a close to real-world setting to be able to make improvements quickly and reliably. We had the means to do unit tests and small simulations that could prove out basic tweaks, but no way to replicate thousands of nodes or typical network configurations in order to benchmark major changes. This left us without real data on the true impact of changes until they had gone live.</p>
+
+<p>We had to change this quickly to be successful in righting the DHT. We formed a working group to remedy this gap; <a href="https://blog.ipfs.io/2020-05-06-launching-testground/">Testground</a> was born. Testground is a platform for testing, benchmarking, and simulating distributed and peer-to-peer systems at scale, allowing us to validate the needed fixes and pressure test the broad DHT changes before IPFS 0.5.0 went live.</p>
+
+<p>Testground gave us the tools to do <em>data-driven development</em> in our DHT rewrite. It also helped us in other parts of the IPFS 0.5.0 release: like prototyping new potential solutions, comparing potential fixes against each other, and stress-testing the edge cases and upgrade process. The repeatability and introspection Testground gave us was <em>critical</em> to accelerating our development velocity to reliably improve IPFS.</p>
+
+<p>With the <a href="https://blog.ipfs.io/2020-05-06-launching-testground/">launch of Testground v0.5</a>, we’re excited to share this tool with others as well to benchmark and evaluate their p2p networks. <strong><a href="https://docs.testground.ai/">Start using Testground today!</a></strong></p>
+
+<h2 id="now-for-the-fix">Now for the “fix”</h2>
+
+<p>With Testground, we were able to benchmark and quantify our DHT issues around peer availability, query termination, and routing table maintenance. We started with simulations of the existing network - showing how our previous query logic interacted with evolving network parameters, like many nodes being undialable.</p>
+
+<p>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="//www.youtube.com/embed/S8a1xzdWjN0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<br /></p>
+
+<p>Testground allowed us to tweak these parameters to measure which changes would have the most impact on network performance. As we gathered for a Research Summit in January to compare potential mitigations to the ongoing network challenges, we were now empowered with a <strong>quantitative</strong> understanding of the network structure and the tools to immediately prototype and test out the resulting hypotheses from our discussions.</p>
+
+<p>What followed was a whirlwind of test-plan writing to measure each change to the DHT logic in a real-world network setting. We tested our new systems for diagnosing undialable peers and removing them from our routing tables, measured success rates for ending our queries earlier, and even re-benchmarked our <a href="https://blog.ipfs.io/2020-02-14-improved-bitswap-for-container-distribution/">improvements to Bitswap</a> to find additional improvements. Throughout these refactors, we were able to continually validate the performance of these changes with our Testground simulations, as well as a few well-placed canary nodes to run benchmarks against the full public network.</p>
+
+<p>With these tools in hand, we sprinted 🏃‍♂️💨 from the summit to our release to make it all happen. From identifying the problem with the community, to scoping potential solutions, building testing tools, learning from past research, and executing on the needed technical fixes - this marathon of a release certainly put us through our paces - resulting in an <a href="https://docs.ipfs.io/recent-releases/go-ipfs-0-5/features/">epic list of new and improved features</a>.</p>
+
+<p>Up next, in <strong>Part 2 of this DHT Deep Dive</strong>, we&rsquo;ll walk you through exactly what’s new with the DHT and go even deeper on the improvements we saw. In the meantime, if you haven’t upgraded yet, <strong><a href="https://docs.ipfs.io/recent-releases/go-ipfs-0-5/update-procedure/#use-ipfs-update">please do</a></strong>. We’ll all reap the benefits of a more performant DHT as more and more nodes update!</p>
+
+<h3 id="learn-more">Learn more</h3>
+
+<ul>
+<li>IPFS 0.5.0 Announcement: <a href="https://blog.ipfs.io/2020-04-28-go-ipfs-0-5-0/">https://blog.ipfs.io/2020-04-28-go-ipfs-0-5-0/</a></li>
+<li>Release Highlights:  <a href="https://www.youtube.com/watch?v=G8FvB_0HlCE">https://www.youtube.com/watch?v=G8FvB_0HlCE</a></li>
+<li>TestGround: <a href="https://blog.ipfs.io/2020-05-06-launching-testground/">https://blog.ipfs.io/2020-05-06-launching-testground/</a></li>
+</ul>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>IPFS Pinning Summit Recap</title>
+      <link>https://blog.ipfs.io/2020-05-13-ipfs-pinning-summit-recap/</link>
+      <pubDate>Wed, 13 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.ipfs.io/2020-05-13-ipfs-pinning-summit-recap/</guid>
+      <description>The first-ever IPFS Pinning Summit brought together IPFS pinning services, infra providers, and users for 2 days of presentations &amp;amp; meetings to discuss the current state of IPFS infrastructure, services, and tools - and the future opportunities in this space.</description>
+      <content:encoded><![CDATA[<p align="center">
+  <img width="100%" src="/header_images/093-ipfs-pinning-summit-recap.png">
+</p>
+
+<p>The first-ever <a href="https://ipfspinningsummit.com/">IPFS Pinning Summit</a> brought together <a href="https://docs.ipfs.io/guides/concepts/pinning/">IPFS pinning services</a>, infra providers, and users for 2 days of presentations &amp; meetings to discuss the current state of IPFS infrastructure, services, and tools - and the future opportunities in this space.</p>
+
+<p>Day 1 focused on the accelerating growth of the IPFS ecosystem - especially the adoption and improvement of IPFS tooling and support for verticals like Web3 applications, DevOps pipelines, and Large Data on IPFS. The day also included presentations from major IPFS pinning services like <a href="https://infura.io/">Infura</a> and <a href="https://pinata.cloud/">Pinata</a>, tools smoothing the IPFS upgrade UX like <a href="https://fleek.co/">Fleek</a> and <a href="https://unstoppabledomains.com/">UnstoppableDomains</a>, and applications building on top of IPFS with strong use cases for IPFS infrastructure and tooling like <a href="https://www.ceramic.network/">Ceramic</a>, <a href="https://ucam.iotex.io/">Ucam</a>, and <a href="https://filecoin.io/">Filecoin</a>.</p>
+
+<p>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="//www.youtube.com/embed/rYD2lfuatJM" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<br /></p>
+
+<p><strong>IPFS Project Lead <a href="https://github.com/momack2">Molly Mackinlay</a></strong> called the next 18 months a “critical period” for the IPFS community. “There are lots of key applications and projects being built, improving the ecosystem, and all kinds of developer tools are arriving that are transforming how applications and users of IPFS end up using the system,” Mackinlay said. “All of these developer tools and systems are changing the nature of how people store and move data.”</p>
+
+<p>The Summit also welcomed a host of IPFS collaborators to the stage, who demoed their work and shared tips on running dweb infrastructure and techniques for improving these services. Here are a few ecosystem highlights:</p>
+
+<ul>
+<li><strong><a href="https://textile.io/">Textile’s</a> Andrew Hill</strong> and <strong>Aaron Sutula</strong> debuted <a href="https://blog.textile.io/filecoin-developer-tools-concepts/">Powergate</a>, an API-driven solution for deploying multitiered storage across Filecoin and IPFS. Powergate gives clients easier access to control who and where their data is stored. Hill also detailed Textile’s ThreadsDB and Buckets, technologies that get us closer to a more intuitive object storage experience. Combining these tools with IPFS enables new pinning capabilities that support dynamic datasets and IPNS addresses. Watch both videos: on <a href="https://www.youtube.com/watch?v=aiOTSkz_6aY">Powergate</a> and on <a href="https://www.youtube.com/watch?v=ojaDzwp9M20&amp;feature=youtu.be">ThreadsDB &amp; Buckets</a>.</li>
+<li><strong><a href="https://infura.io/">Infura’s</a> Mike Godsey</strong> walked through the history and role of IPFS in Infura’s Web3 dev suite. Infura is leading the charge on permissioned gateways. Godsey also hinted at what’s next for Infura when it comes to building on the Filecoin network. “We are actively in discussions with the PL team about all of the interesting ways we can utilize Filecoin inside our infrastructure. We’re exploring specific Filecoin functionality that would be separate from our IPFS functionality. This is still in progress, but it’s super important to us.” <a href="https://www.youtube.com/watch?v=DOLIt2O2aj4">Watch the video</a>.</li>
+<li><strong>Brett Shear, co-founder and COO of <a href="https://fleek.co/">Fleek</a></strong>, showcased how to use Fleek&rsquo;s new IPFS/S3 product to upload, pin, and fetch files to/from IPFS at lightning speed. <a href="https://www.youtube.com/watch?v=Ojtt5NGPxb8">Watch Shear’s presentation</a>.</li>
+<li><strong><a href="https://www.iotex.io/">IoTeX</a> Co-founder Raullen Chai</strong> talked about how IoTeX, a blockchain solution for powering the Internet of Things, is teaming up with IPFS to create decentralized privacy and user data ownership with home security camera Ucam. <a href="https://www.youtube.com/watch?v=_ia0mgG08k8">Watch the video</a>.</li>
+<li><strong><a href="https://pinata.cloud/">Pinata</a> CEO Kyle Tut</strong> dove deep into data permanence and discussed how to keep the data behind a CID alive. Likening data preservation to the responsibility artists have to maintain their own work, Tut asked “Is Da Vinci responsible for maintaining the Mona Lisa? And the answer to that is, no! Da Vinci is no longer with us, the painting is something like over 500 years old, and the person or the body that takes care of that painting today is the Louvre Museum.” Similarly, ownership of digital data, Tut argued, can transfer as a token, from one wallet to another. It’s the file owner’s responsibility to pin that data on a network like IPFS to make sure it’s secure. <a href="https://www.youtube.com/watch?v=RB884S2k59A">Watch the video</a>.</li>
+</ul>
+
+<p><br />
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="//www.youtube.com/embed/Tnn3QJN4dec" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<br /></p>
+
+<p>Day 2 focused on the future - with <strong>Juan Benet</strong>, creator of IPFS &amp; Filecoin, highlighting new opportunities and improvements coming to the space, including a unified IPFS Pinning API, deeper integration of network services into IPFS tools like <a href="https://github.com/ipfs-shipyard/ipfs-desktop">IPFS-Desktop</a> and <a href="https://github.com/ipfs-shipyard/ipfs-webui">WebUI</a>, and new capabilities like <a href="https://blog.textile.io/filecoin-developer-tools-concepts/">Powergate</a> to bring Filecoin persistence to IPFS pinning services.</p>
+
+<p>The IPFS Pinning Summit brought together 100+ participants for product demos, deep-dives into ecosystem progress, and lightning talks on new tools. Talks dived into how infra providers could tune their services to enhance growing verticals like video, gaming, or browsers - or how they might offer new, specialized products for private networks, access control layers, or network introspection.</p>
+
+<p>Presentations also explored new opportunities related to the upcoming Filecoin Network launch - which adds an incentive layer to distributed data storage in IPFS. Filecoin Leads <strong>Pooja Shah</strong> and <strong>Juan Benet</strong> <a href="https://www.youtube.com/watch?v=Q0oe6i7d1u4">shared a number of new ways to integrate Filecoin</a> to augment and enhance existing web3 infrastructure - like using Textile&rsquo;s Powergate to create Filecoin-backed IPFS Pinning Services.</p>
+
+<p>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="//www.youtube.com/embed/aiOTSkz_6aY" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<br /></p>
+
+<p>Watch all of the sessions <a href="https://www.youtube.com/playlist?list=PLuhRWgmPaHtTvsxuZ9T-tMlu_v0lja6v5">here</a>, including lightning talks on <a href="https://www.youtube.com/watch?v=dMuVDELUdnE">Filecoin’s GUI</a>, <a href="https://www.youtube.com/watch?v=dx7TH7-YSEQ">Git on Threads</a>, the <a href="https://www.youtube.com/watch?v=UXmQfnwzhtQ&amp;feature=youtu.be">Filecoin Discover Project</a>, and many more.</p>
+
+<p>Thanks for an amazing summit, and looking forward to the next wave of adoption and growth we create together! 🚀</p>
+]]></content:encoded>
+    </item>
+    
+  </channel>
+</rss>
