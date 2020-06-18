@@ -5,7 +5,7 @@
 ## architecture of Haiku.
 
 # The name of the binary.
-NAME = Ziff
+NAME = Rifen
 
 # The type of binary, must be one of:
 #	APP:	Application
@@ -15,7 +15,7 @@ NAME = Ziff
 TYPE = APP
 
 # 	If you plan to use localization, specify the application's MIME signature.
-APP_MIME_SIG = application/x-vnd.Ziff
+APP_MIME_SIG = application/x-vnd.Rifen
 
 #	The following lines tell Pe and Eddie where the SRCS, RDEFS, and RSRCS are
 #	so that Pe and Eddie can fill them in for you.
@@ -32,7 +32,7 @@ SRCS = \
 	src/Channel.cpp, \
 	src/Fetch.cpp, \
 	src/Parse.cpp, \
-	src/Ziff.cpp
+	src/Rifen.cpp
 
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.
