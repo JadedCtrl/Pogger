@@ -31,7 +31,8 @@ APP_MIME_SIG = application/x-vnd.Rifen
 SRCS = \
 	src/Channel.cpp, \
 	src/Item.cpp, \
-	src/Fetch.cpp, \
+	src/ProtocolListener.cpp, \
+	src/webfetch.cpp, \
 	src/parsing.cpp, \
 	src/Rifen.cpp
 

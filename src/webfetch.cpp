@@ -1,18 +1,18 @@
 #include <HttpRequest.h>
-#include "Fetch.h"
+#include "ProtocolListener.h"
+#include "webfetch.h"
 
 // ----------------------------------------------------------------------------
 
 int32
-fetch ( char* strUrl, BDataIO* reply )
+webfetch ( char* strUrl, BDataIO* reply )
 {
-	BUrl url( strUrl );
-	return fetch( url, reply );
+	return webfetch( BUrl(strUrl), reply );
 }
 
 
 int32
-fetch ( BUrl url, BDataIO* reply )
+webfetch ( BUrl url, BDataIO* reply )
 {
 	ProtocolListener listener(true);
 	BUrlContext context;
