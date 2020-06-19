@@ -1,3 +1,6 @@
+#ifndef CHANNEL_H
+#define CHANNEL_H
+
 #include <DateTime.h>
 #include <String.h>
 #include <List.h>
@@ -18,23 +21,10 @@ public:
 	BString	filePath;
 
 
-	Channel	( int );
+	Channel	( BString );
 //	Channel	( BEntry );
 //	Channel	( BUrl );
 	void	Parse	( void );
 };
 
-class Item {
-public:
-	BString  title;
-	BString  description;
-	BDate    pubDate;
-	BString  homePage;
-	BString  postUrl;
-	BString  content;
-	
-	BString  subject;
-
-	void	Print	( void );
-	Item	( BString );
-};
+#endif

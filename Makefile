@@ -30,8 +30,9 @@ APP_MIME_SIG = application/x-vnd.Rifen
 #	Also note that spaces in folder names do not work well with this Makefile.
 SRCS = \
 	src/Channel.cpp, \
+	src/Item.cpp, \
 	src/Fetch.cpp, \
-	src/Parse.cpp, \
+	src/parsing.cpp, \
 	src/Rifen.cpp
 
 #	Specify the resource definition files to use. Full or relative paths can be

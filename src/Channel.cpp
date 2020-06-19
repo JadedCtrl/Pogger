@@ -1,32 +1,25 @@
 #include <cstdio>
+#include <raptor2/raptor2.h>
 #include "Channel.h"
+#include "Item.h"
+#include "parsing.h"
 
-Channel::Channel ( int itemCount )
+Channel::Channel ( BString path )
 {
 	title = BString("Untitled Feed");
 	description = BString("Nondescript, N/A.");
 	homePage = BString("");
 	xmlUrl = BString("");
-	items = BList(itemCount);
+	filePath = path;
 	topLevelSubject = "";
 	lastSubject = "";
 }
 
-// ============================================================================
-
-Item::Item ( BString localSubject )
-{
-	subject	= localSubject;
-	title = BString("");
-	description = BString("");
-	homePage = BString("");
-	postUrl  = BString("");
-	content  = BString("");
-}
-
 void
-Item::Print ()
+Channel::Parse ( )
 {
-//	printf("%s\t%s\n%s\n\n", subject.String(), title.String(), content.String());
-	printf("%s\t%s\n", subject.String(), title.String());
+	int itemCount = countFeedItems( filePath.String() );
+	items = BList(itemCount);
+	Channel* chan = this;
+	processFeedItems(&chan);
 }

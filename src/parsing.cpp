@@ -1,13 +1,14 @@
 #include <raptor2/raptor2.h>
-//#include "Channel.h"
-#include "Parse.h"
+#include "Channel.h"
+#include "Item.h"
+#include "parsing.h"
 
 // predicate == sweet https version of tag (e.g. <http://purl.org/rss/1.0/modules/rss091#language> )
 // subject == parent
 // object == data
 
 int
-countAllShit ( const char* filePath )
+countFeedItems ( const char* filePath )
 {
 	raptor_parser* rss_parser = NULL;
 	raptor_world* world;
@@ -36,9 +37,10 @@ countAllShit ( const char* filePath )
 	return *(itemCount);
 }
 
-Channel*
-parseRssFile ( const char* filePath )
+void
+processFeedItems ( Channel** chanPtr )
 {
+	Channel* chan = *(chanPtr);
 	raptor_parser* rss_parser = NULL;
 	raptor_world* world;
 	world = raptor_new_world();
@@ -47,19 +49,9 @@ parseRssFile ( const char* filePath )
 	raptor_uri *uri, *base_uri;
 
 	rss_parser = raptor_new_parser(world, "rss-tag-soup");
-	uri_string = raptor_uri_filename_to_uri_string( filePath );
+	uri_string = raptor_uri_filename_to_uri_string( chan->filePath.String() );
 	uri = raptor_new_uri( world, uri_string );
 	base_uri = raptor_uri_copy( uri );
-
-	int itemCount = countAllShit( filePath );
-
-//	int* itemCount = (int*)malloc( sizeof(int) );
-//	*itemCount = 0;
-//	raptor_parser_set_statement_handler( rss_parser, &itemCount, countItemHandler );
-//	raptor_parser_parse_file( rss_parser, uri, base_uri );
-
-	Channel* chan = (Channel*)malloc( sizeof(Channel) );
-	chan = new Channel(itemCount);
 
 	raptor_parser_set_statement_handler( rss_parser, &chan, channelHandler );
 	raptor_parser_parse_file( rss_parser, uri, base_uri );
@@ -69,8 +61,6 @@ parseRssFile ( const char* filePath )
 	raptor_free_uri(uri);
 	raptor_free_memory(uri_string);	
 	raptor_free_world( world );
-
-	return chan;
 }
 
 void
