@@ -5,15 +5,19 @@
 #include "Channel.h"
 
 
-void	channelHandler		( void*, raptor_statement* );
+void	feedParser		(Channel**);
+void	feedHandler		( void*, raptor_statement* );
+void	handleFeedStatement	( Channel**, raptor_statement* );
+void	handleChannelStatement	( Channel**, BString, BString );
+void	handleItemStatement	( Channel**, BString, BString, BString );
+
+int	countItemParser		( const char* );
 void	countItemHandler	( void*, raptor_statement* );
-void	parseRssStatement	( Channel**, raptor_statement* );
+
+void	printStatementParser	( const char* );
+void	printStatementHandler	( void*, raptor_statement* );
+
 BString	getPredicateTag		( char* );
 BString	getPredicateTag		( BString );
-void	parseChannelStatement	( Channel**, BString, BString );
-void	parseItemStatement	( Channel**, BString, BString, BString );
-
-int	countFeedItems		( const char* );
-void	processFeedItems		(Channel**);
 
 #endif

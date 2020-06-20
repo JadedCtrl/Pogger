@@ -18,8 +18,8 @@ Channel::Channel ( BString path )
 void
 Channel::Parse ( )
 {
-	int itemCount = countFeedItems( filePath.String() );
+	int itemCount = countItemParser( filePath.String() );
 	items = BList(itemCount);
 	Channel* chan = this;
-	processFeedItems(&chan);
+	feedParser(&chan);
 }

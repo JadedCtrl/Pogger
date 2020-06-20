@@ -3,12 +3,41 @@
 #include "Item.h"
 #include "parsing.h"
 
-// predicate == sweet https version of tag (e.g. <http://purl.org/rss/1.0/modules/rss091#language> )
-// subject == parent
-// object == data
+/* predicate == sweet http version of tag
+   subject   == parent
+   object    == data */
 
+// ============================================================================
+// PARSERS
+void
+feedParser ( Channel** chanPtr )
+{
+	Channel* chan = *(chanPtr);
+	raptor_parser* rss_parser = NULL;
+	raptor_world* world;
+	world = raptor_new_world();
+
+	unsigned char *uri_string;
+	raptor_uri *uri, *base_uri;
+
+	rss_parser = raptor_new_parser(world, "rss-tag-soup");
+	uri_string = raptor_uri_filename_to_uri_string( chan->filePath.String() );
+	uri = raptor_new_uri( world, uri_string );
+	base_uri = raptor_uri_copy( uri );
+
+	raptor_parser_set_statement_handler( rss_parser, &chan, feedHandler );
+	raptor_parser_parse_file( rss_parser, uri, base_uri );
+
+	raptor_free_parser(rss_parser);
+	raptor_free_uri(base_uri);
+	raptor_free_uri(uri);
+	raptor_free_memory(uri_string);	
+	raptor_free_world( world );
+}
+
+// -------------------------------------
 int
-countFeedItems ( const char* filePath )
+countItemParser ( const char* filePath )
 {
 	raptor_parser* rss_parser = NULL;
 	raptor_world* world;
@@ -38,9 +67,8 @@ countFeedItems ( const char* filePath )
 }
 
 void
-processFeedItems ( Channel** chanPtr )
+printStatementParser ( const char* filePath )
 {
-	Channel* chan = *(chanPtr);
 	raptor_parser* rss_parser = NULL;
 	raptor_world* world;
 	world = raptor_new_world();
@@ -49,11 +77,11 @@ processFeedItems ( Channel** chanPtr )
 	raptor_uri *uri, *base_uri;
 
 	rss_parser = raptor_new_parser(world, "rss-tag-soup");
-	uri_string = raptor_uri_filename_to_uri_string( chan->filePath.String() );
+	uri_string = raptor_uri_filename_to_uri_string( filePath );
 	uri = raptor_new_uri( world, uri_string );
 	base_uri = raptor_uri_copy( uri );
 
-	raptor_parser_set_statement_handler( rss_parser, &chan, channelHandler );
+	raptor_parser_set_statement_handler( rss_parser, NULL, printStatementHandler );
 	raptor_parser_parse_file( rss_parser, uri, base_uri );
 
 	raptor_free_parser(rss_parser);
@@ -63,58 +91,73 @@ processFeedItems ( Channel** chanPtr )
 	raptor_free_world( world );
 }
 
+
+// ============================================================================
+// HANDLERS
 void
-channelHandler ( void* user_data, raptor_statement* statement ) 
+feedHandler ( void* user_data, raptor_statement* statement ) 
 {
 	if ( user_data != NULL ) {
 		Channel** chanPtr = (Channel**)user_data;
-		parseRssStatement( chanPtr, statement );
+		handleFeedStatement( chanPtr, statement );
 	}
 }
 
 void
 countItemHandler ( void* user_data, raptor_statement* statement ) 
 {
-	int** countPtr = (int**)user_data;
-	int* count = *(countPtr);
+	int** countPtr =  ( int** )user_data;
+	int* count     = *(countPtr);
 
-	const char* object = (const char*)raptor_term_to_string(statement->object);
-	const char* predicate = (const char*)raptor_term_to_string(statement->predicate);
+	const char* object    = ( const char* )raptor_term_to_string( statement->object );
+	const char* predicate = ( const char* )raptor_term_to_string( statement->predicate );
 
 	if (getPredicateTag(predicate) == "type"
 	    && getPredicateTag(object) == "item")
 		*count += 1;
 }
 
-
-// ============================================================================
-
 void
-parseRssStatement ( Channel** chanPtr, raptor_statement* statement )
+printStatementHandler ( void* user_data, raptor_statement* statement ) 
+{
+	int** countPtr = (int**)user_data;
+	int* count = *(countPtr);
+
+	const char* subject   = ( const char* )raptor_term_to_string( statement->subject );
+	const char* predicate = ( const char* )raptor_term_to_string( statement->predicate );
+	const char* object    = ( const char* )raptor_term_to_string( statement->object );
+
+	printf("%s\t-%s\n%.5s\n", subject, predicate, object);
+}
+
+// ----------------------------------------------------------------------------
+// FEEDHANDLER HELPERS
+void
+handleFeedStatement ( Channel** chanPtr, raptor_statement* statement )
 {
 	Channel* chan = *(chanPtr);
-	BString predicate = BString( (const char*)raptor_term_to_string(statement->predicate) );
-	BString subject   = BString( (const char*)raptor_term_to_string(statement->subject) );
-	BString object    = BString( (const char*)raptor_term_to_string(statement->object) );
+	BString predicate = BString(( const char* )raptor_term_to_string( statement->predicate ));
+	BString subject   = BString(( const char* )raptor_term_to_string( statement->subject ));
+	BString object    = BString(( const char* )raptor_term_to_string( statement->object ));
 	predicate = getPredicateTag( predicate );
 
-	if (predicate == "type" && getPredicateTag(object) == "channel")
+	if ( predicate == "type" && getPredicateTag( object ) == "channel" )
 		chan->topLevelSubject = subject;
 
 	if ( subject != chan->topLevelSubject )
-//		parseChannelStatement( chanPtr, predicate, object );
+//		handleChannelStatement( chanPtr, predicate, object );
 //	else
-		parseItemStatement( chanPtr, subject, predicate, object );
+		handleItemStatement( chanPtr, subject, predicate, object );
 }
 
 void
-parseChannelStatement ( Channel** chanPtr, BString predicate, BString object )
+handleChannelStatement ( Channel** chanPtr, BString predicate, BString object )
 {
 	Channel* chan = *(chanPtr);
 }
 
 void
-parseItemStatement ( Channel** chanPtr, BString subject, BString predicate, BString object )
+handleItemStatement ( Channel** chanPtr, BString subject, BString predicate, BString object )
 {
 	Channel* chan = *(chanPtr);
 	if ( subject.StartsWith("_:genid") )
@@ -140,6 +183,9 @@ parseItemStatement ( Channel** chanPtr, BString subject, BString predicate, BStr
 		nowItem->content = object;
 }
 
+
+// ============================================================================
+// UTIL
 BString
 getPredicateTag ( BString spec )
 {
