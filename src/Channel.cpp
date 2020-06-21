@@ -4,7 +4,7 @@
 #include "Item.h"
 #include "parsing.h"
 
-Channel::Channel ( BString path )
+Channel::Channel ( BString path, BString outputPath )
 {
 	title = BString("Untitled Feed");
 	description = BString("Nondescript, N/A.");
@@ -13,6 +13,7 @@ Channel::Channel ( BString path )
 	filePath = path;
 	topLevelSubject = "";
 	lastSubject = "";
+	outputDir = outputPath;
 }
 
 void

@@ -1,6 +1,7 @@
 #ifndef ITEM_H
 #define ITEM_H
 
+#include <iostream>
 #include <DateTime.h>
 #include <String.h>
 #include <List.h>
@@ -10,15 +11,17 @@ class Item {
 public:
 	BString  title;
 	BString  description;
-	BDate    pubDate;
+	BString  pubDate;
 	BString  homePage;
 	BString  postUrl;
-	BString  content;
+	std::string  content;
+	BString outputDir;
 	
 	BString  subject;
 
-	void	Print	( void );
-	Item	( BString );
+	Item	( BString, BString );
+
+	bool	Filetize ( bool );
 };
 
 #endif

@@ -2,40 +2,27 @@
 #include <StorageKit.h>
 #include "Channel.h"
 #include "Item.h"
-#include "parsing.h"
+#include "parsing.h" //
+
 
 bool
 create_item ( void* item )
 {
-	Item* itemPtr = (Item*)item;
-
-	BDirectory* dir    = new BDirectory("./test/test/");
-	BFile*      file   = new BFile(itemPtr->title.String(), B_READ_WRITE);
-
-	dir->CreateFile(itemPtr->title.String(), file);
-
-	file->WriteAttr("title",B_STRING_TYPE,0,
-			itemPtr->title.String(),itemPtr->title.CountChars());
-	file->WriteAttr("description",B_STRING_TYPE,0,
-			itemPtr->description.String(),itemPtr->description.CountChars());
-
-//	const char* buf;
-//	buf = itemPtr->title.String();
-	file->Write(itemPtr->title.String(), itemPtr->title.CountChars());
-
+	Item* itemPtr  = (Item*)item;
+	itemPtr->Filetize( false );
 	return false;
 }
 
 int
 main ( int argc, char** argv )
 {
+	BString outputDir("/boot/home/feeds/");
 	Channel* chan = (Channel*)malloc( sizeof(Channel) );
-	chan = new Channel(argv[1]);
-	chan->Parse();
-	BList items = chan->items;
-	printf("%s\n", chan->title.String());
-	items.DoForEach(&create_item);
 
-	
+	chan = new Channel(argv[1], outputDir);
+	chan->Parse();
+
+	BList items = chan->items;
+	items.DoForEach(&create_item);
 	return 0;
 }

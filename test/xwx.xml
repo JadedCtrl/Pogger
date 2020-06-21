@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<rss version="2.0">
+<channel>
+  <title>galactic station xwx</title>
+  <link>http://localhost:8000</link>
+  <description></description>
+
+	<item>
+	<title>La Haiku Funkcisistemo k Esperanto</title>
+  <link>http://localhost:8000../lib/haiku-k-esperanto.html</link>
+	<description></description>
+	<pubDate>Sat, 9 May 2020 01:27:32 -0600</pubDate>
+</item>
+<item>
+	<title>Preter Vim: hoj Kakoune!</title>
+  <link>http://localhost:8000../lib/preter-vim-al-kak.html</link>
+	<description></description>
+	<pubDate>Thu, 02 Jan 2019 00:05:20 -0600</pubDate>
+</item>
+<item>
+	<title>New domain - Novjaro k novnom</title>
+  <link>http://localhost:8000../lib/nova-retejnomo.html</link>
+	<description></description>
+	<pubDate>Web, 1 Jan 2020 19:43:43 -0600</pubDate>
+</item>
+<item>
+	<title>Trans la Rivera Lavejo</title>
+  <link>http://localhost:8000../lib/trans-la-rivero.html</link>
+	<description></description>
+	<pubDate>Wed, 13 Nov 2019 13:55:23 -0600</pubDate>
+</item>
+<item>
+	<title>Arteco kaj Derivfikcio</title>
+  <link>http://localhost:8000../lib/artec-kaj-fanatikfikci.html</link>
+	<description></description>
+	<pubDate>Sat, 2 Nov 2019 00:52:44 -0600</pubDate>
+</item>
+<item>
+	<title>Universalismo kaj fikciaj bestaĉoj</title>
+  <link>http://localhost:8000../lib/universalismo-kaj-ficiaj-bestaĉoj.html</link>
+	<description></description>
+	<pubDate>Mon, 15 Jul 2019 22:05:32 -0600</pubDate>
+</item>
+<item>
+	<title>Project Diva f with English subs</title>
+  <link>http://localhost:8000../lib/project-diva-f-better-english.html</link>
+	<description></description>
+	<pubDate>Wed, 26 Jun 2019 22:37:56 -0600</pubDate>
+</item>
+<item>
+	<title>SBCL k plibonigita terminalo</title>
+  <link>http://localhost:8000../lib/sbcl-k-plibonigita-terminalo.html</link>
+	<description></description>
+	<pubDate>Wed, 19 Jun 2019 20:21:01 -0600</pubDate>
+</item>
+<item>
+	<title>Cowsay and Rewarding HTML</title>
+  <link>http://localhost:8000../lib/cowsay-and-html.html</link>
+	<description></description>
+	<pubDate>Sun, 17 Feb 2019 19:43:43 -0600</pubDate>
+</item>
+
+</channel>
+</rss>

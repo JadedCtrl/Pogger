@@ -19,9 +19,10 @@ public:
 	BString topLevelSubject;
 	BString lastSubject;
 	BString	filePath;
+	BString outputDir;
 
 
-	Channel	( BString );
+	Channel	( BString, BString );
 //	Channel	( BEntry );
 //	Channel	( BUrl );
 	void	Parse	( void );
