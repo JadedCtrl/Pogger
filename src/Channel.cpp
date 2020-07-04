@@ -2,6 +2,7 @@
 #include <raptor2/raptor2.h>
 #include "Channel.h"
 #include "Item.h"
+#include "Config.h"
 #include "parsing.h"
 
 Channel::Channel ( BString path, BString outputPath )
@@ -17,7 +18,7 @@ Channel::Channel ( BString path, BString outputPath )
 }
 
 void
-Channel::Parse ( )
+Channel::Parse ( Config* cfg )
 {
 	int itemCount = countItemParser( filePath.String() );
 	items = BList(itemCount);

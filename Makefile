@@ -32,6 +32,7 @@ SRCS = \
 	src/Channel.cpp, \
 	src/Item.cpp, \
 	src/ProtocolListener.cpp, \
+	src/Config.cpp, \
 	src/webfetch.cpp, \
 	src/parsing.cpp, \
 	src/Rifen.cpp

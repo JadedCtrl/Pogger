@@ -5,6 +5,7 @@
 #include <String.h>
 #include <List.h>
 #include <Url.h>
+#include "Config.h"
 
 class Channel {
 public:
@@ -25,7 +26,7 @@ public:
 	Channel	( BString, BString );
 //	Channel	( BEntry );
 //	Channel	( BUrl );
-	void	Parse	( void );
+	void	Parse	( Config* );
 };
 
 #endif

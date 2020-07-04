@@ -5,9 +5,6 @@
 #include "Item.h"
 #include "parsing.h"
 
-/* predicate == sweet http version of tag
-   subject   == parent
-   object    == data */
 
 // ============================================================================
 // PARSERS
