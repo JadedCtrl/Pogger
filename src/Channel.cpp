@@ -1,5 +1,5 @@
-#include <cstdio>
 #include <tinyxml2.h>
+#include "Util.h"
 #include "Channel.h"
 #include "Item.h"
 #include "Config.h"
@@ -26,31 +26,48 @@ Channel::Parse ( Config* cfg )
 	feedParser(&chan, cfg);
 }
 
-void Channel::SetTitle ( const char* titleStr ) {
+bool Channel::SetTitle ( const char* titleStr ) {
 	if ( titleStr != NULL )	title = BString( titleStr );
+	else return false;
+	return true;
 }
-void Channel::SetTitle ( tinyxml2::XMLElement* elem ) {
-	if ( elem != NULL )	SetTitle( elem->GetText() );
+bool Channel::SetTitle ( tinyxml2::XMLElement* elem ) {
+	if ( elem != NULL )	return SetTitle( elem->GetText() );
+	else return false;
 }
 
-void Channel::SetDesc ( const char* descStr ) {
+bool Channel::SetDesc ( const char* descStr ) {
 	if ( descStr != NULL )	description = BString( descStr );
+	else return false;
+	return true;
 }
-void Channel::SetDesc ( tinyxml2::XMLElement* elem ) {
-	if ( elem != NULL )	SetDesc( elem->GetText() );
-}
-
-void Channel::SetHomePage ( const char* homepageStr ) {
-	if ( homepageStr != NULL )
-		homePage = BString( homepageStr );
-}
-void Channel::SetHomePage ( tinyxml2::XMLElement* elem ) {
-	if ( elem != NULL )	SetHomePage( elem->GetText() );
+bool Channel::SetDesc ( tinyxml2::XMLElement* elem ) {
+	if ( elem != NULL )	return SetDesc( elem->GetText() );
+	else return false;
 }
 
-void Channel::SetLastDate ( const char* dateStr ) {
-	if ( dateStr != NULL )	lastDate = BString( dateStr );
+bool Channel::SetHomePage ( const char* homepageStr ) {
+	if ( homepageStr != NULL ) homePage = BString( homepageStr );
+	else return false;
+	return true;
 }
-void Channel::SetLastDate ( tinyxml2::XMLElement* elem ) {
-	if ( elem != NULL )	SetLastDate( elem->GetText() );
+bool Channel::SetHomePage ( tinyxml2::XMLElement* elem ) {
+	if ( elem != NULL )	return SetHomePage( elem->GetText() );
+	else return false;
+}
+
+bool Channel::SetLastDate ( const char* dateCStr ) {
+	if ( dateCStr == NULL )
+		return false;
+
+	BString dateStr = stringDateToBString( dateCStr );
+	if ( dateStr == NULL )
+		return false;
+	lastDate = dateStr;
+	return true;
+}
+bool Channel::SetLastDate ( tinyxml2::XMLElement* elem ) {
+	if ( elem != NULL )	return SetLastDate( elem->GetText() );
+
+	else return false;
 }

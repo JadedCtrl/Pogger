@@ -29,14 +29,14 @@ public:
 //	Channel	( BUrl );
 	void	Parse	( Config* );
 
-	void	SetTitle ( const char* );
-	void	SetTitle ( tinyxml2::XMLElement* );
-	void	SetDesc ( const char* );
-	void	SetDesc ( tinyxml2::XMLElement* );
-	void	SetLastDate ( const char* );
-	void	SetLastDate ( tinyxml2::XMLElement* );
-	void	SetHomePage ( const char* );
-	void	SetHomePage ( tinyxml2::XMLElement* );
+	bool	SetTitle ( const char* );
+	bool	SetTitle ( tinyxml2::XMLElement* );
+	bool	SetDesc ( const char* );
+	bool	SetDesc ( tinyxml2::XMLElement* );
+	bool	SetLastDate ( const char* );
+	bool	SetLastDate ( tinyxml2::XMLElement* );
+	bool	SetHomePage ( const char* );
+	bool	SetHomePage ( tinyxml2::XMLElement* );
 };
 
 #endif
