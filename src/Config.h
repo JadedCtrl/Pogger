@@ -1,6 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <String.h>
 #include <StorageKit.h>
 
 class Config {

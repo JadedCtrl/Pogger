@@ -1,28 +1,15 @@
 #ifndef PARSE_H
 #define PARSE_H
 
-#include <iostream>
-#include <raptor2/raptor2.h>
+#include <tinyxml2.h>
+#include "Config.h"
 #include "Channel.h"
 
-
-void	feedParser		(Channel**);
-void	feedHandler		( void*, raptor_statement* );
-void	handleFeedStatement	( Channel**, raptor_statement* );
-void	handleChannelStatement	( Channel**, BString, BString );
-void	handleItemStatement	( Channel**, BString, BString, std::string );
-
-int	countItemParser		( const char* );
-void	countItemHandler	( void*, raptor_statement* );
-
-void	printStatementParser	( const char* );
-void	printStatementHandler	( void*, raptor_statement* );
-
-BString	getPredicateTag		( const char* );
-BString	getPredicateTag		( BString );
-BString	getPredicateTag		( std::string );
-std::string	to_utf		( uint32 );
-std::string	unescape	( std::string, std::string );
-std::string	unescape	( const char* );
+void feedParser   ( Channel**, Config* );
+void rssParser    ( Channel**, Config*, tinyxml2::XMLDocument* );
+void rssRootParse ( Channel**, Config*, tinyxml2::XMLElement* );
+void rssItemParse ( Channel**, Config*, tinyxml2::XMLElement* );
+void rssParseItems ( Channel**, Config*, tinyxml2::XMLElement* );
+int xmlCountSiblings ( tinyxml2::XMLElement*, const char* );
 
 #endif

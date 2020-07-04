@@ -1,6 +1,7 @@
 #ifndef CHANNEL_H
 #define CHANNEL_H
 
+#include <tinyxml2.h>
 #include <DateTime.h>
 #include <String.h>
 #include <List.h>
@@ -12,7 +13,7 @@ public:
 	char	lang[3];
 	BString	title;
 	BString	description;
-	BDate	lastBuildDate;
+	BString	lastDate;
 	BString	homePage;
 	BString	xmlUrl;
 	BList	items;
@@ -27,6 +28,15 @@ public:
 //	Channel	( BEntry );
 //	Channel	( BUrl );
 	void	Parse	( Config* );
+
+	void	SetTitle ( const char* );
+	void	SetTitle ( tinyxml2::XMLElement* );
+	void	SetDesc ( const char* );
+	void	SetDesc ( tinyxml2::XMLElement* );
+	void	SetLastDate ( const char* );
+	void	SetLastDate ( tinyxml2::XMLElement* );
+	void	SetHomePage ( const char* );
+	void	SetHomePage ( tinyxml2::XMLElement* );
 };
 
 #endif

@@ -1,4 +1,3 @@
-#include <raptor2/raptor2.h>
 #include <StorageKit.h>
 #include <String.h>
 #include <getopt.h>
@@ -7,6 +6,8 @@
 #include "parsing.h"
 #include "Config.h"
 #include "Rifen.h"
+
+Config* main_cfg;
 
 int
 usage ()
@@ -18,9 +19,8 @@ usage ()
 bool
 create_item ( void* item )
 {
-	printf("hi");
 	Item* itemPtr  = (Item*)item;
-	itemPtr->Filetize( false );
+	itemPtr->Filetize( main_cfg, false );
 	return false;
 }
 
@@ -78,16 +78,14 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 int
 main ( int argc, char** argv )
 {
-//
-//
-	Config* cfg = new Config;
+	main_cfg = new Config;
 	usageMsg.ReplaceAll("%app%", "Rifen");
 
-	invocation( argc, argv, &cfg );
+	invocation( argc, argv, &main_cfg );
 
 	Channel* chan = (Channel*)malloc( sizeof(Channel) );
-	chan = new Channel(cfg->targetFeed, cfg->outDir);
-	chan->Parse(cfg);
+	chan = new Channel(main_cfg->targetFeed, main_cfg->outDir);
+	chan->Parse(main_cfg);
 
 	BList items = chan->items;
 	items.DoForEach(&create_item);

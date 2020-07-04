@@ -14,14 +14,25 @@ public:
 	BString  pubDate;
 	BString  homePage;
 	BString  postUrl;
-	std::string  content;
+	BString  content;
 	BString outputDir;
 	
-	BString  subject;
+	Item	( BString );
 
-	Item	( BString, BString );
+	bool	Filetize ( Config*, bool );
 
-	bool	Filetize ( bool );
+	void	SetTitle ( const char* );
+	void	SetTitle ( tinyxml2::XMLElement* );
+	void	SetDesc ( const char* );
+	void	SetDesc ( tinyxml2::XMLElement* );
+	void	SetContent ( const char* );
+	void	SetContent ( tinyxml2::XMLElement* );
+	void	SetPostUrl ( const char* );
+	void	SetPostUrl ( tinyxml2::XMLElement* );
+	void	SetPubDate ( const char* );
+	void	SetPubDate ( tinyxml2::XMLElement* );
 };
+
+
 
 #endif
