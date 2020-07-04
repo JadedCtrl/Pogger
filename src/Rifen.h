@@ -1,9 +1,11 @@
 #include <StorageKit.h>
 
-int main ( int, char** );
-int  invocation  ( int, char**, Config** );
+int  main ( int, char** );
 int  usage       ( );
-bool create_item ( void* );
+int  invocation  ( int, char**, Config** );
+void  freeargInvocation  ( int, char**, int, Config** );
+bool processItem ( void* );
+bool processFeed ( void* );
 
 // ----------------------------------------------------------------------------
 

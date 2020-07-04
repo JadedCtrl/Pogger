@@ -10,7 +10,7 @@ public:
 	bool daemon;
 	BString mimetype;
 	BString outDir;
-	BString targetFeed; // file or url
+	BList targetFeeds; // file or url
 
 	Config ( );
 };

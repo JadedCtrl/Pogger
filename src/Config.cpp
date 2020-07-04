@@ -6,4 +6,5 @@ Config::Config () {
 	daemon     = true;
 	mimetype   = BString("text/xml");
 	outDir     = BString("/boot/home/feeds/");
+	targetFeeds = NULL;
 }

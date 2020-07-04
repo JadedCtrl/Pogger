@@ -10,20 +10,25 @@
 Config* main_cfg;
 
 int
+main ( int argc, char** argv )
+{
+	main_cfg = new Config;
+	usageMsg.ReplaceAll("%app%", "Rifen");
+
+	invocation( argc, argv, &main_cfg );
+
+	main_cfg->targetFeeds.DoForEach(&processFeed);
+	return 0;
+}
+
+// ----------------------------------------------------------------------------
+
+int
 usage ()
 {
 	fprintf(stderr, "%s", usageMsg.String());
 	return 2;
 }
-
-bool
-create_item ( void* item )
-{
-	Item* itemPtr  = (Item*)item;
-	itemPtr->Filetize( main_cfg, false );
-	return false;
-}
-
 
 int
 invocation ( int argc, char** argv, Config** cfgPtr )
@@ -45,8 +50,7 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 
 		switch (c) {
 			case -1:
-				if ( optind < argc )
-					cfg->targetFeed = BString(argv[optind]);
+				freeargInvocation( argc, argv, optind, cfgPtr );
 				return 0;
 			case 'h':
 				return usage();
@@ -70,24 +74,46 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 				return 2;
 		}
 	}
-
-	return 0;
 }
-	
 
-int
-main ( int argc, char** argv )
+// ―――――――――――――――――
+
+void
+freeargInvocation ( int argc, char** argv, int optind, Config** cfgPtr )
 {
-	main_cfg = new Config;
-	usageMsg.ReplaceAll("%app%", "Rifen");
+	Config* cfg = *(cfgPtr);
+	if ( optind < argc ) {
+		int freeargc = argc - optind;
+		cfg->targetFeeds =  BList( freeargc );
 
-	invocation( argc, argv, &main_cfg );
+		for ( int i = 0; i < freeargc; i++ ) {
+			BString* newFeed = new BString( argv[optind + i] );
+			cfg->targetFeeds.AddItem( newFeed );
+		}
+	}
+}
 
+// ----------------------------------------------------------------------------
+
+bool
+processItem ( void* item )
+{
+	Item* itemPtr  = (Item*)item;
+	itemPtr->Filetize( main_cfg, false );
+	return false;
+}
+
+bool
+processFeed ( void* feed )
+{
+	BString* feedStr = (BString*)feed;
+				
 	Channel* chan = (Channel*)malloc( sizeof(Channel) );
-	chan = new Channel(main_cfg->targetFeed, main_cfg->outDir);
+	chan = new Channel(*(feedStr), main_cfg->outDir);
 	chan->Parse(main_cfg);
-
 	BList items = chan->items;
-	items.DoForEach(&create_item);
-	return 0;
+	items.DoForEach(&processItem);
+	free(chan);
+
+	return false;
 }
