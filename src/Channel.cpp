@@ -12,7 +12,7 @@ Channel::Channel ( BString path, BString outputPath )
 	homePage = BString("");
 	xmlUrl = BString("");
 	filePath = path;
-	lastDate = BString("");
+//	lastDate = NULL;
 	topLevelSubject = "";
 	lastSubject = "";
 	outputDir = outputPath;
@@ -59,11 +59,10 @@ bool Channel::SetHomePage ( tinyxml2::XMLElement* elem ) {
 bool Channel::SetLastDate ( const char* dateCStr ) {
 	if ( dateCStr == NULL )
 		return false;
-
-	BString dateStr = stringDateToBString( dateCStr );
-	if ( dateStr == NULL )
+	BDateTime date = feedDateToBDate( dateCStr );
+	if ( date == NULL )
 		return false;
-	lastDate = dateStr;
+	lastDate = date;
 	return true;
 }
 bool Channel::SetLastDate ( tinyxml2::XMLElement* elem ) {

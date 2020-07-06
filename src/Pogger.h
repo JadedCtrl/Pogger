@@ -3,7 +3,7 @@
 int  main ( int, char** );
 int  usage       ( );
 int  invocation  ( int, char**, Config** );
-void  freeargInvocation  ( int, char**, int, Config** );
+void freeargInvocation  ( int, char**, int, Config** );
 bool processItem ( void* );
 bool processFeed ( void* );
 

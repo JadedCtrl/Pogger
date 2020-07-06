@@ -11,7 +11,7 @@ class Item {
 public:
 	BString  title;
 	BString  description;
-	BString  pubDate;
+	BDateTime pubDate;
 	BString  homePage;
 	BString  postUrl;
 	BString  content;
@@ -21,16 +21,16 @@ public:
 
 	bool	Filetize ( Config*, bool );
 
-	void	SetTitle ( const char* );
-	void	SetTitle ( tinyxml2::XMLElement* );
-	void	SetDesc ( const char* );
-	void	SetDesc ( tinyxml2::XMLElement* );
-	void	SetContent ( const char* );
-	void	SetContent ( tinyxml2::XMLElement* );
-	void	SetPostUrl ( const char* );
-	void	SetPostUrl ( tinyxml2::XMLElement* );
-	void	SetPubDate ( const char* );
-	void	SetPubDate ( tinyxml2::XMLElement* );
+	bool	SetTitle ( const char* );
+	bool	SetTitle ( tinyxml2::XMLElement* );
+	bool	SetDesc ( const char* );
+	bool	SetDesc ( tinyxml2::XMLElement* );
+	bool	SetContent ( const char* );
+	bool	SetContent ( tinyxml2::XMLElement* );
+	bool	SetPostUrl ( const char* );
+	bool	SetPostUrl ( tinyxml2::XMLElement* );
+	bool	SetPubDate ( const char* );
+	bool	SetPubDate ( tinyxml2::XMLElement* );
 };
 
 

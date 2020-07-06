@@ -5,7 +5,9 @@
 #include "Item.h"
 #include "parsing.h"
 #include "Config.h"
-#include "Rifen.h"
+#include "Pogger.h"
+
+#include <StorageKit.h>
 
 Config* main_cfg;
 
@@ -13,11 +15,11 @@ int
 main ( int argc, char** argv )
 {
 	main_cfg = new Config;
-	usageMsg.ReplaceAll("%app%", "Rifen");
+	usageMsg.ReplaceAll("%app%", "Pogger");
 
 	invocation( argc, argv, &main_cfg );
-
 	main_cfg->targetFeeds.DoForEach(&processFeed);
+
 	return 0;
 }
 
@@ -68,7 +70,8 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 				break;
 			case '?':
 				if ( optopt == 'O' || optopt == 'm' )
-					fprintf( stderr, "Option `-%c` requires an argument.\n\n", optopt );
+					fprintf( stderr, "Option `-%c` requires an argument.\n\n",
+					         optopt );
 				else
 					fprintf( stderr, "Unknown option `-%c`.\n\n", optopt );
 				return 2;

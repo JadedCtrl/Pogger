@@ -13,7 +13,7 @@ public:
 	char	lang[3];
 	BString	title;
 	BString	description;
-	BString	lastDate;
+	BDateTime lastDate;
 	BString	homePage;
 	BString	xmlUrl;
 	BList	items;
