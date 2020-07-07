@@ -58,6 +58,20 @@ dateTo3339String ( BDateTime dt )
 
 // ----------------------------------------------------------------------------
 
+bool
+withinDateRange ( BDateTime minDate, BDateTime nowDate, BDateTime maxDate )
+{
+	if ( minDate != NULL && nowDate != NULL  && maxDate != NULL )
+		return ( minDate < nowDate && nowDate < maxDate );
+	if ( minDate != NULL && nowDate != NULL )
+		return ( minDate < nowDate );
+	if ( maxDate != NULL && nowDate != NULL )
+		return ( nowDate < maxDate );
+	return true;
+}
+
+// ----------------------------------------------------------------------------
+
 int32
 webFetch ( char* strUrl, BDataIO* reply )
 {

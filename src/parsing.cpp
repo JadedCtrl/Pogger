@@ -3,6 +3,7 @@
 #include <tinyxml2.h>
 #include "Channel.h"
 #include "Item.h"
+#include "Util.h"
 #include "parsing.h"
 
 
@@ -65,7 +66,8 @@ rssItemParse ( Channel** chanPtr, Config* cfg, tinyxml2::XMLElement* xitem )
 	if (cfg->verbose )
 		printf("\t%s\n", newItem->title.String());
 
-	chan->items.AddItem( newItem );
+	if ( withinDateRange( cfg->minDate, newItem->pubDate, cfg->maxDate ) )
+		chan->items.AddItem( newItem );
 }
 
 void
@@ -159,7 +161,8 @@ atomEntryParse ( Channel** chanPtr, Config* cfg, tinyxml2::XMLElement* xentry )
 	if ( cfg->verbose )
 		printf("\t%s\n", newItem->title.String());
 
-	chan->items.AddItem( newItem );
+	if ( withinDateRange( cfg->minDate, newItem->pubDate, cfg->maxDate ) )
+		chan->items.AddItem( newItem );
 }
 
 void

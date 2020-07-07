@@ -5,6 +5,7 @@
 #include "Item.h"
 #include "parsing.h"
 #include "Config.h"
+#include "Util.h"
 #include "Pogger.h"
 
 #include <StorageKit.h>
@@ -36,7 +37,9 @@ int
 invocation ( int argc, char** argv, Config** cfgPtr )
 {
 	Config* cfg = *(cfgPtr);
-	bool suicide = false;
+	BDateTime maxDate;
+	BDateTime minDate;
+
 	static struct option sLongOptions[] = {
 		{ "help", no_argument, 0, 'h' },
 		{ "verbose", no_argument, 0, 'v' },
@@ -48,7 +51,7 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 
 	while (true) {
 		opterr = 0;
-		int c = getopt_long(argc, argv, "+hvDm:O:", sLongOptions, NULL);
+		int c = getopt_long(argc, argv, "+hvDm:O:T:t:", sLongOptions, NULL);
 
 		switch (c) {
 			case -1:
@@ -57,10 +60,28 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 			case 'h':
 				return usage();
 			case 'm':
-				cfg->mimetype = BString(optarg);
+				cfg->mimetype = BString( optarg );
+				break;
+			case 't':
+				minDate = dateRfc3339ToBDate( optarg );
+				if ( minDate != NULL ) 
+					cfg->minDate = minDate;
+				else {
+					fprintf(stderr, "Invalid date format for `-%c'.\n", optopt);
+					return 2;
+				}
+				break;
+			case 'T':
+				maxDate = dateRfc3339ToBDate( optarg );
+				if ( maxDate != NULL ) 
+					cfg->maxDate = maxDate;
+				else {
+					fprintf(stderr, "Invalid date format for `-%c'.\n", optopt);
+					return 2;
+				}
 				break;
 			case 'O':
-				cfg->outDir = BString(optarg);
+				cfg->outDir = BString( optarg );
 				break;
 			case 'v':
 				cfg->verbose = true;
@@ -70,10 +91,10 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 				break;
 			case '?':
 				if ( optopt == 'O' || optopt == 'm' )
-					fprintf( stderr, "Option `-%c` requires an argument.\n\n",
+					fprintf( stderr, "Option `-%c` requires an argument.\n",
 					         optopt );
 				else
-					fprintf( stderr, "Unknown option `-%c`.\n\n", optopt );
+					fprintf( stderr, "Unknown option `-%c`.\n", optopt );
 				return 2;
 		}
 	}

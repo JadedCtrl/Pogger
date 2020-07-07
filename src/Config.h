@@ -1,6 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <DateTime.h>
 #include <String.h>
 #include <StorageKit.h>
 
@@ -11,6 +12,9 @@ public:
 	BString mimetype;
 	BString outDir;
 	BList targetFeeds; // file or url
+
+	BDateTime minDate;
+	BDateTime maxDate;
 
 	Config ( );
 };

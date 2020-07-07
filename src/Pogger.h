@@ -38,13 +38,11 @@ BString usageMsg =
 	"\n"
 	"Both -t and -T use the ISO 8601 format for specifying datetimes:\n"
 	"      YYYY-MM-DDTHH:MM:SS - 2020-01-01T07:07:07\n"
-	"You can leave out seconds, minutes, or hours, but YMD are required.\n"
 	"\n"
 	"NOTE: This message doesn't reflect reality. This is more of a spec of\n"
-	"      what I hope this program will be. As of now -t and -T aren't\n"
-	"      implemented, and running %app% without a file/url free-argument\n"
-	"      is invalid, as the daemon isn't implemented at all. As such,\n"
-	"      -D is also non-functional.\n"
+	"      what I hope this program will be. As of now, running %app%\n"
+	"      without a file/url free-argument is invalid, as the daemon\n"
+	"      isn't implemented at all. As such, -D is also non-functional.\n"
 	"      But it sure can turn an XML feed into files! Lol.\n"
 ;
 
