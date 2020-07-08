@@ -8,18 +8,19 @@
 #include "Util.h"
 #include "Pogger.h"
 
-#include <StorageKit.h>
-
-Config* main_cfg;
-
 int
 main ( int argc, char** argv )
 {
 	main_cfg = new Config;
 	usageMsg.ReplaceAll("%app%", "Pogger");
 
+
 	invocation( argc, argv, &main_cfg );
-	main_cfg->targetFeeds.DoForEach(&processFeed);
+	main_cfg->Load();
+	main_cfg->targetFeeds.DoForEach( &processFeed );
+
+	if ( main_cfg->will_save == true )
+		main_cfg->Save();
 
 	return 0;
 }
@@ -43,6 +44,9 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 	static struct option sLongOptions[] = {
 		{ "help", no_argument, 0, 'h' },
 		{ "verbose", no_argument, 0, 'v' },
+		{ "config", required_argument, 0, 'c' },
+		{ "before", required_argument, 0, 't' },
+		{ "after", required_argument, 0, 'T' },
 		{ "output", required_argument, 0, 'O' },
 		{ "mimetype", required_argument, 0, 'm' },
 		{ "foreground", no_argument, 0, 'D' },
@@ -51,7 +55,7 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 
 	while (true) {
 		opterr = 0;
-		int c = getopt_long(argc, argv, "+hvDm:O:T:t:", sLongOptions, NULL);
+		int c = getopt_long(argc, argv, "+hsvDm:O:T:t:c:", sLongOptions, NULL);
 
 		switch (c) {
 			case -1:
@@ -59,6 +63,11 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 				return 0;
 			case 'h':
 				return usage();
+			case 'c':
+				cfg->configPath = BString( optarg );
+				break;
+			case 's':
+				cfg->will_save = true;
 			case 'm':
 				cfg->mimetype = BString( optarg );
 				break;

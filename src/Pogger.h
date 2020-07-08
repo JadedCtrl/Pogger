@@ -9,9 +9,15 @@ bool processFeed ( void* );
 
 // ----------------------------------------------------------------------------
 
+Config* main_cfg;
+const char* configPath = "/boot/home/config/settings/Pogger/";
+
+// ----------------------------------------------------------------------------
+
+
 BString usageMsg =
-	"Usage: %app% [-hvD] [-m mimetype] [-tT datetime] [-O directory] \n"
-	"       %app% [-hv] [-mtTO] ( <text/xml file> |  <META:url file> | <url> )\n"
+	"Usage: %app% [-hvDus] [-m mimetype] [-tT datetime] [-cCO path] \n"
+	"       %app% [-hvs] [-mtTcCO] ( <text/xml file> |  <META:url file> | <url> )\n"
 	"\n"
 	"%app%, a RSS and Atom feed parser/daemon.\n"
 	"\n"
@@ -22,8 +28,12 @@ BString usageMsg =
 	"  -O, --output     - Output dir for item files. (Default: ~/feeds/)\n"
 	"  -t, --before     - Only return items published before this datetime.\n"
 	"  -T, --after      - Only return items published after this datetime.\n"
+	"  -c, --config     - Path to config dir. (Default: ~/config/settings/Pogger/)\n"
+	"  -C, --cache      - Path to cache.  (Default: ~/config/cache/Pogger/)\n"
+	"  -s, --save       - Save the args of `-m`, `-C`, and `-O` to config.\n"
+	"  -u, --update     - Update all feeds, but don't start daemon.\n"
 	"  -D, --foreground - Run in the foreground, do not daemonize.\n"
-	"                     Only applies when running without file/url arg.\n"
+	"                     `-u` and `-D` only apply when running without file/url arg.\n"
 	"\n"
 	"When invoked without a file or URL, will search for any new feed items\n"
 	"published since last check by by any 'feed file' placed in the config\n"
@@ -42,7 +52,7 @@ BString usageMsg =
 	"NOTE: This message doesn't reflect reality. This is more of a spec of\n"
 	"      what I hope this program will be. As of now, running %app%\n"
 	"      without a file/url free-argument is invalid, as the daemon\n"
-	"      isn't implemented at all. As such, -D is also non-functional.\n"
+	"      isn't implemented at all. As such, -D -u and -C are non-functional.\n"
 	"      But it sure can turn an XML feed into files! Lol.\n"
 ;
 

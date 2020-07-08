@@ -11,12 +11,18 @@ public:
 	bool daemon;
 	BString mimetype;
 	BString outDir;
-	BList targetFeeds; // file or url
+	BList targetFeeds; // strings of files or urls
 
 	BDateTime minDate;
 	BDateTime maxDate;
 
+	BString configPath;
+	bool will_save;
+
 	Config ( );
+
+	void Load ( );
+	void Save ( );
 };
 
 #endif
