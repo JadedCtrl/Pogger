@@ -3,22 +3,20 @@
 #include <tinyxml2.h>
 #include <StorageKit.h>
 #include "Config.h"
-#include "Item.h"
+#include "Entry.h"
 #include "Util.h"
 
-Item::Item ( BString outputPath )
+Entry::Entry ( BString outputPath )
 {
 	title = BString("");
 	description = BString("");
-	homePage = BString("");
 	postUrl  = BString("");
 	content  = BString("");
-//	pubDate  = NULL;
 	outputDir = outputPath;
 }
 
 bool
-Item::Filetize ( Config* cfg, bool onlyIfNew = false )
+Entry::Filetize ( Config* cfg, bool onlyIfNew = false )
 {
 	BDirectory* dir = new BDirectory( outputDir );
 	BFile* file = new BFile( title.String(), B_READ_WRITE );
@@ -26,13 +24,13 @@ Item::Filetize ( Config* cfg, bool onlyIfNew = false )
 	dir->CreateFile( title.String(), file );
 
 	BString betype = cfg->mimetype;
-	if ( pubDate != NULL ) {
-		int32 unixDate = (int32)pubDate.Time_t();
+	if ( date != NULL ) {
+		int32 unixDate = (int32)date.Time_t();
 		file->WriteAttr( "unixDate", B_INT32_TYPE, 0,
 				 &unixDate, sizeof(int32) );
-		file->WriteAttr( "pubDate", B_STRING_TYPE, 0,
-				 dateTo3339String(pubDate).String(),
-				 dateTo3339String(pubDate).CountChars() );
+		file->WriteAttr( "date", B_STRING_TYPE, 0,
+				 dateTo3339String(date).String(),
+				 dateTo3339String(date).CountChars() );
 	}
 
 	file->WriteAttr( "META:title", B_STRING_TYPE, 0,
@@ -48,56 +46,56 @@ Item::Filetize ( Config* cfg, bool onlyIfNew = false )
 	return false;
 }
 
-bool Item::SetTitle ( const char* titleStr ) {
+bool Entry::SetTitle ( const char* titleStr ) {
 	if ( titleStr != NULL )	title = BString( titleStr );
 	else return false;
 	return true;
 }
-bool Item::SetTitle ( tinyxml2::XMLElement* elem ) {
+bool Entry::SetTitle ( tinyxml2::XMLElement* elem ) {
 	if ( elem != NULL )	return SetTitle( elem->GetText() );
 	return false;
 }
 
-bool Item::SetDesc ( const char* descStr ) {
+bool Entry::SetDesc ( const char* descStr ) {
 	if ( descStr != NULL )	description = BString( descStr );
 	else return false;
 	return true;
 }
-bool Item::SetDesc ( tinyxml2::XMLElement* elem ) {
+bool Entry::SetDesc ( tinyxml2::XMLElement* elem ) {
 	if ( elem != NULL )	return SetDesc( elem->GetText() );
 	return false;
 }
 
-bool Item::SetContent ( const char* contentStr ) {
+bool Entry::SetContent ( const char* contentStr ) {
 	if ( contentStr != NULL )	content = BString( contentStr );
 	else return false;
 	return true;
 }
-bool Item::SetContent ( tinyxml2::XMLElement* elem ) {
+bool Entry::SetContent ( tinyxml2::XMLElement* elem ) {
 	if ( elem != NULL )	return SetContent( elem->GetText() );
 	return false;
 }
 
-bool Item::SetPostUrl ( const char* urlStr ) {
+bool Entry::SetPostUrl ( const char* urlStr ) {
 	if ( urlStr != NULL )	postUrl = BString( urlStr );
 	else return false;
 	return true;
 }
-bool Item::SetPostUrl ( tinyxml2::XMLElement* elem ) {
+bool Entry::SetPostUrl ( tinyxml2::XMLElement* elem ) {
 	if ( elem != NULL )	return SetPostUrl( elem->GetText() );
 	return false;
 }
 
-bool Item::SetPubDate ( const char* dateStr ) {
+bool Entry::SetDate ( const char* dateStr ) {
 	if ( dateStr == NULL )
 		return false;
-	BDateTime date = feedDateToBDate( dateStr );
-	if ( date == NULL )
+	BDateTime newDate = feedDateToBDate( dateStr );
+	if ( newDate == NULL )
 		return false;
-	pubDate = date;
+	date = newDate;
 	return true;
 }
-bool Item::SetPubDate ( tinyxml2::XMLElement* elem ) {
-	if ( elem != NULL )	return SetPubDate( elem->GetText() );
+bool Entry::SetDate ( tinyxml2::XMLElement* elem ) {
+	if ( elem != NULL )	return SetDate( elem->GetText() );
 	return false;
 }

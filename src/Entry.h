@@ -1,23 +1,23 @@
-#ifndef ITEM_H
-#define ITEM_H
+#ifndef ENTRY_H
+#define ENTRY_H
 
 #include <iostream>
 #include <DateTime.h>
 #include <String.h>
 #include <List.h>
 #include <Url.h>
+#include "Config.h"
 
-class Item {
+class Entry {
 public:
 	BString  title;
 	BString  description;
-	BDateTime pubDate;
-	BString  homePage;
+	BDateTime date;
 	BString  postUrl;
 	BString  content;
-	BString outputDir;
+	BString  outputDir;
 	
-	Item	( BString );
+	Entry	( BString );
 
 	bool	Filetize ( Config*, bool );
 
@@ -29,8 +29,8 @@ public:
 	bool	SetContent ( tinyxml2::XMLElement* );
 	bool	SetPostUrl ( const char* );
 	bool	SetPostUrl ( tinyxml2::XMLElement* );
-	bool	SetPubDate ( const char* );
-	bool	SetPubDate ( tinyxml2::XMLElement* );
+	bool	SetDate ( const char* );
+	bool	SetDate ( tinyxml2::XMLElement* );
 };
 
 

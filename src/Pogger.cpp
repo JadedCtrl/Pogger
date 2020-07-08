@@ -1,8 +1,8 @@
 #include <StorageKit.h>
 #include <String.h>
 #include <getopt.h>
-#include "Channel.h"
-#include "Item.h"
+#include "Feed.h"
+#include "Entry.h"
 #include "parsing.h"
 #include "Config.h"
 #include "Util.h"
@@ -129,24 +129,24 @@ freeargInvocation ( int argc, char** argv, int optind, Config** cfgPtr )
 // ----------------------------------------------------------------------------
 
 bool
-processItem ( void* item )
+processEntry ( void* entry )
 {
-	Item* itemPtr  = (Item*)item;
-	itemPtr->Filetize( main_cfg, false );
+	Entry* entryPtr  = (Entry*)entry;
+	entryPtr->Filetize( main_cfg, false );
 	return false;
 }
 
 bool
-processFeed ( void* feed )
+processFeed ( void* feedArg )
 {
-	BString* feedStr = (BString*)feed;
+	BString* feedStr = (BString*)feedArg;
 				
-	Channel* chan = (Channel*)malloc( sizeof(Channel) );
-	chan = new Channel(*(feedStr), main_cfg->outDir);
-	chan->Parse(main_cfg);
-	BList items = chan->items;
-	items.DoForEach(&processItem);
-	free(chan);
+	Feed* feed = (Feed*)malloc( sizeof(feed) );
+	feed = new Feed(*(feedStr), main_cfg->outDir);
+	feed->Parse(main_cfg);
+	BList entries = feed->entries;
+	entries.DoForEach(&processEntry);
+	free(feed);
 
 	return false;
 }

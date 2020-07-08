@@ -1,8 +1,8 @@
 #include <iostream>
 #include <sstream>
 #include <tinyxml2.h>
-#include "Channel.h"
-#include "Item.h"
+#include "Feed.h"
+#include "Entry.h"
 #include "Util.h"
 #include "parsing.h"
 
@@ -10,82 +10,83 @@
 // ============================================================================
 // PARSERS
 void
-feedParser ( Channel** chanPtr, Config* cfg )
+feedParser ( Feed** feedPtr, Config* cfg )
 {
-	Channel* chan = *(chanPtr);
+	Feed* feed = *(feedPtr);
 
 	tinyxml2::XMLDocument xml;
-	xml.LoadFile( chan->filePath.String() );
+	xml.LoadFile( feed->filePath.String() );
 
 	if ( xml.FirstChildElement("rss") )
-		rssParser( chanPtr, cfg, &xml );
+		rssParser( feedPtr, cfg, &xml );
 	else if ( xml.FirstChildElement("feed") )
-		atomParser( chanPtr, cfg, &xml );
+		atomParser( feedPtr, cfg, &xml );
 }
 
 // ----------------------------------------------------------------------------
 
 void
-rssParser ( Channel** chanPtr, Config* cfg, tinyxml2::XMLDocument* xml )
+rssParser ( Feed** feedPtr, Config* cfg, tinyxml2::XMLDocument* xml )
 {
-	Channel* chan = *(chanPtr);
+	Feed* chan = *(feedPtr);
 
 	tinyxml2::XMLElement* xchan = xml->FirstChildElement("rss")->FirstChildElement("channel");
 
-	rssRootParse( chanPtr, cfg, xchan );
-	rssParseItems( chanPtr, cfg, xchan );
+	rssRootParse( feedPtr, cfg, xchan );
+	rssParseEntries( feedPtr, cfg, xchan );
 }
 
 void
-rssRootParse( Channel** chanPtr, Config* cfg, tinyxml2::XMLElement* xchan )
+rssRootParse( Feed** feedPtr, Config* cfg, tinyxml2::XMLElement* xchan )
 {
-	Channel* chan = *(chanPtr);
+	Feed* feed = *(feedPtr);
 
-	chan->SetTitle( xchan->FirstChildElement("title") );
-	chan->SetDesc( xchan->FirstChildElement("description") );
-	chan->SetHomePage( xchan->FirstChildElement("link") );
-	chan->SetLastDate( xchan->FirstChildElement("lastBuildDate") );
+	feed->SetTitle   ( xchan->FirstChildElement("title") );
+	feed->SetDesc    ( xchan->FirstChildElement("description") );
+	feed->SetHomeUrl ( xchan->FirstChildElement("link") );
+	feed->SetDate    ( xchan->FirstChildElement("lastBuildDate") );
 
 	if ( cfg->verbose )
-		printf("Channel '%s' at '%s':\n", chan->title.String(), chan->homePage.String());
+		printf("Channel '%s' at '%s':\n", feed->title.String(), feed->homeUrl.String());
 }
 
 void
-rssItemParse ( Channel** chanPtr, Config* cfg, tinyxml2::XMLElement* xitem )
+rssEntryParse ( Feed** feedPtr, Config* cfg, tinyxml2::XMLElement* xitem )
 {
-	Channel* chan = *(chanPtr);
+	Feed* feed = *(feedPtr);
 
-	Item* newItem = (Item*)malloc( sizeof(Item) );
-	newItem = new Item( chan->outputDir );
+	Entry* newEntry = (Entry*)malloc( sizeof(Entry) );
+	newEntry = new Entry( feed->outputDir );
 
-	newItem->SetTitle( xitem->FirstChildElement("title") );
-	newItem->SetDesc( xitem->FirstChildElement("description") );
-	newItem->SetPubDate( xitem->FirstChildElement("pubDate") );
-	newItem->SetContent( xitem->FirstChildElement("content:encoded") );
+	newEntry->SetTitle   ( xitem->FirstChildElement("title") );
+	newEntry->SetDesc    ( xitem->FirstChildElement("description") );
+	newEntry->SetDate    ( xitem->FirstChildElement("pubDate") );
+	newEntry->SetPostUrl ( xitem->FirstChildElement("link") );
+	newEntry->SetContent ( xitem->FirstChildElement("content:encoded") );
 
 	if (cfg->verbose )
-		printf("\t%s\n", newItem->title.String());
+		printf("\t%s\n", newEntry->title.String());
 
-	if ( withinDateRange( cfg->minDate, newItem->pubDate, cfg->maxDate ) )
-		chan->items.AddItem( newItem );
+	if ( withinDateRange( cfg->minDate, newEntry->date, cfg->maxDate ) )
+		feed->entries.AddItem( newEntry );
 }
 
 void
-rssParseItems ( Channel** chanPtr, Config* cfg, tinyxml2::XMLElement* xchan )
+rssParseEntries ( Feed** feedPtr, Config* cfg, tinyxml2::XMLElement* xchan )
 {
-	Channel* chan = *(chanPtr);
+	Feed* feed = *(feedPtr);
 	tinyxml2::XMLElement* xitem;
 
 	xitem = xchan->FirstChildElement("item");
 
-	int itemCount = xmlCountSiblings( xitem, "item" );
-	chan->items = BList(itemCount);
+	int entryCount = xmlCountSiblings( xitem, "item" );
+	feed->entries = BList(entryCount);
 
 	if ( cfg->verbose )
-		printf("\t-%i items-\n", itemCount);
+		printf("\t-%i entries-\n", entryCount);
 
 	while ( xitem ) {
-		rssItemParse( chanPtr, cfg, xitem );
+		rssEntryParse( feedPtr, cfg, xitem );
 		xitem = xitem->NextSiblingElement("item");
 	}
 }
@@ -93,20 +94,20 @@ rssParseItems ( Channel** chanPtr, Config* cfg, tinyxml2::XMLElement* xchan )
 // ----------------------------------------------------------------------------
 
 void
-atomParser ( Channel** chanPtr, Config* cfg, tinyxml2::XMLDocument* xml )
+atomParser ( Feed** feedPtr, Config* cfg, tinyxml2::XMLDocument* xml )
 {
-	Channel* chan = *(chanPtr);
+	Feed* feed = *(feedPtr);
 
 	tinyxml2::XMLElement* xfeed = xml->FirstChildElement("feed");
 
-	atomRootParse( chanPtr, cfg, xfeed );
-	atomParseEntries( chanPtr, cfg, xfeed );
+	atomRootParse( feedPtr, cfg, xfeed );
+	atomParseEntries( feedPtr, cfg, xfeed );
 }
 
 void
-atomRootParse( Channel** chanPtr, Config* cfg, tinyxml2::XMLElement* xfeed )
+atomRootParse( Feed** feedPtr, Config* cfg, tinyxml2::XMLElement* xfeed )
 {
-	Channel* chan = *(chanPtr);
+	Feed* feed = *(feedPtr);
 
 	tinyxml2::XMLElement* xauthor = xfeed->FirstChildElement("author");
 	tinyxml2::XMLElement* xentry = xfeed->FirstChildElement("entry");
@@ -115,72 +116,72 @@ atomRootParse( Channel** chanPtr, Config* cfg, tinyxml2::XMLElement* xfeed )
 	
 	bool set = false;
 
-	chan->SetTitle( xfeed->FirstChildElement("title") );
-	chan->SetDesc( xfeed->FirstChildElement("description") );
+	feed->SetTitle( xfeed->FirstChildElement("title") );
+	feed->SetDesc( xfeed->FirstChildElement("description") );
 
-	set = chan->SetLastDate( xfeed->FirstChildElement("updated") );
-	if ( !set )             set = chan->SetLastDate( xfeed->FirstChildElement("published") );
-	if ( !set && xentry )   set = chan->SetLastDate( xentry->FirstChildElement("updated") );
-	if ( !set && xentry )   set = chan->SetLastDate( xentry->FirstChildElement("published") );
+	set = feed->SetDate( xfeed->FirstChildElement("updated") );
+	if ( !set )             set = feed->SetDate( xfeed->FirstChildElement("published") );
+	if ( !set && xentry )   set = feed->SetDate( xentry->FirstChildElement("updated") );
+	if ( !set && xentry )   set = feed->SetDate( xentry->FirstChildElement("published") );
 
-	set = chan->SetHomePage( xlink->Attribute( "href" ) );
-	if ( !set && xauthor )    set = chan->SetHomePage( xauthor->FirstChildElement("uri") );
-	if ( !set && xauthlink )  set = chan->SetHomePage( xauthlink->Attribute( "href" ) );
+	set = feed->SetHomeUrl( xlink->Attribute( "href" ) );
+	if ( !set && xauthor )    set = feed->SetHomeUrl( xauthor->FirstChildElement("uri") );
+	if ( !set && xauthlink )  set = feed->SetHomeUrl( xauthlink->Attribute( "href" ) );
 
 	if ( cfg->verbose )
-		printf("Channel '%s' at '%s':\n", chan->title.String(), chan->homePage.String());
+		printf("Channel '%s' at '%s':\n", feed->title.String(), feed->homeUrl.String());
 }
 
 void
-atomEntryParse ( Channel** chanPtr, Config* cfg, tinyxml2::XMLElement* xentry )
+atomEntryParse ( Feed** feedPtr, Config* cfg, tinyxml2::XMLElement* xentry )
 {
-	Channel* chan = *(chanPtr);
-	Item* newItem = (Item*)malloc( sizeof(Item) );
-	newItem = new Item( chan->outputDir );
+	Feed* feed = *(feedPtr);
+	Entry* newEntry= (Entry*)malloc( sizeof(Entry) );
+	newEntry = new Entry( feed->outputDir );
 
 	tinyxml2::XMLElement* xcontent = xentry->FirstChildElement("content");
 	tinyxml2::XMLElement* xmedia   = xentry->FirstChildElement("media:group");
 	tinyxml2::XMLPrinter  xprinter;
 
-	newItem->SetTitle( xentry->FirstChildElement("title") );
-	newItem->SetPostUrl( xentry->FirstChildElement("link")->Attribute("href") );
+	newEntry->SetTitle( xentry->FirstChildElement("title") );
+	newEntry->SetPostUrl( xentry->FirstChildElement("link")->Attribute("href") );
 
 	bool set = false;
-	set = newItem->SetDesc( xentry->FirstChildElement("summary") );
-	if ( !set )           set = newItem->SetDesc( xentry->FirstChildElement("description")); 
-	if ( !set && xmedia ) set = newItem->SetDesc( xmedia->FirstChildElement("media:description")); 
+	set = newEntry->SetDesc( xentry->FirstChildElement("summary") );
+	if ( !set )           set = newEntry->SetDesc( xentry->FirstChildElement("description")); 
+	if ( !set && xmedia ) set = newEntry->SetDesc( xmedia->FirstChildElement("media:description")); 
 
-	set = newItem->SetPubDate( xentry->FirstChildElement("updated") );
-	if ( !set )   set = newItem->SetPubDate( xentry->FirstChildElement("published") );
+	set = newEntry->SetDate( xentry->FirstChildElement("updated") );
+	if ( !set )   set = newEntry->SetDate( xentry->FirstChildElement("published") );
 
 	if ( xcontent ) {
 		xcontent->Accept( &xprinter );
-		newItem->SetContent( xprinter.CStr() );
+		newEntry->SetContent( xprinter.CStr() );
 	}
 
 	if ( cfg->verbose )
-		printf("\t%s\n", newItem->title.String());
+		printf("\t%s\n", newEntry->title.String());
 
-	if ( withinDateRange( cfg->minDate, newItem->pubDate, cfg->maxDate ) )
-		chan->items.AddItem( newItem );
+	if ( withinDateRange( cfg->minDate, newEntry->date, cfg->maxDate ) )
+		feed->entries.AddItem( newEntry );
 }
 
 void
-atomParseEntries ( Channel** chanPtr, Config* cfg, tinyxml2::XMLElement* xfeed )
+atomParseEntries ( Feed** feedPtr, Config* cfg, tinyxml2::XMLElement* xfeed )
 {
-	Channel* chan = *(chanPtr);
+	Feed* feed = *(feedPtr);
 	tinyxml2::XMLElement* xentry;
 
 	xentry = xfeed->FirstChildElement("entry");
 
 	int entryCount = xmlCountSiblings( xentry, "entry" );
-	chan->items = BList(entryCount);
+	feed->entries = BList(entryCount);
 
 	if ( cfg->verbose )
-		printf("\t-%i items-\n", entryCount);
+		printf("\t-%i entries-\n", entryCount);
 
 	while ( xentry ) {
-		atomEntryParse( chanPtr, cfg, xentry );
+		atomEntryParse( feedPtr, cfg, xentry );
 		xentry = xentry->NextSiblingElement("entry");
 	}
 }
