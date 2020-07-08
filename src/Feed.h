@@ -10,21 +10,17 @@
 
 class Feed {
 public:
-	char	lang[3];
+	Feed	( BString );
+	Feed	( );
+
 	BString	title;
 	BString	description;
 	BDateTime date;
 	BString	homeUrl;
 	BString	xmlUrl;
-	BList	entries;
-
-	BString topLevelSubject;
-	BString lastSubject;
 	BString	filePath;
 	BString outputDir;
-
-
-	Feed	( BString, BString );
+	BList	entries;
 
 	void	Parse	( Config* );
 
@@ -36,6 +32,12 @@ public:
 	bool	SetDate ( tinyxml2::XMLElement* );
 	bool	SetHomeUrl ( const char* );
 	bool	SetHomeUrl ( tinyxml2::XMLElement* );
+
+	bool IsRss ( );
+	bool IsAtom ( );
+
+protected:
+	int xmlCountSiblings ( tinyxml2::XMLElement*, const char* );
 };
 
 #endif

@@ -1,9 +1,10 @@
 #include <StorageKit.h>
 #include <String.h>
 #include <getopt.h>
+#include "AtomFeed.h"
+#include "RssFeed.h"
 #include "Feed.h"
 #include "Entry.h"
-#include "parsing.h"
 #include "Config.h"
 #include "Util.h"
 #include "Pogger.h"
@@ -13,7 +14,6 @@ main ( int argc, char** argv )
 {
 	main_cfg = new Config;
 	usageMsg.ReplaceAll("%app%", "Pogger");
-
 
 	invocation( argc, argv, &main_cfg );
 	main_cfg->Load();
@@ -109,7 +109,7 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 	}
 }
 
-// ―――――――――――――――――
+// -------------------------------------
 
 void
 freeargInvocation ( int argc, char** argv, int optind, Config** cfgPtr )
@@ -140,13 +140,22 @@ bool
 processFeed ( void* feedArg )
 {
 	BString* feedStr = (BString*)feedArg;
-				
-	Feed* feed = (Feed*)malloc( sizeof(feed) );
-	feed = new Feed(*(feedStr), main_cfg->outDir);
-	feed->Parse(main_cfg);
-	BList entries = feed->entries;
-	entries.DoForEach(&processEntry);
-	free(feed);
+	Feed* testFeed = new Feed( *(feedStr) );
+	BList entries;
 
+	if ( testFeed->IsAtom() ) {
+		AtomFeed* feed = (AtomFeed*)malloc( sizeof(AtomFeed) );
+		feed = new AtomFeed( *(feedStr), main_cfg->outDir );
+		feed->Parse(main_cfg);
+		entries = feed->entries;
+	}
+	if ( testFeed->IsRss() ) {
+		RssFeed* feed = (RssFeed*)malloc( sizeof(RssFeed) );
+		feed = new RssFeed( *(feedStr), main_cfg->outDir );
+		feed->Parse(main_cfg);
+		entries = feed->entries;
+	}
+
+	entries.DoForEach(&processEntry);
 	return false;
 }

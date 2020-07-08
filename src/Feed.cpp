@@ -1,28 +1,63 @@
 #include <tinyxml2.h>
 #include "Entry.h"
 #include "Config.h"
-#include "parsing.h"
 #include "Util.h"
 #include "Feed.h"
 
-Feed::Feed ( BString path, BString outputPath )
+Feed::Feed ( BString path )
 {
 	title = BString("Untitled Feed");
 	description = BString("Nondescript, N/A.");
 	homeUrl = BString("");
 	xmlUrl = BString("");
 	filePath = path;
-//	lastDate = NULL;
-	outputDir = outputPath;
 }
 
-void
-Feed::Parse ( Config* cfg )
-{
-	entries = BList();
-	Feed* feed = this;
-	feedParser(&feed, cfg);
+Feed::Feed () {
+	title = BString("");
+	description = BString("");
+	homeUrl = BString("");
+	xmlUrl = BString("");
 }
+
+// ----------------------------------------------------------------------------
+
+bool
+Feed::IsRss ( )
+{
+	tinyxml2::XMLDocument xml;
+	xml.LoadFile( filePath.String() );
+
+	if ( xml.FirstChildElement("rss") )
+		return true;
+	return false;
+}
+
+bool
+Feed::IsAtom ( )
+{
+	tinyxml2::XMLDocument xml;
+	xml.LoadFile( filePath.String() );
+
+	if ( xml.FirstChildElement("feed") )
+		return true;
+	return false;
+}
+
+// ----------------------------------------------------------------------------
+
+int
+Feed::xmlCountSiblings ( tinyxml2::XMLElement* xsibling, const char* sibling_name )
+{
+	int count = 0;
+	while ( xsibling ) {
+		count++;
+		xsibling = xsibling->NextSiblingElement(sibling_name);
+	}
+	return count;
+}
+
+// ----------------------------------------------------------------------------
 
 bool Feed::SetTitle ( const char* titleStr ) {
 	if ( titleStr != NULL )	title = BString( titleStr );
@@ -68,3 +103,4 @@ bool Feed::SetDate ( tinyxml2::XMLElement* elem ) {
 
 	else return false;
 }
+
