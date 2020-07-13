@@ -7,7 +7,7 @@
 class ProtocolListener : public BUrlProtocolListener
 {
 public:
-	ProtocolListener(bool traceLogging);
+	ProtocolListener ( bool );
 
 	virtual ~ProtocolListener();
 	virtual void DataReceived(BUrlRequest*, const char*, off_t, ssize_t);

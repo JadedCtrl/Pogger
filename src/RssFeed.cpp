@@ -4,14 +4,14 @@
 #include "Util.h"
 #include "RssFeed.h"
 
-RssFeed::RssFeed ( BString path, BString outputPath )
+RssFeed::RssFeed ( BString path, Config* cfg )
 {
 	title = BString("Untitled Feed");
 	description = BString("");
 	homeUrl = BString("");
 	xmlUrl = BString("");
 	filePath = path;
-	outputDir = outputPath;
+	outputDir = cfg->outDir;
 }
 
 // ----------------------------------------------------------------------------

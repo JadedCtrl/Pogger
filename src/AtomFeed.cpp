@@ -4,14 +4,14 @@
 #include "Util.h"
 #include "AtomFeed.h"
 
-AtomFeed::AtomFeed ( BString path, BString outputPath )
+AtomFeed::AtomFeed ( BString path, Config* cfg )
 {
 	title = BString("Untitled Feed");
 	description = BString("");
 	homeUrl = BString("");
 	xmlUrl = BString("");
 	filePath = path;
-	outputDir = outputPath;
+	outputDir = cfg->outDir;
 }
 
 // ----------------------------------------------------------------------------

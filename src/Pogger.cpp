@@ -28,7 +28,7 @@ main ( int argc, char** argv )
 // ----------------------------------------------------------------------------
 
 int
-usage ()
+usage ( )
 {
 	fprintf(stderr, "%s", usageMsg.String());
 	return 2;
@@ -45,6 +45,7 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 		{ "help", no_argument, 0, 'h' },
 		{ "verbose", no_argument, 0, 'v' },
 		{ "config", required_argument, 0, 'c' },
+		{ "cache", required_argument, 0, 'C' },
 		{ "before", required_argument, 0, 't' },
 		{ "after", required_argument, 0, 'T' },
 		{ "output", required_argument, 0, 'O' },
@@ -55,7 +56,7 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 
 	while (true) {
 		opterr = 0;
-		int c = getopt_long(argc, argv, "+hsvDm:O:T:t:c:", sLongOptions, NULL);
+		int c = getopt_long(argc, argv, "+hsvDm:O:T:t:c:C:", sLongOptions, NULL);
 
 		switch (c) {
 			case -1:
@@ -64,7 +65,10 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 			case 'h':
 				return usage();
 			case 'c':
-				cfg->configPath = BString( optarg );
+				cfg->configDir = BString( optarg );
+				break;
+			case 'C':
+				cfg->cacheDir = BString( optarg );
 				break;
 			case 's':
 				cfg->will_save = true;
@@ -140,18 +144,20 @@ bool
 processFeed ( void* feedArg )
 {
 	BString* feedStr = (BString*)feedArg;
-	Feed* testFeed = new Feed( *(feedStr) );
+	Feed* testFeed = new Feed( *(feedStr), main_cfg );
 	BList entries;
 
 	if ( testFeed->IsAtom() ) {
+		printf("Atom\n");
 		AtomFeed* feed = (AtomFeed*)malloc( sizeof(AtomFeed) );
-		feed = new AtomFeed( *(feedStr), main_cfg->outDir );
+		feed = new AtomFeed( testFeed->filePath, main_cfg );
 		feed->Parse(main_cfg);
 		entries = feed->entries;
 	}
 	if ( testFeed->IsRss() ) {
+		printf("RSS\n");
 		RssFeed* feed = (RssFeed*)malloc( sizeof(RssFeed) );
-		feed = new RssFeed( *(feedStr), main_cfg->outDir );
+		feed = new RssFeed( testFeed->filePath, main_cfg );
 		feed->Parse(main_cfg);
 		entries = feed->entries;
 	}

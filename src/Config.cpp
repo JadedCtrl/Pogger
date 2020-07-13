@@ -3,19 +3,20 @@
 #include "Config.h"
 
 Config::Config () {
-	verbose    = false;
-	daemon     = true;
-	will_save  = false;
+	verbose     = false;
+	daemon      = true;
+	will_save   = false;
+	updateFeeds = false;
 }
 
 // !! handle file status
 void
 Config::Load ()
 {
-	if ( configPath == NULL )
-		configPath = BString( "/boot/home/config/settings/Pogger/" );
+	if ( configDir == NULL )
+		configDir = BString( "/boot/home/config/settings/Pogger/" );
 
-	BString filename = BString(configPath);
+	BString filename = BString(configDir);
 	filename.Append("settings");
 	BFile* file = new BFile( filename.String(), B_READ_ONLY );
 	status_t result = file->InitCheck();
@@ -27,8 +28,8 @@ Config::Load ()
 		mimetype = BString( storage.GetString("mimetype", "text/xml") );
 	if ( outDir == NULL)
 		outDir   = BString( storage.GetString("outDir", "/boot/home/feeds/") );
-//	if ( cacheDir == NULL)
-//		cacheDir = BString( storage.GetString("cacheDir", "/boot/home/config/cache/Pogger/") );
+	if ( cacheDir == NULL)
+		cacheDir = BString( storage.GetString("cacheDir", "/boot/home/config/cache/Pogger/") );
 	delete file;
 }
 
@@ -36,10 +37,10 @@ Config::Load ()
 void
 Config::Save ()
 {
-	if ( configPath == NULL )
-		configPath = BString( "/boot/home/config/settings/Pogger/" );
+	if ( configDir == NULL )
+		configDir = BString( "/boot/home/config/settings/Pogger/" );
 
-	BPath*      cfgPath  = new BPath( configPath.String(), NULL, true );
+	BPath*      cfgPath  = new BPath( configDir.String(), NULL, true );
 	BEntry*     cfgEntry = new BEntry( cfgPath->Path() );
 	BDirectory* cfgDir   = new BDirectory;
 
@@ -49,14 +50,14 @@ Config::Save ()
 		cfgDir->CreateDirectory( cfgPath->Path(), NULL );
 
 	BMessage storage;
-	BString filename = BString( configPath ).Append("/settings");
+	BString filename = BString( configDir ).Append("/settings");
 
 	BFile* file = new BFile( filename.String(), B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE );
 	status_t result = file->InitCheck();
 
 	storage.AddString( "mimetype", mimetype.String() );
 	storage.AddString( "outDir", outDir.String() );
-//	storage.AddString( "cacheDir", cacheDir.String() );
+	storage.AddString( "cacheDir", cacheDir.String() );
 
 	storage.Flatten( file );
 }

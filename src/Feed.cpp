@@ -4,20 +4,49 @@
 #include "Util.h"
 #include "Feed.h"
 
-Feed::Feed ( BString path )
+Feed::Feed ( BString path, Config* cfg )
 {
-	title = BString("Untitled Feed");
-	description = BString("Nondescript, N/A.");
+	title = BString( "Untitled Feed" );
+	description = BString( "Nondescript, N/A." );
 	homeUrl = BString("");
 	xmlUrl = BString("");
-	filePath = path;
+
+	filePath = GetCachePath( path, cfg );
 }
 
-Feed::Feed () {
+Feed::Feed ( ) {
 	title = BString("");
 	description = BString("");
 	homeUrl = BString("");
 	xmlUrl = BString("");
+}
+
+// ----------------------------------------------------------------------------
+
+BString
+Feed::GetCachePath ( BString falsePath, Config* cfg )
+{
+	BUrl falseUrl = BUrl(falsePath);
+	BString protocol = falseUrl.Protocol().String();
+
+	if ( protocol == NULL && falseUrl.UrlString() != NULL )
+		return falsePath;
+	if ( protocol != BString("http")  &&  protocol != BString("https") )
+		return NULL;
+
+	BString splitName = falseUrl.Host( );
+	splitName.Append( falseUrl.Path() );
+	splitName.ReplaceAll("/", "_");
+
+	BString filename = cfg->cacheDir;
+	filename.Append(splitName);
+	BFile* cacheFile = new BFile( filename, B_READ_WRITE | B_CREATE_FILE );
+
+	if ( cfg->verbose )
+		printf( "Saving %s to %s...\n", falsePath.String(), filename.String() );
+
+	webFetch( falseUrl, cacheFile );
+	return filename;
 }
 
 // ----------------------------------------------------------------------------

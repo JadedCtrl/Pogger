@@ -16,8 +16,11 @@ public:
 	BDateTime minDate;
 	BDateTime maxDate;
 
-	BString configPath;
+	BString configDir;
+	BString cacheDir;
 	bool will_save;
+
+	bool updateFeeds;
 
 	Config ( );
 

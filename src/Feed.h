@@ -10,7 +10,7 @@
 
 class Feed {
 public:
-	Feed	( BString );
+	Feed	( BString, Config* );
 	Feed	( );
 
 	BString	title;
@@ -37,7 +37,8 @@ public:
 	bool IsAtom ( );
 
 protected:
-	int xmlCountSiblings ( tinyxml2::XMLElement*, const char* );
+	BString GetCachePath ( BString, Config* );
+	int	xmlCountSiblings ( tinyxml2::XMLElement*, const char* );
 };
 
 #endif

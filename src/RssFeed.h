@@ -11,7 +11,7 @@
 
 class RssFeed: public Feed {
 public:
-	RssFeed ( BString, BString );
+	RssFeed ( BString, Config* );
 
 	void	Parse        ( Config* );
 	void	RootParse    ( Config*, tinyxml2::XMLElement* );

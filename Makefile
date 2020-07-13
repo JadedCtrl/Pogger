@@ -36,7 +36,6 @@ SRCS = \
 	src/ProtocolListener.cpp, \
 	src/Config.cpp, \
 	src/Util.cpp, \
-	src/parsing.cpp, \
 	src/Pogger.cpp
 
 #	Specify the resource definition files to use. Full or relative paths can be
