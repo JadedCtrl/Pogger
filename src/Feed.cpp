@@ -10,7 +10,7 @@ Feed::Feed ( BString path, Config* cfg )
 	description = BString( "Nondescript, N/A." );
 	homeUrl = BString("");
 	xmlUrl = BString("");
-
+	updated = true;
 	filePath = GetCachePath( path, cfg );
 }
 
@@ -24,28 +24,48 @@ Feed::Feed ( ) {
 // ----------------------------------------------------------------------------
 
 BString
-Feed::GetCachePath ( BString falsePath, Config* cfg )
+Feed::GetCachePath ( BString givenPath, Config* cfg )
 {
-	BUrl falseUrl = BUrl(falsePath);
-	BString protocol = falseUrl.Protocol().String();
+	BUrl givenUrl = BUrl( givenPath );
+	BString protocol = givenUrl.Protocol().String();
 
-	if ( protocol == NULL && falseUrl.UrlString() != NULL )
-		return falsePath;
+	if ( protocol == NULL && givenUrl.UrlString() != NULL )
+		return givenPath;
 	if ( protocol != BString("http")  &&  protocol != BString("https") )
 		return NULL;
 
-	BString splitName = falseUrl.Host( );
-	splitName.Append( falseUrl.Path() );
+	return FetchRemoteFeed( givenPath, cfg );
+}
+
+BString
+Feed::FetchRemoteFeed ( BString givenPath, Config* cfg )
+{
+	BUrl givenUrl = BUrl( givenPath );
+	BString* newHash = new BString();
+	char oldHash[41];
+
+	BString splitName = givenUrl.Host( );
+	splitName.Append( givenUrl.Path() );
 	splitName.ReplaceAll("/", "_");
 
 	BString filename = cfg->cacheDir;
 	filename.Append(splitName);
 	BFile* cacheFile = new BFile( filename, B_READ_WRITE | B_CREATE_FILE );
 
-	if ( cfg->verbose )
-		printf( "Saving %s to %s...\n", falsePath.String(), filename.String() );
+	cacheFile->ReadAttr( "FeedSum", B_STRING_TYPE, 0,
+			     oldHash, 41 );
 
-	webFetch( falseUrl, cacheFile );
+	if ( cfg->verbose )
+		printf( "Saving %s...\n", givenPath.String() );
+
+	webFetch( givenUrl, cacheFile, newHash );
+
+	cacheFile->WriteAttr( "FeedSum", B_STRING_TYPE, 0,
+			      newHash->String(), newHash->CountChars() );
+
+	if ( *(newHash) == BString(oldHash) )
+		updated = false;
+
 	return filename;
 }
 

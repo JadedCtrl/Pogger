@@ -16,11 +16,13 @@ public:
 	BString	title;
 	BString	description;
 	BDateTime date;
+	BDateTime lastDate;
 	BString	homeUrl;
 	BString	xmlUrl;
 	BString	filePath;
 	BString outputDir;
 	BList	entries;
+	bool	updated;
 
 	void	Parse	( Config* );
 
@@ -38,6 +40,7 @@ public:
 
 protected:
 	BString GetCachePath ( BString, Config* );
+	BString FetchRemoteFeed ( BString, Config* );
 	int	xmlCountSiblings ( tinyxml2::XMLElement*, const char* );
 };
 

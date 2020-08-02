@@ -14,8 +14,7 @@ BString dateTo3339String	( BDateTime );
 
 bool withinDateRange ( BDateTime, BDateTime, BDateTime );
 
+int32 webFetch	( BUrl,  BDataIO*, BString* );
 int32 webFetch	( BUrl,  BDataIO* );
-int32 webFetch	( char*, BDataIO* );
-
 
 #endif

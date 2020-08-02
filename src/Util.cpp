@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <DateTime.h>
 #include <HttpRequest.h>
+#include <boost/uuid/detail/sha1.hpp>
 #include "ProtocolListener.h"
 #include "Util.h"
 
@@ -73,24 +74,29 @@ withinDateRange ( BDateTime minDate, BDateTime nowDate, BDateTime maxDate )
 // ----------------------------------------------------------------------------
 
 int32
-webFetch ( char* strUrl, BDataIO* reply )
+webFetch ( BUrl url, BDataIO* reply )
 {
-	return webFetch( BUrl(strUrl), reply );
+	BString* ignored = new BString();
+	return webFetch( url, reply, ignored );
 }
 
 
 int32
-webFetch ( BUrl url, BDataIO* reply )
+webFetch ( BUrl url, BDataIO* reply, BString* hash )
 {
 	ProtocolListener listener(true);
 	BUrlContext context;
+	boost::uuids::detail::sha1 sha1;
 
 	BHttpRequest request( url, true, "HTTP", &listener, &context );
 
 	listener.SetDownloadIO( reply );
+	listener.SetSha1( &sha1 );
 
 	thread_id thread = request.Run();
 	wait_for_thread( thread, NULL );
+
+	*(hash) = listener.GetHash();
 
 	const BHttpResult& result = dynamic_cast<const BHttpResult&>( request.Result() );
 	return result.StatusCode();

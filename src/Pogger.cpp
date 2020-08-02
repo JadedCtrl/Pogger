@@ -148,14 +148,12 @@ processFeed ( void* feedArg )
 	BList entries;
 
 	if ( testFeed->IsAtom() ) {
-		printf("Atom\n");
 		AtomFeed* feed = (AtomFeed*)malloc( sizeof(AtomFeed) );
 		feed = new AtomFeed( testFeed->filePath, main_cfg );
 		feed->Parse(main_cfg);
 		entries = feed->entries;
 	}
 	if ( testFeed->IsRss() ) {
-		printf("RSS\n");
 		RssFeed* feed = (RssFeed*)malloc( sizeof(RssFeed) );
 		feed = new RssFeed( testFeed->filePath, main_cfg );
 		feed->Parse(main_cfg);
