@@ -34,6 +34,7 @@ SRCS = \
 	src/AtomFeed.cpp, \
 	src/RssFeed.cpp, \
 	src/ProtocolListener.cpp, \
+	src/Mimetypes.cpp, \
 	src/Config.cpp, \
 	src/Util.cpp, \
 	src/Pogger.cpp
@@ -41,7 +42,7 @@ SRCS = \
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.
 RDEFS = # \
-#	 src/calendar.rdef  \
+	# src/Pogger.rdef  \
 
 
 #	Specify the resource files to use. Full or relative paths can be used.

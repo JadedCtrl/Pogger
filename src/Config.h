@@ -9,7 +9,6 @@ class Config {
 public:
 	bool verbose;
 	bool daemon;
-	BString mimetype;
 	BString outDir;
 	BList targetFeeds; // strings of files or urls
 

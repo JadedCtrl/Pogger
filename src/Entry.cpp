@@ -20,27 +20,24 @@ Entry::Filetize ( Config* cfg, bool onlyIfNew = false )
 {
 	BDirectory* dir = new BDirectory( outputDir );
 	BFile* file = new BFile( title.String(), B_READ_WRITE );
+	time_t tt_date = date.Time_t();
 
 	dir->CreateFile( title.String(), file );
 
-	BString betype = cfg->mimetype;
-	if ( date != NULL ) {
-		int32 unixDate = (int32)date.Time_t();
-		file->WriteAttr( "unixDate", B_INT32_TYPE, 0,
-				 &unixDate, sizeof(int32) );
-		file->WriteAttr( "date", B_STRING_TYPE, 0,
-				 dateTo3339String(date).String(),
-				 dateTo3339String(date).CountChars() );
-	}
+	BString betype = BString("text/x-feed-entry");
+	file->WriteAttr( "BEOS:TYPE", B_MIME_STRING_TYPE, 0,
+			 betype.String(), betype.CountChars() + 1 );
 
-	file->WriteAttr( "META:title", B_STRING_TYPE, 0,
+	file->WriteAttr( "FEED:name", B_STRING_TYPE, 0,
 			 title.String(), title.CountChars() );
-	file->WriteAttr( "description", B_STRING_TYPE, 0,
+	file->WriteAttr( "FEED:description", B_STRING_TYPE, 0,
 			 description.String(), description.CountChars() );
 	file->WriteAttr( "META:url", B_STRING_TYPE, 0,
 			 postUrl.String(), postUrl.CountChars() );
-	file->WriteAttr( "BEOS:TYPE", B_STRING_TYPE, 0,
-			 betype.String(), betype.CountChars() );
+	if ( date != NULL ) {
+		file->WriteAttr( "FEED:when", B_TIME_TYPE, 0,
+				 &tt_date, sizeof(time_t) );
+	}
 
 	file->Write(content.String(), content.Length());
 	return false;

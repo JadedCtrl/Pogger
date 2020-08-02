@@ -16,15 +16,14 @@ const char* configPath = "/boot/home/config/settings/Pogger/";
 
 
 BString usageMsg =
-	"Usage: %app% [-hvDus] [-m mimetype] [-tT datetime] [-cCO path] \n"
-	"       %app% [-hvs] [-mtTcCO] ( <text/xml file> |  <META:url file> | <url> )\n"
+	"Usage: %app% [-hvDus] [-tT datetime] [-cCO path] \n"
+	"       %app% [-hvs] [-tTcCO] ( <text/xml file> |  <META:url file> | <url> )\n"
 	"\n"
 	"%app%, a RSS and Atom feed parser/daemon.\n"
 	"\n"
 	"Options:\n"
 	"  -h, --help       - Print this usage info.\n"
 	"  -v, --verbose    - Print verbose (debug) info.\n"
-	"  -m, --mimetype   - Mimetype of new item files. (Default: text/xml)\n"
 	"  -O, --output     - Output dir for item files. (Default: ~/feeds/)\n"
 	"  -t, --before     - Only return items published before this datetime.\n"
 	"  -T, --after      - Only return items published after this datetime.\n"

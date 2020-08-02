@@ -24,8 +24,6 @@ Config::Load ()
 	BMessage storage;
 	storage.Unflatten( file );
 
-	if ( mimetype == NULL)
-		mimetype = BString( storage.GetString("mimetype", "text/xml") );
 	if ( outDir == NULL)
 		outDir   = BString( storage.GetString("outDir", "/boot/home/feeds/") );
 	if ( cacheDir == NULL)
@@ -55,7 +53,6 @@ Config::Save ()
 	BFile* file = new BFile( filename.String(), B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE );
 	status_t result = file->InitCheck();
 
-	storage.AddString( "mimetype", mimetype.String() );
 	storage.AddString( "outDir", outDir.String() );
 	storage.AddString( "cacheDir", cacheDir.String() );
 

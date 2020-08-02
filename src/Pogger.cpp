@@ -5,6 +5,7 @@
 #include "RssFeed.h"
 #include "Feed.h"
 #include "Entry.h"
+#include "Mimetypes.h"
 #include "Config.h"
 #include "Util.h"
 #include "Pogger.h"
@@ -14,6 +15,7 @@ main ( int argc, char** argv )
 {
 	main_cfg = new Config;
 	usageMsg.ReplaceAll("%app%", "Pogger");
+	feedMimeType();
 
 	invocation( argc, argv, &main_cfg );
 	main_cfg->Load();
@@ -49,7 +51,6 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 		{ "before", required_argument, 0, 't' },
 		{ "after", required_argument, 0, 'T' },
 		{ "output", required_argument, 0, 'O' },
-		{ "mimetype", required_argument, 0, 'm' },
 		{ "foreground", no_argument, 0, 'D' },
 		{ 0, 0, 0, 0 }
 	};
@@ -72,9 +73,6 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 				break;
 			case 's':
 				cfg->will_save = true;
-			case 'm':
-				cfg->mimetype = BString( optarg );
-				break;
 			case 't':
 				minDate = dateRfc3339ToBDate( optarg );
 				if ( minDate != NULL ) 
