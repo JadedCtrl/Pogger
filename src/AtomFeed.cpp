@@ -27,6 +27,10 @@ AtomFeed::Parse ( Config* cfg )
 
 	RootParse( cfg, xfeed );
 	ParseEntries( cfg, xfeed );
+
+	time_t tt_lastDate = lastDate.Time_t();
+	BFile* cacheFile = new BFile( filePath, B_READ_WRITE );
+	cacheFile->WriteAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
 }
 
 void
@@ -75,6 +79,9 @@ AtomFeed::EntryParse ( Config* cfg, tinyxml2::XMLElement* xentry )
 
 	set = newEntry->SetDate( xentry->FirstChildElement("updated") );
 	if ( !set )   set = newEntry->SetDate( xentry->FirstChildElement("published") );
+
+	if ( lastDate != NULL || lastDate < newEntry->date )
+		lastDate = newEntry->date;
 
 	if ( xcontent ) {
 		xcontent->Accept( &xprinter );

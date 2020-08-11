@@ -14,7 +14,8 @@ Feed::Feed ( BString path, Config* cfg )
 	filePath = GetCachePath( path, cfg );
 }
 
-Feed::Feed ( ) {
+Feed::Feed ( )
+{
 	title = BString("");
 	description = BString("");
 	homeUrl = BString("");
@@ -52,7 +53,7 @@ Feed::FetchRemoteFeed ( BString givenPath, Config* cfg )
 	filename.Append(splitName);
 	BFile* cacheFile = new BFile( filename, B_READ_WRITE | B_CREATE_FILE );
 
-	cacheFile->ReadAttr( "FeedSum", B_STRING_TYPE, 0,
+	cacheFile->ReadAttr( "LastHash", B_STRING_TYPE, 0,
 			     oldHash, 41 );
 
 	if ( cfg->verbose )
@@ -60,7 +61,7 @@ Feed::FetchRemoteFeed ( BString givenPath, Config* cfg )
 
 	webFetch( givenUrl, cacheFile, newHash );
 
-	cacheFile->WriteAttr( "FeedSum", B_STRING_TYPE, 0,
+	cacheFile->WriteAttr( "LastHash", B_STRING_TYPE, 0,
 			      newHash->String(), newHash->CountChars() );
 
 	if ( *(newHash) == BString(oldHash) )
