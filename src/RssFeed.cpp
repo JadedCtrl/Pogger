@@ -25,18 +25,10 @@ RssFeed::RssFeed ( Config* cfg ) : RssFeed::RssFeed( )
 void
 RssFeed::Parse ( Config* cfg )
 {
-	BFile* feedFile = new BFile( filePath.String(), B_READ_ONLY );
         tinyxml2::XMLDocument xml;
 	entries = BList();
-	time_t tt_lastDate = 0;
-	BDateTime attrLastDate = BDateTime();
 
-
-	feedFile->ReadAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
-	if ( tt_lastDate > 0 && cfg->updateFeeds == true ) {
-		attrLastDate.SetTime_t( tt_lastDate );
-		minDate = attrLastDate;
-	}
+	Feed::Parse( cfg );
 
         xml.LoadFile( filePath.String() );
 	tinyxml2::XMLElement* xchan = xml.FirstChildElement("rss")->FirstChildElement("channel");
@@ -44,7 +36,8 @@ RssFeed::Parse ( Config* cfg )
 	RootParse( cfg, xchan );
 	ParseEntries( cfg, xchan );
 
-	tt_lastDate = lastDate.Time_t();
+	time_t tt_lastDate = lastDate.Time_t();
+	BFile* feedFile = new BFile( filePath.String(), B_READ_ONLY );
 	feedFile->WriteAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
 }
 

@@ -25,25 +25,19 @@ AtomFeed::AtomFeed ( Config* cfg ) : AtomFeed::AtomFeed( )
 void
 AtomFeed::Parse ( Config* cfg )
 {
-	BFile* feedFile = new BFile( filePath.String(), B_READ_ONLY );
 	entries = BList();
         tinyxml2::XMLDocument xml;
         xml.LoadFile( filePath.String() );
-	time_t tt_lastDate = 0;
-	BDateTime attrLastDate = BDateTime();
 
-	feedFile->ReadAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
-	if ( tt_lastDate > 0 && cfg->updateFeeds == true ) {
-		attrLastDate.SetTime_t( tt_lastDate );
-		minDate = attrLastDate;
-	}
+	Feed::Parse( cfg );
 
 	tinyxml2::XMLElement* xfeed = xml.FirstChildElement("feed");
 
 	RootParse( cfg, xfeed );
 	ParseEntries( cfg, xfeed );
 
-	tt_lastDate = lastDate.Time_t();
+	BFile* feedFile = new BFile( filePath.String(), B_READ_WRITE );
+	time_t tt_lastDate = lastDate.Time_t();
 	feedFile->WriteAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
 }
 

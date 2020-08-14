@@ -24,6 +24,22 @@ Feed::Feed ( )
 
 // ----------------------------------------------------------------------------
 
+void
+Feed::Parse ( Config* cfg )
+{
+	BFile* feedFile = new BFile( filePath.String(), B_READ_ONLY );
+	time_t tt_lastDate = 0;
+	BDateTime attrLastDate = BDateTime();
+
+	feedFile->ReadAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
+	if ( tt_lastDate > 0 && cfg->updateFeeds == true ) {
+		attrLastDate.SetTime_t( tt_lastDate );
+		minDate = attrLastDate;
+	}
+}
+
+// -------------------------------------
+
 BString
 Feed::GetCachePath ( BString givenPath, Config* cfg )
 {

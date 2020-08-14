@@ -27,7 +27,7 @@ public:
 	BList	entries;
 	bool	updated;
 
-	void	Parse	( Config* );
+	virtual void	Parse	( Config* );
 
 	bool	AddEntry ( Config*, Entry* );
 	bool	SetTitle ( const char* );
