@@ -4,15 +4,21 @@
 #include "Util.h"
 #include "RssFeed.h"
 
-RssFeed::RssFeed ( BString path, Config* cfg )
+RssFeed::RssFeed ( )
 {
 	title = BString("Untitled Feed");
 	description = BString("");
 	homeUrl = BString("");
 	xmlUrl = BString("");
-	filePath = path;
-	outputDir = cfg->outDir;
 }
+
+RssFeed::RssFeed ( Feed* feed ) : RssFeed::RssFeed()
+{	filePath = feed->filePath; }
+RssFeed::RssFeed ( Feed* feed, Config* cfg ) : RssFeed::RssFeed( feed )
+{	outputDir = cfg->outDir; }
+RssFeed::RssFeed ( Config* cfg ) : RssFeed::RssFeed( )
+{	outputDir = cfg->outDir; }
+
 
 // ----------------------------------------------------------------------------
 
@@ -27,9 +33,9 @@ RssFeed::Parse ( Config* cfg )
 
 
 	feedFile->ReadAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
-	if ( tt_lastDate > 0 && cfg->minDate == NULL && cfg->updateFeeds == true ) {
+	if ( tt_lastDate > 0 && cfg->updateFeeds == true ) {
 		attrLastDate.SetTime_t( tt_lastDate );
-		cfg->minDate = attrLastDate;
+		minDate = attrLastDate;
 	}
 
         xml.LoadFile( filePath.String() );

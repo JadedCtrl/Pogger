@@ -7,6 +7,9 @@
 
 class Config {
 public:
+	Config ( );
+	Config ( Config* );
+	
 	bool verbose;
 	bool daemon;
 	BString outDir;
@@ -20,8 +23,6 @@ public:
 	bool will_save;
 
 	bool updateFeeds;
-
-	Config ( );
 
 	void Load ( );
 	void Save ( );

@@ -149,15 +149,18 @@ processFeed ( void* feedArg )
 	Feed* testFeed = new Feed( *(feedStr), main_cfg );
 	BList entries;
 
+	if ( testFeed->updated == false && main_cfg->updateFeeds == true )
+		return false;
+
 	if ( testFeed->IsAtom() ) {
 		AtomFeed* feed = (AtomFeed*)malloc( sizeof(AtomFeed) );
-		feed = new AtomFeed( testFeed->filePath, main_cfg );
+		feed = new AtomFeed( testFeed, main_cfg );
 		feed->Parse(main_cfg);
 		entries = feed->entries;
 	}
 	if ( testFeed->IsRss() ) {
 		RssFeed* feed = (RssFeed*)malloc( sizeof(RssFeed) );
-		feed = new RssFeed( testFeed->filePath, main_cfg );
+		feed = new RssFeed( testFeed, main_cfg );
 		feed->Parse(main_cfg);
 		entries = feed->entries;
 	}

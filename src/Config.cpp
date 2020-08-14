@@ -9,6 +9,15 @@ Config::Config () {
 	updateFeeds = false;
 }
 
+Config::Config ( Config* cfg ) {
+	verbose     = cfg->verbose;
+	daemon      = cfg->daemon;
+	will_save   = cfg->will_save;
+	updateFeeds = cfg->updateFeeds;
+	minDate     = cfg->minDate;
+	maxDate     = cfg->maxDate;
+}
+
 // !! handle file status
 void
 Config::Load ()

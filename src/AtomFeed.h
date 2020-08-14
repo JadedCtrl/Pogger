@@ -11,7 +11,10 @@
 
 class AtomFeed: public Feed {
 public:
-	AtomFeed ( BString, Config* );
+	AtomFeed ( );
+	AtomFeed ( Feed*, Config* );
+	AtomFeed ( Feed* );
+	AtomFeed ( Config* );
 
 	void	Parse        ( Config* );
 	void	RootParse    ( Config*, tinyxml2::XMLElement* );

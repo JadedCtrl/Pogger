@@ -18,6 +18,8 @@ public:
 	BString	description;
 	BDateTime date;
 	BDateTime lastDate;
+	BDateTime minDate;
+	BDateTime maxDate;
 	BString	homeUrl;
 	BString	xmlUrl;
 	BString	filePath;

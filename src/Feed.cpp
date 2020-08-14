@@ -113,7 +113,8 @@ Feed::xmlCountSiblings ( tinyxml2::XMLElement* xsibling, const char* sibling_nam
 bool
 Feed::AddEntry ( Config* cfg, Entry* newEntry )
 {
-	if ( !withinDateRange( cfg->minDate, newEntry->date, cfg->maxDate ) )
+	if ( !withinDateRange( cfg->minDate, newEntry->date, cfg->maxDate ) ||
+	     !withinDateRange( minDate, newEntry->date, maxDate ) )
 		return false;
 
 	if ( cfg->verbose == true )

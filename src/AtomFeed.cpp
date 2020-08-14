@@ -4,15 +4,21 @@
 #include "Util.h"
 #include "AtomFeed.h"
 
-AtomFeed::AtomFeed ( BString path, Config* cfg )
+AtomFeed::AtomFeed ( )
 {
 	title = BString("Untitled Feed");
 	description = BString("");
 	homeUrl = BString("");
 	xmlUrl = BString("");
-	filePath = path;
-	outputDir = cfg->outDir;
+	filePath = BString("");
 }
+
+AtomFeed::AtomFeed ( Feed* feed ) : AtomFeed::AtomFeed()
+{	filePath = feed->filePath; }
+AtomFeed::AtomFeed ( Feed* feed, Config* cfg ) : AtomFeed::AtomFeed( feed )
+{	outputDir = cfg->outDir; }
+AtomFeed::AtomFeed ( Config* cfg ) : AtomFeed::AtomFeed( )
+{	outputDir = cfg->outDir; }
 
 // ----------------------------------------------------------------------------
 
@@ -27,9 +33,9 @@ AtomFeed::Parse ( Config* cfg )
 	BDateTime attrLastDate = BDateTime();
 
 	feedFile->ReadAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
-	if ( tt_lastDate > 0 && cfg->minDate == NULL && cfg->updateFeeds == true ) {
+	if ( tt_lastDate > 0 && cfg->updateFeeds == true ) {
 		attrLastDate.SetTime_t( tt_lastDate );
-		cfg->minDate = attrLastDate;
+		minDate = attrLastDate;
 	}
 
 	tinyxml2::XMLElement* xfeed = xml.FirstChildElement("feed");
