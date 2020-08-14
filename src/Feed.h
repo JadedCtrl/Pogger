@@ -6,6 +6,7 @@
 #include <String.h>
 #include <List.h>
 #include <Url.h>
+#include "Entry.h"
 #include "Config.h"
 
 class Feed {
@@ -26,6 +27,7 @@ public:
 
 	void	Parse	( Config* );
 
+	bool	AddEntry ( Config*, Entry* );
 	bool	SetTitle ( const char* );
 	bool	SetTitle ( tinyxml2::XMLElement* );
 	bool	SetDesc ( const char* );

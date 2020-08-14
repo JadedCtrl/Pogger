@@ -19,18 +19,27 @@ RssFeed::RssFeed ( BString path, Config* cfg )
 void
 RssFeed::Parse ( Config* cfg )
 {
-	entries = BList();
+	BFile* feedFile = new BFile( filePath.String(), B_READ_ONLY );
         tinyxml2::XMLDocument xml;
-        xml.LoadFile( filePath.String() );
+	entries = BList();
+	time_t tt_lastDate = 0;
+	BDateTime attrLastDate = BDateTime();
 
+
+	feedFile->ReadAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
+	if ( tt_lastDate > 0 && cfg->minDate == NULL && cfg->updateFeeds == true ) {
+		attrLastDate.SetTime_t( tt_lastDate );
+		cfg->minDate = attrLastDate;
+	}
+
+        xml.LoadFile( filePath.String() );
 	tinyxml2::XMLElement* xchan = xml.FirstChildElement("rss")->FirstChildElement("channel");
 
 	RootParse( cfg, xchan );
 	ParseEntries( cfg, xchan );
 
-	time_t tt_lastDate = lastDate.Time_t();
-	BFile* cacheFile = new BFile( filePath, B_READ_WRITE );
-	cacheFile->WriteAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
+	tt_lastDate = lastDate.Time_t();
+	feedFile->WriteAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
 }
 
 // -------------------------------------
@@ -59,14 +68,10 @@ RssFeed::EntryParse ( Config* cfg, tinyxml2::XMLElement* xitem )
 	newEntry->SetPostUrl ( xitem->FirstChildElement("link") );
 	newEntry->SetContent ( xitem->FirstChildElement("content:encoded") );
 
-	if (cfg->verbose )
-		printf("\t%s\n", newEntry->title.String());
-
 	if ( lastDate == NULL || lastDate < newEntry->date )
 		lastDate = newEntry->date;
 
-	if ( withinDateRange( cfg->minDate, newEntry->date, cfg->maxDate ) )
-		entries.AddItem( newEntry );
+	AddEntry( cfg, newEntry );
 }
 
 void

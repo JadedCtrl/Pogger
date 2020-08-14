@@ -19,18 +19,26 @@ AtomFeed::AtomFeed ( BString path, Config* cfg )
 void
 AtomFeed::Parse ( Config* cfg )
 {
+	BFile* feedFile = new BFile( filePath.String(), B_READ_ONLY );
 	entries = BList();
         tinyxml2::XMLDocument xml;
         xml.LoadFile( filePath.String() );
+	time_t tt_lastDate = 0;
+	BDateTime attrLastDate = BDateTime();
+
+	feedFile->ReadAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
+	if ( tt_lastDate > 0 && cfg->minDate == NULL && cfg->updateFeeds == true ) {
+		attrLastDate.SetTime_t( tt_lastDate );
+		cfg->minDate = attrLastDate;
+	}
 
 	tinyxml2::XMLElement* xfeed = xml.FirstChildElement("feed");
 
 	RootParse( cfg, xfeed );
 	ParseEntries( cfg, xfeed );
 
-	time_t tt_lastDate = lastDate.Time_t();
-	BFile* cacheFile = new BFile( filePath, B_READ_WRITE );
-	cacheFile->WriteAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
+	tt_lastDate = lastDate.Time_t();
+	feedFile->WriteAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
 }
 
 void
@@ -80,7 +88,7 @@ AtomFeed::EntryParse ( Config* cfg, tinyxml2::XMLElement* xentry )
 	set = newEntry->SetDate( xentry->FirstChildElement("updated") );
 	if ( !set )   set = newEntry->SetDate( xentry->FirstChildElement("published") );
 
-	if ( lastDate != NULL || lastDate < newEntry->date )
+	if ( lastDate == NULL || lastDate < newEntry->date )
 		lastDate = newEntry->date;
 
 	if ( xcontent ) {
@@ -88,11 +96,7 @@ AtomFeed::EntryParse ( Config* cfg, tinyxml2::XMLElement* xentry )
 		newEntry->SetContent( xprinter.CStr() );
 	}
 
-	if ( cfg->verbose )
-		printf("\t%s\n", newEntry->title.String());
-
-	if ( withinDateRange( cfg->minDate, newEntry->date, cfg->maxDate ) )
-		entries.AddItem( newEntry );
+	AddEntry( cfg, newEntry );
 }
 
 void

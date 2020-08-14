@@ -42,6 +42,8 @@ BString
 Feed::FetchRemoteFeed ( BString givenPath, Config* cfg )
 {
 	BUrl givenUrl = BUrl( givenPath );
+	time_t tt_lastDate = 0;
+	BDateTime* lastDate = new BDateTime();
 	BString* newHash = new BString();
 	char oldHash[41];
 
@@ -53,8 +55,7 @@ Feed::FetchRemoteFeed ( BString givenPath, Config* cfg )
 	filename.Append(splitName);
 	BFile* cacheFile = new BFile( filename, B_READ_WRITE | B_CREATE_FILE );
 
-	cacheFile->ReadAttr( "LastHash", B_STRING_TYPE, 0,
-			     oldHash, 41 );
+	cacheFile->ReadAttr( "LastHash", B_STRING_TYPE, 0, oldHash, 41 );
 
 	if ( cfg->verbose )
 		printf( "Saving %s...\n", givenPath.String() );
@@ -109,6 +110,18 @@ Feed::xmlCountSiblings ( tinyxml2::XMLElement* xsibling, const char* sibling_nam
 
 // ----------------------------------------------------------------------------
 
+bool
+Feed::AddEntry ( Config* cfg, Entry* newEntry )
+{
+	if ( !withinDateRange( cfg->minDate, newEntry->date, cfg->maxDate ) )
+		return false;
+
+	if ( cfg->verbose == true )
+		printf( "\t%s\n", newEntry->title.String() );
+	entries.AddItem( newEntry );
+	return true;
+}
+
 bool Feed::SetTitle ( const char* titleStr ) {
 	if ( titleStr != NULL )	title = BString( titleStr );
 	else return false;
@@ -150,7 +163,6 @@ bool Feed::SetDate ( const char* dateCStr ) {
 }
 bool Feed::SetDate ( tinyxml2::XMLElement* elem ) {
 	if ( elem != NULL )	return SetDate( elem->GetText() );
-
 	else return false;
 }
 

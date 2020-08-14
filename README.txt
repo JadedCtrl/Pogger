@@ -97,7 +97,7 @@ Both -t and -T use the ISO 8601 format for specifying datetimes:
 NOTE: This message doesn't reflect reality. This is more of a spec of
       what I hope this program will be. As of now, running Pogger
       without a file/url free-argument is invalid, as the daemon
-      isn't implemented at all. As such, -D -u and -C are non-functional.
+      isn't implemented at all. As such, -D and -C are non-functional.
       But it sure can turn an XML feed into files! Lol.
 
 

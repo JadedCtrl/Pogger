@@ -52,12 +52,13 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 		{ "after", required_argument, 0, 'T' },
 		{ "output", required_argument, 0, 'O' },
 		{ "foreground", no_argument, 0, 'D' },
+		{ "update", no_argument, 0, 'u' },
 		{ 0, 0, 0, 0 }
 	};
 
 	while (true) {
 		opterr = 0;
-		int c = getopt_long(argc, argv, "+hsvDm:O:T:t:c:C:", sLongOptions, NULL);
+		int c = getopt_long(argc, argv, "+hsuvDm:O:T:t:c:C:", sLongOptions, NULL);
 
 		switch (c) {
 			case -1:
@@ -93,6 +94,9 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 				break;
 			case 'O':
 				cfg->outDir = BString( optarg );
+				break;
+			case 'u':
+				cfg->updateFeeds = true;
 				break;
 			case 'v':
 				cfg->verbose = true;
