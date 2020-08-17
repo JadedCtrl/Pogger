@@ -1,20 +1,60 @@
 #include <StorageKit.h>
+#include <String.h>
+#include <getopt.h>
+#include "AtomFeed.h"
+#include "RssFeed.h"
+#include "Feed.h"
+#include "Entry.h"
+#include "Mimetypes.h"
+#include "Config.h"
+#include "Util.h"
+#include "App.h"
+#include "Invocation.h"
 
-int  main ( int, char** );
-int  usage       ( );
-int  invocation  ( int, char**, Config** );
-void freeargInvocation  ( int, char**, int, Config** );
-bool processItem ( void* );
-bool processFeed ( void* );
+
+int
+main ( int argc, char** argv )
+{
+	App* app = new App();
+	usageMsg.ReplaceAll("%app%", "Pogger");
+	feedMimeType();
+
+	main_cfg = new Config;
+	main_cfg->Load();
+
+
+	if ( argc == 0 )
+		app->Run();
+	else
+		cliStart( argc, argv );
+
+		
+	if ( main_cfg->will_save == true )
+		main_cfg->Save();
+
+	return 0;
+}
+
+// -------------------------------------
+
+void
+cliStart ( int argc, char** argv )
+{
+	invocation( argc, argv, &main_cfg );
+	main_cfg->targetFeeds.DoForEach( &processFeed );
+}
+
+App::App ( )
+       : BApplication("application/x-vnd.Pogger")
+{
+}
+
 
 // ----------------------------------------------------------------------------
+
 
 Config* main_cfg;
 const char* configPath = "/boot/home/config/settings/Pogger/";
-
-// ----------------------------------------------------------------------------
-
-
 BString usageMsg =
 	"Usage: %app% [-hvDus] [-tT datetime] [-cCO path] \n"
 	"       %app% [-hvs] [-tTcCO] ( <text/xml file> |  <META:url file> | <url> )\n"
@@ -54,4 +94,3 @@ BString usageMsg =
 	"      isn't implemented at all. As such, -D -u and -C are non-functional.\n"
 	"      But it sure can turn an XML feed into files! Lol.\n"
 ;
-

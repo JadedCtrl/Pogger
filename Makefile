@@ -37,7 +37,8 @@ SRCS = \
 	src/Mimetypes.cpp, \
 	src/Config.cpp, \
 	src/Util.cpp, \
-	src/Pogger.cpp
+	src/App.cpp, \
+	src/Invocation.cpp \
 
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.

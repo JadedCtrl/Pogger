@@ -8,26 +8,8 @@
 #include "Mimetypes.h"
 #include "Config.h"
 #include "Util.h"
-#include "Pogger.h"
-
-int
-main ( int argc, char** argv )
-{
-	main_cfg = new Config;
-	usageMsg.ReplaceAll("%app%", "Pogger");
-	feedMimeType();
-
-	invocation( argc, argv, &main_cfg );
-	main_cfg->Load();
-	main_cfg->targetFeeds.DoForEach( &processFeed );
-
-	if ( main_cfg->will_save == true )
-		main_cfg->Save();
-
-	return 0;
-}
-
-// ----------------------------------------------------------------------------
+#include "App.h"
+#include "Invocation.h"
 
 int
 usage ( )
