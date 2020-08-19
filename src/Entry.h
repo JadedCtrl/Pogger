@@ -12,6 +12,7 @@ class Entry {
 public:
 	BString  title;
 	BString  description;
+	BString  feedTitle;
 	BDateTime date;
 	BString  postUrl;
 	BString  content;
@@ -25,6 +26,7 @@ public:
 	bool	SetTitle ( tinyxml2::XMLElement* );
 	bool	SetDesc ( const char* );
 	bool	SetDesc ( tinyxml2::XMLElement* );
+	bool	SetFeedTitle ( BString );
 	bool	SetContent ( const char* );
 	bool	SetContent ( tinyxml2::XMLElement* );
 	bool	SetPostUrl ( const char* );

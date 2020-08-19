@@ -79,6 +79,7 @@ AtomFeed::EntryParse ( Config* cfg, tinyxml2::XMLElement* xentry )
 
 	newEntry->SetTitle( xentry->FirstChildElement("title") );
 	newEntry->SetPostUrl( xentry->FirstChildElement("link")->Attribute("href") );
+	newEntry->SetFeedTitle( title );
 
 	bool set = false;
 	set = newEntry->SetDesc( xentry->FirstChildElement("summary") );

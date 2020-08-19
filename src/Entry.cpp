@@ -10,6 +10,7 @@ Entry::Entry ( BString outputPath )
 {
 	title = BString("");
 	description = BString("");
+	feedTitle = BString("");
 	postUrl  = BString("");
 	content  = BString("");
 	outputDir = outputPath;
@@ -32,6 +33,8 @@ Entry::Filetize ( Config* cfg, bool onlyIfNew = false )
 			 title.String(), title.CountChars() );
 	file->WriteAttr( "FEED:description", B_STRING_TYPE, 0,
 			 description.String(), description.CountChars() );
+	file->WriteAttr( "FEED:source", B_STRING_TYPE, 0,
+			 feedTitle.String(), feedTitle.CountChars() );
 	file->WriteAttr( "META:url", B_STRING_TYPE, 0,
 			 postUrl.String(), postUrl.CountChars() );
 	if ( date != NULL ) {
@@ -52,7 +55,6 @@ bool Entry::SetTitle ( tinyxml2::XMLElement* elem ) {
 	if ( elem != NULL )	return SetTitle( elem->GetText() );
 	return false;
 }
-
 bool Entry::SetDesc ( const char* descStr ) {
 	if ( descStr != NULL )	description = BString( descStr );
 	else return false;
@@ -61,6 +63,11 @@ bool Entry::SetDesc ( const char* descStr ) {
 bool Entry::SetDesc ( tinyxml2::XMLElement* elem ) {
 	if ( elem != NULL )	return SetDesc( elem->GetText() );
 	return false;
+}
+bool Entry::SetFeedTitle ( BString titleStr ) {
+	if ( titleStr != NULL )	feedTitle = titleStr;
+	else return false;
+	return true;
 }
 
 bool Entry::SetContent ( const char* contentStr ) {

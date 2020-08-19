@@ -66,6 +66,7 @@ RssFeed::EntryParse ( Config* cfg, tinyxml2::XMLElement* xitem )
 	newEntry->SetDate    ( xitem->FirstChildElement("pubDate") );
 	newEntry->SetPostUrl ( xitem->FirstChildElement("link") );
 	newEntry->SetContent ( xitem->FirstChildElement("content:encoded") );
+	newEntry->SetFeedTitle( title );
 
 	if ( lastDate == NULL || lastDate < newEntry->date )
 		lastDate = newEntry->date;
