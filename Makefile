@@ -33,6 +33,7 @@ SRCS = \
 	src/Entry.cpp, \
 	src/AtomFeed.cpp, \
 	src/RssFeed.cpp, \
+	src/PrefWindow.cpp, \
 	src/ProtocolListener.cpp, \
 	src/Mimetypes.cpp, \
 	src/Config.cpp, \
