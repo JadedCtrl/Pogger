@@ -7,8 +7,7 @@
 bool feedMimeType ( );
 
 static void addAttribute
-( BMessage&, const char*, const char*, int32 type = B_STRING_TYPE, bool viewable = true,
-  bool editable = false, int32 width = 200);
+( BMessage&, const char*, const char*, int32 type = B_STRING_TYPE, int32 width = 200);
 
 
 #endif
