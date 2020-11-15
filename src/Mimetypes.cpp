@@ -1,4 +1,5 @@
 // borrowed significantly from mailserver. thanks! <3
+#include <iostream>
 #include <Application.h>
 #include <DateTime.h>
 #include <Message.h>
@@ -10,6 +11,9 @@ feedMimeType ( )
 {
 	BMessage info;
 	BMimeType mime( "text/x-feed-entry" );
+	if ( mime.IsInstalled() )	return true;
+
+	std::cout << "NOT INSTALLED";
 	mime.GetAttrInfo( &info );
 
 	mime.SetShortDescription( "Feed Entry" );
@@ -22,7 +26,6 @@ feedMimeType ( )
 	addAttribute( info, "FEED:when", "When", B_TIME_TYPE, 150 );
 
 	mime.SetAttrInfo( &info );
-
 	return true;
 }
 
@@ -39,5 +42,5 @@ addAttribute
 	msg.AddInt32( "attr:alignment", B_ALIGN_LEFT );
 	msg.AddBool( "attr:extra", false );
 	msg.AddBool( "attr:viewable", true );
-	msg.AddBool( "attr:editable", false );
+	msg.AddBool( "attr:editable", true );
 }
