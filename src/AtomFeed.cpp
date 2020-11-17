@@ -1,5 +1,6 @@
 #include <tinyxml2.h>
 #include "Entry.h"
+#include "App.h"
 #include "Config.h"
 #include "Util.h"
 #include "AtomFeed.h"
@@ -11,30 +12,27 @@ AtomFeed::AtomFeed ( )
 	homeUrl = BString("");
 	xmlUrl = BString("");
 	filePath = BString("");
+	outputDir = ((App*)be_app)->cfg->outDir;
 }
 
 AtomFeed::AtomFeed ( Feed* feed ) : AtomFeed::AtomFeed()
 {	filePath = feed->filePath; }
-AtomFeed::AtomFeed ( Feed* feed, Config* cfg ) : AtomFeed::AtomFeed( feed )
-{	outputDir = cfg->outDir; }
-AtomFeed::AtomFeed ( Config* cfg ) : AtomFeed::AtomFeed( )
-{	outputDir = cfg->outDir; }
 
 // ----------------------------------------------------------------------------
 
 void
-AtomFeed::Parse ( Config* cfg )
+AtomFeed::Parse ( )
 {
 	entries = BList();
         tinyxml2::XMLDocument xml;
         xml.LoadFile( filePath.String() );
 
-	Feed::Parse( cfg );
+	Feed::Parse();
 
 	tinyxml2::XMLElement* xfeed = xml.FirstChildElement("feed");
 
-	RootParse( cfg, xfeed );
-	ParseEntries( cfg, xfeed );
+	RootParse( xfeed );
+	ParseEntries( xfeed );
 
 	BFile* feedFile = new BFile( filePath.String(), B_READ_WRITE );
 	time_t tt_lastDate = lastDate.Time_t();
@@ -42,7 +40,7 @@ AtomFeed::Parse ( Config* cfg )
 }
 
 void
-AtomFeed::RootParse( Config* cfg, tinyxml2::XMLElement* xfeed )
+AtomFeed::RootParse( tinyxml2::XMLElement* xfeed )
 {
 	tinyxml2::XMLElement* xauthor = xfeed->FirstChildElement("author");
 	tinyxml2::XMLElement* xentry = xfeed->FirstChildElement("entry");
@@ -63,12 +61,12 @@ AtomFeed::RootParse( Config* cfg, tinyxml2::XMLElement* xfeed )
 	if ( !set && xauthor )    set = SetHomeUrl( xauthor->FirstChildElement("uri") );
 	if ( !set && xauthlink )  set = SetHomeUrl( xauthlink->Attribute( "href" ) );
 
-	if ( cfg->verbose )
+	if ( ((App*)be_app)->cfg->verbose )
 		printf("Channel '%s' at '%s':\n", title.String(), homeUrl.String());
 }
 
 void
-AtomFeed::EntryParse ( Config* cfg, tinyxml2::XMLElement* xentry )
+AtomFeed::EntryParse ( tinyxml2::XMLElement* xentry )
 {
 	Entry* newEntry= (Entry*)malloc( sizeof(Entry) );
 	newEntry = new Entry( outputDir );
@@ -97,11 +95,11 @@ AtomFeed::EntryParse ( Config* cfg, tinyxml2::XMLElement* xentry )
 		newEntry->SetContent( xprinter.CStr() );
 	}
 
-	AddEntry( cfg, newEntry );
+	AddEntry( newEntry );
 }
 
 void
-AtomFeed::ParseEntries ( Config* cfg, tinyxml2::XMLElement* xfeed )
+AtomFeed::ParseEntries ( tinyxml2::XMLElement* xfeed )
 {
 	tinyxml2::XMLElement* xentry;
 
@@ -110,11 +108,11 @@ AtomFeed::ParseEntries ( Config* cfg, tinyxml2::XMLElement* xfeed )
 	int entryCount = xmlCountSiblings( xentry, "entry" );
 	entries = BList(entryCount);
 
-	if ( cfg->verbose )
+	if ( ((App*)be_app)->cfg->verbose )
 		printf("\t-%i entries-\n", entryCount);
 
 	while ( xentry ) {
-		EntryParse( cfg, xentry );
+		EntryParse( xentry );
 		xentry = xentry->NextSiblingElement("entry");
 	}
 }

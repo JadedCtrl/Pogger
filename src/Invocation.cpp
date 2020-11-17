@@ -19,9 +19,9 @@ usage ( )
 }
 
 int
-invocation ( int argc, char** argv, Config** cfgPtr )
+invocation ( int argc, char** argv )
 {
-	Config* cfg = *(cfgPtr);
+	Config* cfg = ((App*)be_app)->cfg;
 	BDateTime maxDate;
 	BDateTime minDate;
 
@@ -44,7 +44,7 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 
 		switch (c) {
 			case -1:
-				freeargInvocation( argc, argv, optind, cfgPtr );
+				freeargInvocation( argc, argv, optind );
 				return 0;
 			case 'h':
 				return usage();
@@ -100,9 +100,9 @@ invocation ( int argc, char** argv, Config** cfgPtr )
 // -------------------------------------
 
 void
-freeargInvocation ( int argc, char** argv, int optind, Config** cfgPtr )
+freeargInvocation ( int argc, char** argv, int optind )
 {
-	Config* cfg = *(cfgPtr);
+	Config* cfg = ((App*)be_app)->cfg;
 	if ( optind < argc ) {
 		int freeargc = argc - optind;
 		cfg->targetFeeds =  BList( freeargc );
@@ -120,7 +120,7 @@ bool
 processEntry ( void* entry )
 {
 	Entry* entryPtr  = (Entry*)entry;
-	entryPtr->Filetize( main_cfg, false );
+	entryPtr->Filetize( false );
 	return false;
 }
 
@@ -128,22 +128,22 @@ bool
 processFeed ( void* feedArg )
 {
 	BString* feedStr = (BString*)feedArg;
-	Feed* testFeed = new Feed( *(feedStr), main_cfg );
+	Feed* testFeed = new Feed( *(feedStr) );
 	BList entries;
 
-	if ( testFeed->updated == false && main_cfg->updateFeeds == true )
+	if ( testFeed->updated == false && ((App*)be_app)->cfg->updateFeeds == true )
 		return false;
 
 	if ( testFeed->IsAtom() ) {
 		AtomFeed* feed = (AtomFeed*)malloc( sizeof(AtomFeed) );
-		feed = new AtomFeed( testFeed, main_cfg );
-		feed->Parse(main_cfg);
+		feed = new AtomFeed( testFeed );
+		feed->Parse();
 		entries = feed->entries;
 	}
 	if ( testFeed->IsRss() ) {
 		RssFeed* feed = (RssFeed*)malloc( sizeof(RssFeed) );
-		feed = new RssFeed( testFeed, main_cfg );
-		feed->Parse(main_cfg);
+		feed = new RssFeed( testFeed );
+		feed->Parse();
 		entries = feed->entries;
 	}
 

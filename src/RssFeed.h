@@ -6,20 +6,17 @@
 #include <String.h>
 #include <List.h>
 #include <Url.h>
-#include "Config.h"
 #include "Feed.h"
 
 class RssFeed: public Feed {
 public:
 	RssFeed ( );
-	RssFeed ( Feed*, Config* );
 	RssFeed ( Feed* );
-	RssFeed ( Config* );
 
-	void	Parse        ( Config* );
-	void	RootParse    ( Config*, tinyxml2::XMLElement* );
-	void	EntryParse   ( Config*, tinyxml2::XMLElement* );
-	void	ParseEntries ( Config*, tinyxml2::XMLElement* );
+	void	Parse        ( );
+	void	RootParse    ( tinyxml2::XMLElement* );
+	void	EntryParse   ( tinyxml2::XMLElement* );
+	void	ParseEntries ( tinyxml2::XMLElement* );
 };
 
 #endif

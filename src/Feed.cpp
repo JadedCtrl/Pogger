@@ -1,17 +1,18 @@
 #include <tinyxml2.h>
+#include "App.h"
 #include "Entry.h"
 #include "Config.h"
 #include "Util.h"
 #include "Feed.h"
 
-Feed::Feed ( BString path, Config* cfg )
+Feed::Feed ( BString path )
 {
 	title = BString( "Untitled Feed" );
 	description = BString( "Nondescript, N/A." );
 	homeUrl = BString("");
 	xmlUrl = BString("");
 	updated = true;
-	filePath = GetCachePath( path, cfg );
+	filePath = GetCachePath( path );
 }
 
 Feed::Feed ( )
@@ -25,14 +26,14 @@ Feed::Feed ( )
 // ----------------------------------------------------------------------------
 
 void
-Feed::Parse ( Config* cfg )
+Feed::Parse ( )
 {
 	BFile* feedFile = new BFile( filePath.String(), B_READ_ONLY );
 	time_t tt_lastDate = 0;
 	BDateTime attrLastDate = BDateTime();
 
 	feedFile->ReadAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
-	if ( tt_lastDate > 0 && cfg->updateFeeds == true ) {
+	if ( tt_lastDate > 0 && ((App*)be_app)->cfg->updateFeeds == true ) {
 		attrLastDate.SetTime_t( tt_lastDate );
 		minDate = attrLastDate;
 	}
@@ -41,7 +42,7 @@ Feed::Parse ( Config* cfg )
 // -------------------------------------
 
 BString
-Feed::GetCachePath ( BString givenPath, Config* cfg )
+Feed::GetCachePath ( BString givenPath )
 {
 	BUrl givenUrl = BUrl( givenPath );
 	BString protocol = givenUrl.Protocol().String();
@@ -51,11 +52,11 @@ Feed::GetCachePath ( BString givenPath, Config* cfg )
 	if ( protocol != BString("http")  &&  protocol != BString("https") )
 		return NULL;
 
-	return FetchRemoteFeed( givenPath, cfg );
+	return FetchRemoteFeed( givenPath );
 }
 
 BString
-Feed::FetchRemoteFeed ( BString givenPath, Config* cfg )
+Feed::FetchRemoteFeed ( BString givenPath )
 {
 	BUrl givenUrl = BUrl( givenPath );
 	time_t tt_lastDate = 0;
@@ -67,13 +68,13 @@ Feed::FetchRemoteFeed ( BString givenPath, Config* cfg )
 	splitName.Append( givenUrl.Path() );
 	splitName.ReplaceAll("/", "_");
 
-	BString filename = cfg->cacheDir;
+	BString filename = ((App*)be_app)->cfg->cacheDir;
 	filename.Append(splitName);
 	BFile* cacheFile = new BFile( filename, B_READ_WRITE | B_CREATE_FILE );
 
 	cacheFile->ReadAttr( "LastHash", B_STRING_TYPE, 0, oldHash, 41 );
 
-	if ( cfg->verbose )
+	if ( ((App*)be_app)->cfg->verbose )
 		printf( "Saving %s...\n", givenPath.String() );
 
 	webFetch( givenUrl, cacheFile, newHash );
@@ -127,8 +128,9 @@ Feed::xmlCountSiblings ( tinyxml2::XMLElement* xsibling, const char* sibling_nam
 // ----------------------------------------------------------------------------
 
 bool
-Feed::AddEntry ( Config* cfg, Entry* newEntry )
+Feed::AddEntry ( Entry* newEntry )
 {
+	Config* cfg = ((App*)be_app)->cfg;
 	if ( !withinDateRange( cfg->minDate, newEntry->date, cfg->maxDate ) ||
 	     !withinDateRange( minDate, newEntry->date, maxDate ) )
 		return false;

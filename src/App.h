@@ -3,12 +3,14 @@
 
 #include <SupportDefs.h>
 #include <Application.h>
+#include "Config.h"
 
 
 class App : public BApplication
 {
 public:
        App(void);
+       Config* cfg;
 };
 
 // ----------------------------------------------------------------------------
@@ -17,8 +19,6 @@ int  main	( int, char** );
 void cliStart	( int, char** );
 
 // ----------------------------------------------------------------------------
-
-extern Config* main_cfg;
 
 extern const char* configPath;
 

@@ -17,7 +17,7 @@ Entry::Entry ( BString outputPath )
 }
 
 bool
-Entry::Filetize ( Config* cfg, bool onlyIfNew = false )
+Entry::Filetize ( bool onlyIfNew = false )
 {
 	BDirectory* dir = new BDirectory( outputDir );
 	BFile* file = new BFile( title.String(), B_READ_WRITE );

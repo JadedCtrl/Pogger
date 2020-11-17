@@ -1,5 +1,6 @@
 #include <tinyxml2.h>
 #include "Entry.h"
+#include "App.h"
 #include "Config.h"
 #include "Util.h"
 #include "RssFeed.h"
@@ -10,31 +11,27 @@ RssFeed::RssFeed ( )
 	description = BString("");
 	homeUrl = BString("");
 	xmlUrl = BString("");
+	outputDir = ((App*)be_app)->cfg->outDir;
 }
 
 RssFeed::RssFeed ( Feed* feed ) : RssFeed::RssFeed()
 {	filePath = feed->filePath; }
-RssFeed::RssFeed ( Feed* feed, Config* cfg ) : RssFeed::RssFeed( feed )
-{	outputDir = cfg->outDir; }
-RssFeed::RssFeed ( Config* cfg ) : RssFeed::RssFeed( )
-{	outputDir = cfg->outDir; }
-
 
 // ----------------------------------------------------------------------------
 
 void
-RssFeed::Parse ( Config* cfg )
+RssFeed::Parse ( )
 {
         tinyxml2::XMLDocument xml;
 	entries = BList();
 
-	Feed::Parse( cfg );
+	Feed::Parse();
 
         xml.LoadFile( filePath.String() );
 	tinyxml2::XMLElement* xchan = xml.FirstChildElement("rss")->FirstChildElement("channel");
 
-	RootParse( cfg, xchan );
-	ParseEntries( cfg, xchan );
+	RootParse( xchan );
+	ParseEntries( xchan );
 
 	time_t tt_lastDate = lastDate.Time_t();
 	BFile* feedFile = new BFile( filePath.String(), B_READ_ONLY );
@@ -44,19 +41,19 @@ RssFeed::Parse ( Config* cfg )
 // -------------------------------------
 
 void
-RssFeed::RootParse ( Config* cfg, tinyxml2::XMLElement* xchan )
+RssFeed::RootParse ( tinyxml2::XMLElement* xchan )
 {
 	SetTitle   ( xchan->FirstChildElement("title") );
 	SetDesc    ( xchan->FirstChildElement("description") );
 	SetHomeUrl ( xchan->FirstChildElement("link") );
 	SetDate    ( xchan->FirstChildElement("lastBuildDate") );
 
-	if ( cfg->verbose )
+	if ( ((App*)be_app)->cfg->verbose )
 		printf("Channel '%s' at '%s':\n", title.String(), homeUrl.String());
 }
 
 void
-RssFeed::EntryParse ( Config* cfg, tinyxml2::XMLElement* xitem )
+RssFeed::EntryParse ( tinyxml2::XMLElement* xitem )
 {
 	Entry* newEntry = (Entry*)malloc( sizeof(Entry) );
 	newEntry = new Entry( outputDir );
@@ -71,11 +68,11 @@ RssFeed::EntryParse ( Config* cfg, tinyxml2::XMLElement* xitem )
 	if ( lastDate == NULL || lastDate < newEntry->date )
 		lastDate = newEntry->date;
 
-	AddEntry( cfg, newEntry );
+	AddEntry( newEntry );
 }
 
 void
-RssFeed::ParseEntries ( Config* cfg, tinyxml2::XMLElement* xchan )
+RssFeed::ParseEntries ( tinyxml2::XMLElement* xchan )
 {
 	tinyxml2::XMLElement* xitem;
 
@@ -84,11 +81,11 @@ RssFeed::ParseEntries ( Config* cfg, tinyxml2::XMLElement* xchan )
 	int entryCount = xmlCountSiblings( xitem, "item" );
 	entries = BList(entryCount);
 
-	if ( cfg->verbose )
+	if ( ((App*)be_app)->cfg->verbose )
 		printf("\t-%i entries-\n", entryCount);
 
 	while ( xitem ) {
-		EntryParse( cfg, xitem );
+		EntryParse( xitem );
 		xitem = xitem->NextSiblingElement("item");
 	}
 }

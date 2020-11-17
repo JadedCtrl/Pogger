@@ -4,8 +4,8 @@
 #include <StorageKit.h>
 
 int  usage       ( );
-int  invocation  ( int, char**, Config** );
-void freeargInvocation  ( int, char**, int, Config** );
+int  invocation  ( int, char** );
+void freeargInvocation  ( int, char**, int );
 bool processItem ( void* );
 bool processFeed ( void* );
 

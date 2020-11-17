@@ -7,11 +7,10 @@
 #include <List.h>
 #include <Url.h>
 #include "Entry.h"
-#include "Config.h"
 
 class Feed {
 public:
-	Feed	( BString, Config* );
+	Feed	( BString );
 	Feed	( );
 
 	BString	title;
@@ -27,9 +26,9 @@ public:
 	BList	entries;
 	bool	updated;
 
-	virtual void	Parse	( Config* );
+	virtual void	Parse	( );
 
-	bool	AddEntry ( Config*, Entry* );
+	bool	AddEntry ( Entry* );
 	bool	SetTitle ( const char* );
 	bool	SetTitle ( tinyxml2::XMLElement* );
 	bool	SetDesc ( const char* );
@@ -43,8 +42,8 @@ public:
 	bool IsAtom ( );
 
 protected:
-	BString GetCachePath ( BString, Config* );
-	BString FetchRemoteFeed ( BString, Config* );
+	BString GetCachePath ( BString );
+	BString FetchRemoteFeed ( BString );
 	int	xmlCountSiblings ( tinyxml2::XMLElement*, const char* );
 };
 

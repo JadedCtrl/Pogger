@@ -20,8 +20,8 @@ main ( int argc, char** argv )
 	usageMsg.ReplaceAll("%app%", "Pogger");
 	feedMimeType();
 
-	main_cfg = new Config;
-	main_cfg->Load();
+	app->cfg = new Config;
+	app->cfg->Load();
 
 
 	if ( argc == 1 )
@@ -30,8 +30,8 @@ main ( int argc, char** argv )
 		cliStart( argc, argv );
 
 		
-	if ( main_cfg->will_save == true )
-		main_cfg->Save();
+	if ( app->cfg->will_save == true )
+		app->cfg->Save();
 
 	return 0;
 }
@@ -41,8 +41,8 @@ main ( int argc, char** argv )
 void
 cliStart ( int argc, char** argv )
 {
-	invocation( argc, argv, &main_cfg );
-	main_cfg->targetFeeds.DoForEach( &processFeed );
+	invocation( argc, argv );
+	((App*)be_app)->cfg->targetFeeds.DoForEach( &processFeed );
 }
 
 App::App ( )
@@ -55,8 +55,6 @@ App::App ( )
 
 // ----------------------------------------------------------------------------
 
-
-Config* main_cfg;
 const char* configPath = "/boot/home/config/settings/Pogger/";
 BString usageMsg =
 	"Usage: %app% [-hvDus] [-tT datetime] [-cCO path] \n"

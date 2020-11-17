@@ -1,7 +1,6 @@
 #ifndef ENTRY_H
 #define ENTRY_H
 
-#include <iostream>
 #include <DateTime.h>
 #include <String.h>
 #include <List.h>
@@ -20,7 +19,7 @@ public:
 	
 	Entry	( BString );
 
-	bool	Filetize ( Config*, bool );
+	bool	Filetize ( bool );
 
 	bool	SetTitle ( const char* );
 	bool	SetTitle ( tinyxml2::XMLElement* );
@@ -34,7 +33,5 @@ public:
 	bool	SetDate ( const char* );
 	bool	SetDate ( tinyxml2::XMLElement* );
 };
-
-
 
 #endif

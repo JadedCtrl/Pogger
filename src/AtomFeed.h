@@ -12,14 +12,12 @@
 class AtomFeed: public Feed {
 public:
 	AtomFeed ( );
-	AtomFeed ( Feed*, Config* );
 	AtomFeed ( Feed* );
-	AtomFeed ( Config* );
 
-	void	Parse        ( Config* );
-	void	RootParse    ( Config*, tinyxml2::XMLElement* );
-	void	EntryParse   ( Config*, tinyxml2::XMLElement* );
-	void	ParseEntries ( Config*, tinyxml2::XMLElement* );
+	void	Parse        ( );
+	void	RootParse    ( tinyxml2::XMLElement* );
+	void	EntryParse   ( tinyxml2::XMLElement* );
+	void	ParseEntries ( tinyxml2::XMLElement* );
 };
 
 #endif
