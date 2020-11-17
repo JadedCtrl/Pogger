@@ -11,12 +11,12 @@ AtomFeed::AtomFeed ( )
 	description = BString("");
 	homeUrl = BString("");
 	xmlUrl = BString("");
-	filePath = BString("");
+	cachePath = BString("");
 	outputDir = ((App*)be_app)->cfg->outDir;
 }
 
 AtomFeed::AtomFeed ( Feed* feed ) : AtomFeed::AtomFeed()
-{	filePath = feed->filePath; }
+{	SetCachePath( feed->GetCachePath() ); }
 
 // ----------------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ AtomFeed::Parse ( )
 {
 	entries = BList();
         tinyxml2::XMLDocument xml;
-        xml.LoadFile( filePath.String() );
+        xml.LoadFile( GetCachePath().String() );
 
 	Feed::Parse();
 
@@ -34,7 +34,7 @@ AtomFeed::Parse ( )
 	RootParse( xfeed );
 	ParseEntries( xfeed );
 
-	BFile* feedFile = new BFile( filePath.String(), B_READ_WRITE );
+	BFile* feedFile = new BFile( GetCachePath().String(), B_READ_WRITE );
 	time_t tt_lastDate = lastDate.Time_t();
 	feedFile->WriteAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
 }

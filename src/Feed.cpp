@@ -12,7 +12,9 @@ Feed::Feed ( BString path )
 	homeUrl = BString("");
 	xmlUrl = BString("");
 	updated = true;
-	filePath = GetCachePath( path );
+	fetched = false;
+	inputPath = path;
+	SetCachePath( path );
 }
 
 Feed::Feed ( )
@@ -28,7 +30,7 @@ Feed::Feed ( )
 void
 Feed::Parse ( )
 {
-	BFile* feedFile = new BFile( filePath.String(), B_READ_ONLY );
+	BFile* feedFile = new BFile( GetCachePath().String(), B_READ_ONLY );
 	time_t tt_lastDate = 0;
 	BDateTime attrLastDate = BDateTime();
 
@@ -41,43 +43,26 @@ Feed::Parse ( )
 
 // -------------------------------------
 
+// -------------------------------------
+
+// Download a remote feed's XML to the cache path.
 BString
-Feed::GetCachePath ( BString givenPath )
+Feed::FetchRemoteFeed ( )
 {
-	BUrl givenUrl = BUrl( givenPath );
-	BString protocol = givenUrl.Protocol().String();
-
-	if ( protocol == NULL && givenUrl.UrlString() != NULL )
-		return givenPath;
-	if ( protocol != BString("http")  &&  protocol != BString("https") )
-		return NULL;
-
-	return FetchRemoteFeed( givenPath );
-}
-
-BString
-Feed::FetchRemoteFeed ( BString givenPath )
-{
-	BUrl givenUrl = BUrl( givenPath );
+	BUrl givenUrl = BUrl( inputPath );
 	time_t tt_lastDate = 0;
 	BDateTime* lastDate = new BDateTime();
 	BString* newHash = new BString();
 	char oldHash[41];
 
-	BString splitName = givenUrl.Host( );
-	splitName.Append( givenUrl.Path() );
-	splitName.ReplaceAll("/", "_");
-
-	BString filename = ((App*)be_app)->cfg->cacheDir;
-	filename.Append(splitName);
-	BFile* cacheFile = new BFile( filename, B_READ_WRITE | B_CREATE_FILE );
+	BFile* cacheFile = new BFile( GetCachePath(), B_READ_WRITE | B_CREATE_FILE );
 
 	cacheFile->ReadAttr( "LastHash", B_STRING_TYPE, 0, oldHash, 41 );
 
 	if ( ((App*)be_app)->cfg->verbose )
-		printf( "Saving %s...\n", givenPath.String() );
+		printf( "Saving %s...\n", inputPath.String() );
 
-	webFetch( givenUrl, cacheFile, newHash );
+	webFetch( BUrl(inputPath), cacheFile, newHash );
 
 	cacheFile->WriteAttr( "LastHash", B_STRING_TYPE, 0,
 			      newHash->String(), newHash->CountChars() );
@@ -85,27 +70,45 @@ Feed::FetchRemoteFeed ( BString givenPath )
 	if ( *(newHash) == BString(oldHash) )
 		updated = false;
 
-	return filename;
+	fetched = true;
+	return GetCachePath();
 }
 
 // ----------------------------------------------------------------------------
 
+// return whether or not the feed's given URI/path is remote.
+bool
+Feed::IsRemote ( )
+{
+	return isRemotePath( inputPath );
+}
+
+// return whether or not the feed seems to have been updated
+bool
+Feed::IsUpdated ( )
+{
+	return updated;
+}
+
+// return whether or not feed is RSS
 bool
 Feed::IsRss ( )
 {
+	EnsureCached();
 	tinyxml2::XMLDocument xml;
-	xml.LoadFile( filePath.String() );
+	xml.LoadFile( GetCachePath().String() );
 
 	if ( xml.FirstChildElement("rss") )
 		return true;
 	return false;
 }
 
+// return whether or not feed is Atom
 bool
 Feed::IsAtom ( )
 {
 	tinyxml2::XMLDocument xml;
-	xml.LoadFile( filePath.String() );
+	xml.LoadFile( GetCachePath().String() );
 
 	if ( xml.FirstChildElement("feed") )
 		return true;
@@ -114,6 +117,52 @@ Feed::IsAtom ( )
 
 // ----------------------------------------------------------------------------
 
+// ensure the feed XML is available at the cache path.
+// if necessary, download it.
+void
+Feed::EnsureCached ( )
+{
+	if ( IsRemote()  &&  fetched == false )
+		FetchRemoteFeed();
+}
+
+// Return the 'cachePath' (location of XML file locally)
+BString
+Feed::GetCachePath ( )
+{
+	if ( cachePath == NULL )
+		SetCachePath( inputPath );
+	return cachePath;
+}
+
+// Select a 'cachePath' (location of XML file locally)
+// For remote files, a cache file is created in ~/config/cache/Pogger/ by default
+// For local files, the same local file is used.
+BString
+Feed::SetCachePath ( BString givenPath )
+{
+	BUrl givenUrl = BUrl( givenPath );
+	BString protocol = givenUrl.Protocol().String();
+
+	if ( protocol == NULL && givenUrl.UrlString() != NULL ) {
+		cachePath = givenPath;
+		return givenPath;
+	}
+
+	BString splitName = givenUrl.Host( );
+	splitName.Append( givenUrl.Path() );
+	splitName.ReplaceAll("/", "_");
+
+	BString filename = ((App*)be_app)->cfg->cacheDir;
+	filename.Append(splitName);
+
+	cachePath = filename;
+	return filename;
+}
+
+// ----------------------------------------------------------------------------
+
+// count the amount of siblings to an element of given type name
 int
 Feed::xmlCountSiblings ( tinyxml2::XMLElement* xsibling, const char* sibling_name )
 {
@@ -127,6 +176,7 @@ Feed::xmlCountSiblings ( tinyxml2::XMLElement* xsibling, const char* sibling_nam
 
 // ----------------------------------------------------------------------------
 
+// add the given entry to the feed, if appropriate
 bool
 Feed::AddEntry ( Entry* newEntry )
 {
@@ -140,6 +190,7 @@ Feed::AddEntry ( Entry* newEntry )
 	entries.AddItem( newEntry );
 	return true;
 }
+BList Feed::GetEntries ( ) { return entries; }
 
 bool Feed::SetTitle ( const char* titleStr ) {
 	if ( titleStr != NULL )	title = BString( titleStr );
@@ -150,6 +201,7 @@ bool Feed::SetTitle ( tinyxml2::XMLElement* elem ) {
 	if ( elem != NULL )	return SetTitle( elem->GetText() );
 	else return false;
 }
+BString Feed::GetTitle ( ) { return title; }
 
 bool Feed::SetDesc ( const char* descStr ) {
 	if ( descStr != NULL )	description = BString( descStr );
@@ -160,7 +212,9 @@ bool Feed::SetDesc ( tinyxml2::XMLElement* elem ) {
 	if ( elem != NULL )	return SetDesc( elem->GetText() );
 	else return false;
 }
+BString Feed::GetDesc ( ) { return description; }
 
+// set a feed's «home URL»
 bool Feed::SetHomeUrl ( const char* homepageStr ) {
 	if ( homepageStr != NULL ) homeUrl = BString( homepageStr );
 	else return false;
@@ -170,7 +224,9 @@ bool Feed::SetHomeUrl ( tinyxml2::XMLElement* elem ) {
 	if ( elem != NULL )	return SetHomeUrl( elem->GetText() );
 	else return false;
 }
+BString Feed::GetHomeUrl ( ) { return homeUrl; }
 
+// set the update time for a feed
 bool Feed::SetDate ( const char* dateCStr ) {
 	if ( dateCStr == NULL )
 		return false;
@@ -184,4 +240,5 @@ bool Feed::SetDate ( tinyxml2::XMLElement* elem ) {
 	if ( elem != NULL )	return SetDate( elem->GetText() );
 	else return false;
 }
+BDateTime Feed::GetDate ( ) { return date; }
 

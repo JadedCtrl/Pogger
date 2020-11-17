@@ -131,20 +131,20 @@ processFeed ( void* feedArg )
 	Feed* testFeed = new Feed( *(feedStr) );
 	BList entries;
 
-	if ( testFeed->updated == false && ((App*)be_app)->cfg->updateFeeds == true )
+	if ( testFeed->IsUpdated() == false  &&  ((App*)be_app)->cfg->updateFeeds == true )
 		return false;
 
 	if ( testFeed->IsAtom() ) {
 		AtomFeed* feed = (AtomFeed*)malloc( sizeof(AtomFeed) );
 		feed = new AtomFeed( testFeed );
 		feed->Parse();
-		entries = feed->entries;
+		entries = feed->GetEntries();
 	}
 	if ( testFeed->IsRss() ) {
 		RssFeed* feed = (RssFeed*)malloc( sizeof(RssFeed) );
 		feed = new RssFeed( testFeed );
 		feed->Parse();
-		entries = feed->entries;
+		entries = feed->GetEntries();
 	}
 
 	entries.DoForEach(&processEntry);

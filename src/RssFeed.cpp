@@ -15,7 +15,7 @@ RssFeed::RssFeed ( )
 }
 
 RssFeed::RssFeed ( Feed* feed ) : RssFeed::RssFeed()
-{	filePath = feed->filePath; }
+{	SetCachePath( feed->GetCachePath() ); }
 
 // ----------------------------------------------------------------------------
 
@@ -27,14 +27,14 @@ RssFeed::Parse ( )
 
 	Feed::Parse();
 
-        xml.LoadFile( filePath.String() );
+        xml.LoadFile( GetCachePath().String() );
 	tinyxml2::XMLElement* xchan = xml.FirstChildElement("rss")->FirstChildElement("channel");
 
 	RootParse( xchan );
 	ParseEntries( xchan );
 
 	time_t tt_lastDate = lastDate.Time_t();
-	BFile* feedFile = new BFile( filePath.String(), B_READ_ONLY );
+	BFile* feedFile = new BFile( GetCachePath().String(), B_READ_ONLY );
 	feedFile->WriteAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
 }
 
