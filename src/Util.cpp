@@ -3,7 +3,9 @@
 #include <locale>
 #include <iomanip>
 #include <DateTime.h>
-#include <HttpRequest.h>
+#include <UrlProtocolRoster.h>
+#include <Url.h>
+#include <UrlRequest.h>
 #include <boost/uuid/detail/sha1.hpp>
 #include "ProtocolListener.h"
 #include "Util.h"
@@ -98,19 +100,18 @@ int32
 webFetch ( BUrl url, BDataIO* reply, BString* hash )
 {
 	ProtocolListener listener(true);
-	BUrlContext context;
 	boost::uuids::detail::sha1 sha1;
 
-	BHttpRequest request( url, true, "HTTP", &listener, &context );
+	BUrlRequest* request = BUrlProtocolRoster::MakeRequest( url, &listener );
 
 	listener.SetDownloadIO( reply );
 	listener.SetSha1( &sha1 );
 
-	thread_id thread = request.Run();
+	thread_id thread = request->Run();
 	wait_for_thread( thread, NULL );
 
 	*(hash) = listener.GetHash();
 
-	const BHttpResult& result = dynamic_cast<const BHttpResult&>( request.Result() );
-	return result.StatusCode();
+	return request->Status();
+	return 200;
 }
