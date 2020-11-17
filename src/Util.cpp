@@ -73,6 +73,19 @@ withinDateRange ( BDateTime minDate, BDateTime nowDate, BDateTime maxDate )
 
 // ----------------------------------------------------------------------------
 
+// return whether or not the given path is remote
+bool
+isRemotePath ( BString path ) {
+	BUrl givenUrl = BUrl( path );
+	BString protocol = givenUrl.Protocol().String();
+
+	if ( protocol == NULL  ||  protocol == BString("file")  ||  givenUrl.UrlString() == NULL )
+		return false;
+	return true;
+}
+
+// ----------------------------------------------------------------------------
+
 int32
 webFetch ( BUrl url, BDataIO* reply )
 {

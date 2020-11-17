@@ -1,4 +1,4 @@
-// borrowed significantly from mailserver. thanks! <3
+// borrowed significantly (addAttribute) from mailserver. thanks! <3
 #include <iostream>
 #include <Application.h>
 #include <DateTime.h>
@@ -6,6 +6,7 @@
 #include <MimeType.h>
 #include "Mimetypes.h"
 
+// install the Feed Entry mimetype, if need be
 bool
 feedMimeType ( )
 {
@@ -25,12 +26,12 @@ feedMimeType ( )
 	addAttribute( info, "FEED:source", "Source" );
 	addAttribute( info, "FEED:when", "When", B_TIME_TYPE, 150 );
 
-	mime.SetAttrInfo( &info );
-	return true;
+	return mime.SetAttrInfo( &info );
 }
 
 // -------------------------------------
 
+// add the given attribute to a BMessage for use as attr info
 static void
 addAttribute
 ( BMessage& msg, const char* name, const char* publicName, int32 type, int32 width )
