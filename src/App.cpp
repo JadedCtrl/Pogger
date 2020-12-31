@@ -9,7 +9,7 @@
 #include "Config.h"
 #include "Util.h"
 #include "App.h"
-#include "PrefWindow.h"
+#include "MainWindow.h"
 #include "Invocation.h"
 
 
@@ -48,8 +48,8 @@ cliStart ( int argc, char** argv )
 App::App ( )
        : BApplication("application/x-vnd.Pogger")
 {
-//	PrefWindow* prefWin = new PrefWindow();
-//	prefWin->Show();
+	MainWindow* mainWin = new MainWindow();
+	mainWin->Show();
 }
 
 
