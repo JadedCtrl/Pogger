@@ -1,14 +1,40 @@
+/*
+ * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
 #ifndef ENTRY_H
 #define ENTRY_H
 
+
 #include <DateTime.h>
-#include <String.h>
 #include <List.h>
+#include <String.h>
 #include <Url.h>
+
+#include <tinyxml2.h>
+
 #include "Config.h"
+
 
 class Entry {
 public:
+	
+	Entry(BString);
+
+	bool Filetize(bool);
+
+	bool SetTitle(const char*);
+	bool SetTitle(tinyxml2::XMLElement*);
+	bool SetDesc(const char*);
+	bool SetDesc(tinyxml2::XMLElement*);
+	bool SetFeedTitle(BString);
+	bool SetContent(const char*);
+	bool SetContent(tinyxml2::XMLElement*);
+	bool SetPostUrl(const char*);
+	bool SetPostUrl(tinyxml2::XMLElement*);
+	bool SetDate(const char*);
+	bool SetDate(tinyxml2::XMLElement*);
+
 	BString  title;
 	BString  description;
 	BString  feedTitle;
@@ -16,22 +42,8 @@ public:
 	BString  postUrl;
 	BString  content;
 	BString  outputDir;
-	
-	Entry	( BString );
-
-	bool	Filetize ( bool );
-
-	bool	SetTitle ( const char* );
-	bool	SetTitle ( tinyxml2::XMLElement* );
-	bool	SetDesc ( const char* );
-	bool	SetDesc ( tinyxml2::XMLElement* );
-	bool	SetFeedTitle ( BString );
-	bool	SetContent ( const char* );
-	bool	SetContent ( tinyxml2::XMLElement* );
-	bool	SetPostUrl ( const char* );
-	bool	SetPostUrl ( tinyxml2::XMLElement* );
-	bool	SetDate ( const char* );
-	bool	SetDate ( tinyxml2::XMLElement* );
 };
 
+
 #endif
+

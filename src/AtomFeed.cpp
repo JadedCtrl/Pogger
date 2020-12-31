@@ -1,11 +1,19 @@
-#include <tinyxml2.h>
-#include "Entry.h"
-#include "App.h"
-#include "Config.h"
-#include "Util.h"
+/*
+ * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
+
 #include "AtomFeed.h"
 
-AtomFeed::AtomFeed ( )
+#include <tinyxml2.h>
+
+#include "App.h"
+#include "Config.h"
+#include "Entry.h"
+#include "Util.h"
+
+
+AtomFeed::AtomFeed()
 {
 	title = BString("Untitled Feed");
 	description = BString("");
@@ -15,32 +23,37 @@ AtomFeed::AtomFeed ( )
 	outputDir = ((App*)be_app)->cfg->outDir;
 }
 
-AtomFeed::AtomFeed ( Feed* feed ) : AtomFeed::AtomFeed()
-{	SetCachePath( feed->GetCachePath() ); }
 
-// ----------------------------------------------------------------------------
+AtomFeed::AtomFeed(Feed* feed)
+	: AtomFeed::AtomFeed()
+{
+	SetCachePath(feed->GetCachePath());
+}
+
 
 void
-AtomFeed::Parse ( )
+AtomFeed::Parse ()
 {
 	entries = BList();
-        tinyxml2::XMLDocument xml;
-        xml.LoadFile( GetCachePath().String() );
+	tinyxml2::XMLDocument xml;
+	xml.LoadFile(GetCachePath().String());
 
 	Feed::Parse();
 
 	tinyxml2::XMLElement* xfeed = xml.FirstChildElement("feed");
 
-	RootParse( xfeed );
-	ParseEntries( xfeed );
+	RootParse(xfeed);
+	ParseEntries(xfeed);
 
-	BFile* feedFile = new BFile( GetCachePath().String(), B_READ_WRITE );
+	BFile* feedFile = new BFile(GetCachePath().String(), B_READ_WRITE);
 	time_t tt_lastDate = lastDate.Time_t();
-	feedFile->WriteAttr( "LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t) );
+	feedFile->WriteAttr("LastDate", B_TIME_TYPE, 0, &tt_lastDate,
+		sizeof(time_t));
 }
 
+
 void
-AtomFeed::RootParse( tinyxml2::XMLElement* xfeed )
+AtomFeed::RootParse(tinyxml2::XMLElement* xfeed)
 {
 	tinyxml2::XMLElement* xauthor = xfeed->FirstChildElement("author");
 	tinyxml2::XMLElement* xentry = xfeed->FirstChildElement("entry");
@@ -49,70 +62,80 @@ AtomFeed::RootParse( tinyxml2::XMLElement* xfeed )
 	
 	bool set = false;
 
-	SetTitle( xfeed->FirstChildElement("title") );
-	SetDesc(  xfeed->FirstChildElement("description") );
+	SetTitle(xfeed->FirstChildElement("title"));
+	SetDesc( xfeed->FirstChildElement("description"));
 
-	set = SetDate( xfeed->FirstChildElement("updated") );
-	if ( !set )             set = SetDate( xfeed->FirstChildElement("published") );
-	if ( !set && xentry )   set = SetDate( xentry->FirstChildElement("updated") );
-	if ( !set && xentry )   set = SetDate( xentry->FirstChildElement("published") );
+	set = SetDate(xfeed->FirstChildElement("updated"));
+	if (!set)
+		set = SetDate(xfeed->FirstChildElement("published"));
+	if (!set && xentry)
+		set = SetDate(xentry->FirstChildElement("updated"));
+	if (!set && xentry)
+		set = SetDate(xentry->FirstChildElement("published"));
 
-	set = SetHomeUrl( xlink->Attribute( "href" ) );
-	if ( !set && xauthor )    set = SetHomeUrl( xauthor->FirstChildElement("uri") );
-	if ( !set && xauthlink )  set = SetHomeUrl( xauthlink->Attribute( "href" ) );
+	set = SetHomeUrl(xlink->Attribute("href"));
+	if (!set && xauthor)
+		set = SetHomeUrl(xauthor->FirstChildElement("uri"));
+	if (!set && xauthlink)
+		set = SetHomeUrl(xauthlink->Attribute("href"));
 
-	if ( ((App*)be_app)->cfg->verbose )
+	if (((App*)be_app)->cfg->verbose)
 		printf("Channel '%s' at '%s':\n", title.String(), homeUrl.String());
 }
 
+
 void
-AtomFeed::EntryParse ( tinyxml2::XMLElement* xentry )
+AtomFeed::EntryParse(tinyxml2::XMLElement* xentry)
 {
-	Entry* newEntry= (Entry*)malloc( sizeof(Entry) );
-	newEntry = new Entry( outputDir );
+	Entry* newEntry = (Entry*)malloc(sizeof(Entry));
+	newEntry = new Entry(outputDir);
 
 	tinyxml2::XMLElement* xcontent = xentry->FirstChildElement("content");
 	tinyxml2::XMLElement* xmedia   = xentry->FirstChildElement("media:group");
 	tinyxml2::XMLPrinter  xprinter;
 
-	newEntry->SetTitle( xentry->FirstChildElement("title") );
-	newEntry->SetPostUrl( xentry->FirstChildElement("link")->Attribute("href") );
-	newEntry->SetFeedTitle( title );
+	newEntry->SetTitle(xentry->FirstChildElement("title"));
+	newEntry->SetPostUrl(xentry->FirstChildElement("link")->Attribute("href"));
+	newEntry->SetFeedTitle(title);
 
 	bool set = false;
-	set = newEntry->SetDesc( xentry->FirstChildElement("summary") );
-	if ( !set )           set = newEntry->SetDesc( xentry->FirstChildElement("description")); 
-	if ( !set && xmedia ) set = newEntry->SetDesc( xmedia->FirstChildElement("media:description")); 
+	set = newEntry->SetDesc(xentry->FirstChildElement("summary"));
+	if (!set)
+		set = newEntry->SetDesc(xentry->FirstChildElement("description")); 
+	if (!set && xmedia)
+		set = newEntry->SetDesc(xmedia->FirstChildElement("media:description")); 
 
-	set = newEntry->SetDate( xentry->FirstChildElement("updated") );
-	if ( !set )   set = newEntry->SetDate( xentry->FirstChildElement("published") );
+	set = newEntry->SetDate(xentry->FirstChildElement("updated"));
+	if (!set)
+		set = newEntry->SetDate(xentry->FirstChildElement("published"));
 
-	if ( lastDate == NULL || lastDate < newEntry->date )
+	if (lastDate == NULL || lastDate < newEntry->date)
 		lastDate = newEntry->date;
 
-	if ( xcontent ) {
-		xcontent->Accept( &xprinter );
-		newEntry->SetContent( xprinter.CStr() );
+	if (xcontent) {
+		xcontent->Accept(&xprinter);
+		newEntry->SetContent(xprinter.CStr());
 	}
 
-	AddEntry( newEntry );
+	AddEntry(newEntry);
 }
 
+
 void
-AtomFeed::ParseEntries ( tinyxml2::XMLElement* xfeed )
+AtomFeed::ParseEntries(tinyxml2::XMLElement* xfeed)
 {
 	tinyxml2::XMLElement* xentry;
 
 	xentry = xfeed->FirstChildElement("entry");
 
-	int entryCount = xmlCountSiblings( xentry, "entry" );
+	int entryCount = xmlCountSiblings(xentry, "entry");
 	entries = BList(entryCount);
 
-	if ( ((App*)be_app)->cfg->verbose )
+	if (((App*)be_app)->cfg->verbose)
 		printf("\t-%i entries-\n", entryCount);
 
-	while ( xentry ) {
-		EntryParse( xentry );
+	while (xentry) {
+		EntryParse(xentry);
 		xentry = xentry->NextSiblingElement("entry");
 	}
 }

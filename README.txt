@@ -112,5 +112,5 @@ Sry bby, i'm trying <3
 BORING INFO
 --------------------------------------------------
 Pogger is under the MIT license.
-https://git.xwx.moe/pogger.git
+https://git.feneas.org/detruota/pogger
 jadedctrl@teknik.io

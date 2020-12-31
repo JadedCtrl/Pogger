@@ -1,25 +1,35 @@
-#include <StorageKit.h>
-#include <String.h>
-#include <getopt.h>
-#include "AtomFeed.h"
-#include "RssFeed.h"
-#include "Feed.h"
-#include "Entry.h"
-#include "Mimetypes.h"
-#include "Config.h"
-#include "Util.h"
-#include "App.h"
+/*
+ * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
+
 #include "Invocation.h"
 
+#include <StorageKit.h>
+#include <String.h>
+
+#include <getopt.h>
+
+#include "App.h"
+#include "AtomFeed.h"
+#include "Config.h"
+#include "Entry.h"
+#include "Feed.h"
+#include "Mimetypes.h"
+#include "RssFeed.h"
+#include "Util.h"
+
+
 int
-usage ( )
+usage()
 {
 	fprintf(stderr, "%s", usageMsg.String());
 	return 2;
 }
 
+
 int
-invocation ( int argc, char** argv )
+invocation(int argc, char** argv)
 {
 	Config* cfg = ((App*)be_app)->cfg;
 	BDateTime maxDate;
@@ -44,21 +54,21 @@ invocation ( int argc, char** argv )
 
 		switch (c) {
 			case -1:
-				freeargInvocation( argc, argv, optind );
+				freeargInvocation(argc, argv, optind);
 				return 0;
 			case 'h':
 				return usage();
 			case 'c':
-				cfg->configDir = BString( optarg );
+				cfg->configDir = BString(optarg);
 				break;
 			case 'C':
-				cfg->cacheDir = BString( optarg );
+				cfg->cacheDir = BString(optarg);
 				break;
 			case 's':
 				cfg->will_save = true;
 			case 't':
-				minDate = dateRfc3339ToBDate( optarg );
-				if ( minDate != NULL ) 
+				minDate = dateRfc3339ToBDate(optarg);
+				if (minDate != NULL) 
 					cfg->minDate = minDate;
 				else {
 					fprintf(stderr, "Invalid date format for `-%c'.\n", optopt);
@@ -66,8 +76,8 @@ invocation ( int argc, char** argv )
 				}
 				break;
 			case 'T':
-				maxDate = dateRfc3339ToBDate( optarg );
-				if ( maxDate != NULL ) 
+				maxDate = dateRfc3339ToBDate(optarg);
+				if (maxDate != NULL) 
 					cfg->maxDate = maxDate;
 				else {
 					fprintf(stderr, "Invalid date format for `-%c'.\n", optopt);
@@ -75,7 +85,7 @@ invocation ( int argc, char** argv )
 				}
 				break;
 			case 'O':
-				cfg->outDir = BString( optarg );
+				cfg->outDir = BString(optarg);
 				break;
 			case 'u':
 				cfg->updateFeeds = true;
@@ -87,62 +97,62 @@ invocation ( int argc, char** argv )
 				cfg->daemon = false;
 				break;
 			case '?':
-				if ( optopt == 'O' || optopt == 'm' )
-					fprintf( stderr, "Option `-%c` requires an argument.\n",
-					         optopt );
+				if (optopt == 'O' || optopt == 'm')
+					fprintf(stderr, "Option `-%c` requires an argument.\n",
+					         optopt);
 				else
-					fprintf( stderr, "Unknown option `-%c`.\n", optopt );
+					fprintf(stderr, "Unknown option `-%c`.\n", optopt);
 				return 2;
 		}
 	}
 }
 
-// -------------------------------------
 
 void
-freeargInvocation ( int argc, char** argv, int optind )
+freeargInvocation(int argc, char** argv, int optind)
 {
 	Config* cfg = ((App*)be_app)->cfg;
-	if ( optind < argc ) {
+	if (optind < argc) {
 		int freeargc = argc - optind;
-		cfg->targetFeeds =  BList( freeargc );
+		cfg->targetFeeds =  BList(freeargc);
 
-		for ( int i = 0; i < freeargc; i++ ) {
-			BString* newFeed = new BString( argv[optind + i] );
-			cfg->targetFeeds.AddItem( newFeed );
+		for (int i = 0; i < freeargc; i++) {
+			BString* newFeed = new BString(argv[optind + i]);
+			cfg->targetFeeds.AddItem(newFeed);
 		}
 	}
 }
 
-// ----------------------------------------------------------------------------
 
 bool
-processEntry ( void* entry )
+processEntry(void* entry)
 {
-	Entry* entryPtr  = (Entry*)entry;
-	entryPtr->Filetize( false );
+	Entry* entryPtr = (Entry*)entry;
+	entryPtr->Filetize(false);
 	return false;
 }
 
+
 bool
-processFeed ( void* feedArg )
+processFeed(void* feedArg)
 {
 	BString* feedStr = (BString*)feedArg;
-	Feed* testFeed = new Feed( *(feedStr) );
+	Feed* testFeed = new Feed(*(feedStr));
 	BList entries;
 
-	if ( testFeed->IsUpdated() == false  &&  ((App*)be_app)->cfg->updateFeeds == true )
+	if (testFeed->IsUpdated() == false
+		&& ((App*)be_app)->cfg->updateFeeds == true)
 		return false;
 
-	if ( testFeed->IsAtom() ) {
-		AtomFeed* feed = (AtomFeed*)malloc( sizeof(AtomFeed) );
-		feed = new AtomFeed( testFeed );
+	if (testFeed->IsAtom()) {
+		AtomFeed* feed = (AtomFeed*)malloc(sizeof(AtomFeed));
+		feed = new AtomFeed(testFeed);
 		feed->Parse();
 		entries = feed->GetEntries();
 	}
-	if ( testFeed->IsRss() ) {
-		RssFeed* feed = (RssFeed*)malloc( sizeof(RssFeed) );
-		feed = new RssFeed( testFeed );
+	if (testFeed->IsRss()) {
+		RssFeed* feed = (RssFeed*)malloc(sizeof(RssFeed));
+		feed = new RssFeed(testFeed);
 		feed->Parse();
 		entries = feed->GetEntries();
 	}
@@ -150,3 +160,5 @@ processFeed ( void* feedArg )
 	entries.DoForEach(&processEntry);
 	return false;
 }
+
+

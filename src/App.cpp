@@ -1,20 +1,28 @@
+/*
+ * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
+
+#include "App.h"
+
 #include <StorageKit.h>
 #include <String.h>
+
 #include <getopt.h>
+
 #include "AtomFeed.h"
-#include "RssFeed.h"
-#include "Feed.h"
-#include "Entry.h"
-#include "Mimetypes.h"
 #include "Config.h"
-#include "Util.h"
-#include "App.h"
-#include "MainWindow.h"
+#include "Entry.h"
+#include "Feed.h"
 #include "Invocation.h"
+#include "MainWindow.h"
+#include "Mimetypes.h"
+#include "RssFeed.h"
+#include "Util.h"
 
 
 int
-main ( int argc, char** argv )
+main(int argc, char** argv)
 {
 	App* app = new App();
 	usageMsg.ReplaceAll("%app%", "Pogger");
@@ -24,10 +32,10 @@ main ( int argc, char** argv )
 	app->cfg->Load();
 
 
-	if ( argc == 1 )
+	if (argc == 1)
 		app->Run();
 	else
-		cliStart( argc, argv );
+		cliStart(argc, argv);
 
 		
 	if ( app->cfg->will_save == true )
@@ -36,24 +44,21 @@ main ( int argc, char** argv )
 	return 0;
 }
 
-// -------------------------------------
 
 void
-cliStart ( int argc, char** argv )
+cliStart(int argc, char** argv)
 {
-	invocation( argc, argv );
-	((App*)be_app)->cfg->targetFeeds.DoForEach( &processFeed );
+	invocation(argc, argv);
+	((App*)be_app)->cfg->targetFeeds.DoForEach(&processFeed);
 }
 
-App::App ( )
-       : BApplication("application/x-vnd.Pogger")
+
+App::App() : BApplication("application/x-vnd.Pogger")
 {
 	MainWindow* mainWin = new MainWindow();
 	mainWin->Show();
 }
 
-
-// ----------------------------------------------------------------------------
 
 const char* configPath = "/boot/home/config/settings/Pogger/";
 BString usageMsg =
