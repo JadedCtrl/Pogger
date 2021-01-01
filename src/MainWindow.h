@@ -1,14 +1,16 @@
-#ifndef PREFWINDOW_H
-#define PREFWINDOW_H
+#ifndef MAINWINDOW_H 
+#define MAINWINDOW_H
 
 
 #include <Window.h>
 
-#include "FeedView.h"
-
 class BButton;
 class BGroupView;
 class BTabView;
+class EntriesView;
+class FeedsView;
+class UpdatesView;
+
 
 class MainWindow : public BWindow {
 public:
@@ -19,12 +21,15 @@ public:
 private:
 	void _InitInterface();
 
-	BGroupView* fBaseView;
-	BTabView*	fTabView;
-	FeedView*	fFeedView;
+	BGroupView*	 fBaseView;
+	BTabView*		fTabView;
+	EntriesView*	fEntriesView;
+	FeedsView*		fFeedsView;
+	UpdatesView*	fUpdatesView;
 
-	BButton*	fServiceToggleButton;
+	BButton*	fUpdateNowButton;
 };
 
 
-#endif
+#endif // MAINWINDOW_H
+

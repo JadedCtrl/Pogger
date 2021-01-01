@@ -33,13 +33,15 @@ SRCS = \
 	src/AtomFeed.cpp, \
 	src/Config.cpp, \
 	src/Entry.cpp, \
+	src/EntriesView.cpp, \
 	src/Feed.cpp, \
-	src/FeedView.cpp, \
+	src/FeedsView.cpp, \
 	src/Invocation.cpp \
 	src/MainWindow.cpp, \
 	src/Mimetypes.cpp, \
 	src/ProtocolListener.cpp, \
 	src/RssFeed.cpp, \
+	src/UpdatesView.cpp, \
 	src/Util.cpp
 
 #	Specify the resource definition files to use. Full or relative paths can be
