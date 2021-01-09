@@ -10,14 +10,23 @@
 #include <Application.h>
 
 
+class BMessage;
 class Config;
+class FeedController;
+class MainWindow;
 
 
 class App : public BApplication
 {
 public:
-       App(void);
-       Config* cfg;
+	App(void);
+	void MessageReceived(BMessage* msg);
+
+	Config* cfg;
+	MainWindow* fMainWindow;
+
+private:
+	FeedController* fFeedController;
 };
 
 
@@ -25,9 +34,10 @@ int  main	( int, char** );
 void cliStart	( int, char** );
 
 
+
 extern const char* configPath;
 extern BString usageMsg;
 
 
-#endif
+#endif // APP_H
 

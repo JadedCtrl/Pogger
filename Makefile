@@ -35,6 +35,7 @@ SRCS = \
 	src/Entry.cpp, \
 	src/EntriesView.cpp, \
 	src/Feed.cpp, \
+	src/FeedController.cpp \
 	src/FeedsView.cpp, \
 	src/Invocation.cpp \
 	src/MainWindow.cpp, \

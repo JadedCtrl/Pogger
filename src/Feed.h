@@ -20,6 +20,7 @@ class BUrl;
 class Feed {
 public:
 	Feed(BString);
+	Feed(Feed*);
 	Feed();
 
 	virtual void Parse();
@@ -28,6 +29,8 @@ public:
 	bool IsUpdated();
 	bool IsRss();
 	bool IsAtom();
+
+	BString FetchRemoteFeed();
 
 	bool	AddEntry(Entry*);
 	BList	GetEntries();
@@ -40,6 +43,7 @@ public:
 	bool	SetHomeUrl(const char*);
 	bool	SetHomeUrl(tinyxml2::XMLElement*);
 	BString	GetHomeUrl();
+	BString	GetXmlUrl();
 	bool	SetDate(const char*);
 	bool	SetDate(tinyxml2::XMLElement*);
 	BDateTime GetDate();
@@ -49,7 +53,6 @@ public:
 
 protected:
 	void EnsureCached();
-	BString FetchRemoteFeed();
 	int	xmlCountSiblings(tinyxml2::XMLElement*, const char*);
 
 	BString	title;

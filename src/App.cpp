@@ -14,6 +14,7 @@
 #include "Config.h"
 #include "Entry.h"
 #include "Feed.h"
+#include "FeedController.h"
 #include "Invocation.h"
 #include "MainWindow.h"
 #include "Mimetypes.h"
@@ -30,7 +31,6 @@ main(int argc, char** argv)
 
 	app->cfg = new Config;
 	app->cfg->Load();
-
 
 	if (argc == 1)
 		app->Run();
@@ -49,14 +49,55 @@ void
 cliStart(int argc, char** argv)
 {
 	invocation(argc, argv);
-	((App*)be_app)->cfg->targetFeeds.DoForEach(&processFeed);
+	BList targetFeeds = ((App*)be_app)->cfg->targetFeeds;
+
+	for (int i = 0; i < targetFeeds.CountItems(); i++) {
+		Feed* newFeed = new Feed(((BString*)targetFeeds.ItemAt(i))->String());
+		BMessage* enqueue = new BMessage(kEnqueueFeed);
+
+		enqueue->AddData("feeds", B_RAW_TYPE, newFeed, sizeof(Feed));
+
+		((App*)be_app)->MessageReceived(enqueue);
+	}
 }
 
 
 App::App() : BApplication("application/x-vnd.Pogger")
 {
-	MainWindow* mainWin = new MainWindow();
-	mainWin->Show();
+	fMainWindow = new MainWindow();
+	fFeedController = new FeedController();
+	fMainWindow->Show();
+}
+
+
+void
+App::MessageReceived(BMessage* msg)
+{
+	switch (msg->what)
+	{
+		case kEnqueueFeed:
+		{
+			fFeedController->MessageReceived(msg);
+			break;
+		}
+		case kClearQueue:
+		{
+			break;
+		}
+		case kQueueProgress:
+		{
+			fMainWindow->MessageReceived(msg);
+		}
+		case kDownloadComplete:
+		{
+			fFeedController->MessageReceived(msg);
+		}
+		default:
+		{
+//			BApplication::MessageReceived(msg);
+			break;
+		}
+	}
 }
 
 

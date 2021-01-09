@@ -26,6 +26,13 @@ Feed::Feed(BString path)
 }
 
 
+Feed::Feed(Feed* feed)
+	: Feed()
+{
+	SetCachePath(feed->GetCachePath());
+}
+	
+
 Feed::Feed()
 {
 	title = BString("");
@@ -171,7 +178,7 @@ Feed::SetCachePath (BString givenPath)
 }
 
 
-// count the amount of siblings to an element of given type name
+// Count the amount of siblings to an element of given type name
 int
 Feed::xmlCountSiblings (tinyxml2::XMLElement* xsibling, const char* sibling_name)
 {
@@ -184,7 +191,7 @@ Feed::xmlCountSiblings (tinyxml2::XMLElement* xsibling, const char* sibling_name
 }
 
 
-// add the given entry to the feed, if appropriate
+// Add the given entry to the feed, if appropriate
 bool
 Feed::AddEntry (Entry* newEntry)
 {
@@ -283,6 +290,13 @@ BString
 Feed::GetHomeUrl()
 {
 	return homeUrl;
+}
+
+
+BString
+Feed::GetXmlUrl()
+{
+	return xmlUrl;
 }
 
 
