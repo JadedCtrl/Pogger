@@ -21,6 +21,8 @@ class App : public BApplication
 public:
 	App(void);
 	void MessageReceived(BMessage* msg);
+	void ArgvReceived(int32 argc, char** argv);
+	
 
 	Config* cfg;
 	MainWindow* fMainWindow;
@@ -29,14 +31,9 @@ private:
 	FeedController* fFeedController;
 };
 
-
 int  main	( int, char** );
-void cliStart	( int, char** );
-
-
 
 extern const char* configPath;
-extern BString usageMsg;
 
 
 #endif // APP_H

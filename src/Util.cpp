@@ -5,6 +5,7 @@
 
 #include "Util.h"
 
+#include <OS.h>
 #include <Url.h>
 #include <UrlProtocolRoster.h>
 #include <UrlRequest.h>
@@ -95,15 +96,7 @@ isRemotePath(BString path) {
 
 
 int32
-webFetch(BUrl url, BDataIO* reply)
-{
-	BString* ignored = new BString();
-	return webFetch(url, reply, ignored);
-}
-
-
-int32
-webFetch(BUrl url, BDataIO* reply, BString* hash)
+fetch(BUrl url, BDataIO* reply, BString* hash, int timeout)
 {
 	ProtocolListener listener(true);
 	boost::uuids::detail::sha1 sha1;
@@ -113,13 +106,18 @@ webFetch(BUrl url, BDataIO* reply, BString* hash)
 	listener.SetDownloadIO(reply);
 	listener.SetSha1(&sha1);
 
+	time_t startTime = time(0);
 	thread_id thread = request->Run();
-	wait_for_thread(thread, NULL);
+	thread_info t_info;
+
+	while (time(0) - startTime < timeout
+		&& get_thread_info(thread, &t_info) == B_OK)
+		snooze(100000);
+
+	kill_thread(thread);
 
 	*(hash) = listener.GetHash();
-
 	return request->Status();
-	return 200;
 }
 
 

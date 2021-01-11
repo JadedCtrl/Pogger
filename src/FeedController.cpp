@@ -88,11 +88,11 @@ FeedController::_DownloadLoop(void* ignored)
 	Feed* feedBuffer = new Feed();
 
 	while (receive_data(&sender, (void*)feedBuffer, sizeof(Feed)) != 0) {
+		printf( "%s\n\n", feedBuffer->GetCachePath().String());
 		feedBuffer->FetchRemoteFeed();
 
 		BMessage* downloaded = new BMessage(kDownloadComplete);
 		downloaded->AddData("feeds", B_RAW_TYPE, feedBuffer, sizeof(Feed));
-
 
 		((App*)be_app)->MessageReceived(downloaded);
 	}
@@ -133,3 +133,5 @@ FeedController::_ParseLoop(void* ignored)
 	delete (feedBuffer);
 	return 0;
 }
+
+

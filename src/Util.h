@@ -23,8 +23,7 @@ bool withinDateRange(BDateTime, BDateTime, BDateTime);
 
 bool isRemotePath(BString);
 
-int32 webFetch(BUrl, BDataIO*, BString*);
-int32 webFetch(BUrl, BDataIO*);
+int32 fetch(BUrl url, BDataIO* reply, BString* hash, int timeout);
 
 
 #endif

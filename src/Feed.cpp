@@ -66,22 +66,23 @@ Feed::FetchRemoteFeed()
 	BUrl givenUrl = BUrl(inputPath);
 	time_t tt_lastDate = 0;
 	BDateTime* lastDate = new BDateTime();
-	BString* newHash = new BString();
-	char oldHash[41];
+	BString newHash;
+	BString oldHash;
 
 	BFile* cacheFile = new BFile(GetCachePath(), B_READ_WRITE | B_CREATE_FILE);
 
-	cacheFile->ReadAttr("LastHash", B_STRING_TYPE, 0, oldHash, 41);
+//	cacheFile->ReadAttr("LastHash", B_STRING_TYPE, 0, oldHash, 41);
+	cacheFile->ReadAttrString("LastHash", &oldHash);
 
 	if (((App*)be_app)->cfg->verbose)
 		printf("Saving %s...\n", inputPath.String());
 
-	webFetch(BUrl(inputPath), cacheFile, newHash);
+	fetch(BUrl(inputPath), cacheFile, &newHash, 30);
+	cacheFile->WriteAttrString("LastHash", &newHash);
+//	cacheFile->WriteAttr("LastHash", B_STRING_TYPE, 0,
+//		newHash.String(), newHash.CountChars());
 
-	cacheFile->WriteAttr("LastHash", B_STRING_TYPE, 0,
-		newHash->String(), newHash->CountChars());
-
-	if (*(newHash) == BString(oldHash))
+	if (newHash == oldHash)
 		updated = false;
 
 	fetched = true;
