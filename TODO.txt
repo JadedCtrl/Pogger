@@ -1,0 +1,30 @@
+* Add subscriptions
+	* Feed files in ~/config/settings/Pogger/subscriptions/
+		* Default column layout, somehow?
+	* Use these Feed files as the cache files
+		* ~/config/cache/Pogger should be used only by random URL argvs
+	* Adding/editing from GUI
+		* Do this for file refs when Feeds, too
+* Revamp configuration
+	* Fix saving, etc.
+* Notifications
+	* On new entries
+		* Sound effect, too
+	* On failures
+* Show progress
+	* With progress bar
+	* With indicator in the feeds list
+* Timed updating
+* Remove unnecessary `new`-- make sure to delete everything
+* Check if arg is a file or not (treat appropriately)
+* No hardcoded paths
+* Show in desktray
+	* Make archivable
+	* Get menu working
+* Add proper scripting support
+* Multiple downloads at once?
+	* Array of thread_ids for multiple DL threads?
+		* In which case, it'd probably make sense to only spin them
+		  up as necessary, and kill when everything's done.
+			* That'd require a proper queue system, instead of just
+			  sending data to the download thread lol
