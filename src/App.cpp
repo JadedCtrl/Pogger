@@ -25,7 +25,7 @@ int
 main(int argc, char** argv)
 {
 	App* app = new App();
-	feedMimeType();
+	installMimeTypes();
 
 	app->cfg = new Config;
 	app->cfg->Load();
@@ -53,6 +53,11 @@ App::MessageReceived(BMessage* msg)
 	switch (msg->what)
 	{
 		case kEnqueueFeed:
+		{
+			fFeedController->MessageReceived(msg);
+			break;
+		}
+		case kUpdateSubscribed:
 		{
 			fFeedController->MessageReceived(msg);
 			break;

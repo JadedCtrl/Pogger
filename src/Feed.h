@@ -12,6 +12,7 @@
 
 
 class BDateTime;
+class BEntry;
 class BString;
 class BList;
 class BUrl;
@@ -21,6 +22,7 @@ class Feed {
 public:
 	Feed(BUrl);
 	Feed(BUrl, BString);
+	Feed(BEntry);
 	Feed(Feed*);
 	Feed();
 
@@ -52,6 +54,7 @@ protected:
 
 	bool	AddEntry(Entry*);
 
+	void	_PostParse();
 	int		xmlCountSiblings(tinyxml2::XMLElement*, const char*);
 
 	BString	title;

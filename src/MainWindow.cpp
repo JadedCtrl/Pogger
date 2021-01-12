@@ -16,6 +16,7 @@
 
 #include "App.h"
 #include "EntriesView.h"
+#include "FeedController.h"
 #include "FeedsView.h"
 #include "UpdatesView.h"
 
@@ -63,8 +64,8 @@ MainWindow::_InitInterface()
 	fBaseView->AddChild(fTabView);
 
 	fUpdateNowButton = new BButton("updateNow", "Update Now",
-		new BMessage('iiii'));
-	fUpdateNowButton->SetTarget(this);
+		new BMessage(kUpdateSubscribed));
+	fUpdateNowButton->SetTarget((App*)be_app);
 	fUpdateNowButton->SetExplicitAlignment(
 		BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 

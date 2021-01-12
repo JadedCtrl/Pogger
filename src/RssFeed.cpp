@@ -21,6 +21,7 @@ RssFeed::RssFeed()
 RssFeed::RssFeed(Feed* feed)
 	: RssFeed::RssFeed()
 {
+	SetXmlUrl(feed->GetXmlUrl());
 	SetCachePath(feed->GetCachePath());
 }
 
@@ -39,9 +40,7 @@ RssFeed::Parse()
 	RootParse(xchan);
 	ParseEntries(xchan);
 
-	time_t tt_date = date.Time_t();
-	BFile* feedFile = new BFile(cachePath, B_READ_ONLY);
-	feedFile->WriteAttr("LastDate", B_TIME_TYPE, 0, &tt_date, sizeof(time_t));
+	_PostParse();
 }
 
 

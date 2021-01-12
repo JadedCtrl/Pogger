@@ -16,7 +16,8 @@ enum
 	kEnqueueFeed		= 'fenq',
 	kClearQueue			= 'frmq',
 	kDownloadComplete	= 'fdpr',
-	kQueueProgress		= 'fqpr'
+	kQueueProgress		= 'fqpr',
+	kUpdateSubscribed	= 'fups'
 };
 
 

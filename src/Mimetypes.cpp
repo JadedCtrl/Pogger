@@ -11,9 +11,37 @@
 #include <MimeType.h>
 
 
-// install the Feed Entry mimetype, if need be
+bool installMimeTypes()
+{
+	return (feedMimeType() && feedEntryMimeType());
+}
+
+
 bool
 feedMimeType()
+{
+	BMessage info;
+	BMimeType mime("application/x-feed-source");
+	if (mime.IsInstalled())
+		return true;
+
+	mime.GetAttrInfo(&info);
+
+	mime.SetShortDescription("Feed");
+	mime.SetLongDescription("Atom/RSS Feed");
+
+	addAttribute(info, "Feed:name", "Name");
+	addAttribute(info, "Feed:description", "Description");
+	addAttribute(info, "META:url", "URL");
+	addAttribute(info, "Feed:when", "Updated", B_TIME_TYPE, 150);
+	addAttribute(info, "Feed:hash", "Hash");
+
+	return mime.SetAttrInfo(&info);
+}
+
+
+bool
+feedEntryMimeType()
 {
 	BMessage info;
 	BMimeType mime("text/x-feed-entry");
@@ -25,11 +53,11 @@ feedMimeType()
 	mime.SetShortDescription("Feed Entry");
 	mime.SetLongDescription("Atom/RSS Feed Entry");
 
-	addAttribute(info, "FEED:name", "Name");
-	addAttribute(info, "FEED:description", "Description");
+	addAttribute(info, "Feed:name", "Name");
+	addAttribute(info, "Feed:description", "Description");
 	addAttribute(info, "META:url", "URL");
-	addAttribute(info, "FEED:source", "Source");
-	addAttribute(info, "FEED:when", "When", B_TIME_TYPE, 150);
+	addAttribute(info, "Feed:source", "Source");
+	addAttribute(info, "Feed:when", "When", B_TIME_TYPE, 150);
 
 	return mime.SetAttrInfo(&info);
 }

@@ -16,18 +16,32 @@
 Feed::Feed(BUrl xml, BString path)
 	: Feed()
 {
-	xmlUrl = xml;
-	cachePath = path;
+	SetXmlUrl(xml);
+	SetCachePath(path);
 }
 
 
 Feed::Feed(BUrl xml)
 	: Feed()
 {
-	xmlUrl = xml;
+	SetXmlUrl(xml);
 	BString cache("/boot/home/config/cache/Pogger/");
 	cache.Append(urlToFilename(xmlUrl));
 	SetCachePath(cache);
+}
+
+
+Feed::Feed(BEntry entry)
+	: Feed()
+{
+	BFile file(&entry, B_READ_ONLY);
+	BPath path;
+	entry.GetPath(&path);
+	SetCachePath(BString(path.Path()));
+
+	BString url;
+	file.ReadAttrString("META:url", &url);
+	xmlUrl = BUrl(url);
 }
 
 
@@ -53,10 +67,28 @@ Feed::Parse()
 	BFile feedFile = BFile(cachePath, B_READ_ONLY);
 	time_t tt_lastDate = 0;
 
-	feedFile.ReadAttr("LastDate", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t));
+	feedFile.ReadAttr("Feed:when", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t));
 
 	if (tt_lastDate > 0)
 		lastDate.SetTime_t(tt_lastDate);
+}
+
+
+void
+Feed::_PostParse()
+{
+	BFile feedFile(cachePath, B_WRITE_ONLY);
+	time_t tt_date = date.Time_t();
+	BString url = xmlUrl.UrlString();
+	BString name = GetTitle();
+	BString type("application/x-feed-source");
+
+	feedFile.WriteAttrString("Feed:name", &name);
+	feedFile.WriteAttrString("META:url", &url);
+	feedFile.WriteAttrString("BEOS:TYPE", &type);
+	feedFile.WriteAttr("Feed:when", B_TIME_TYPE, 0, &tt_date, sizeof(time_t));
+	feedFile.WriteAttr("BEOS:TYPE", B_MIME_STRING_TYPE, 0, type.String(),
+	type.CountChars() + 1);
 }
 
 
@@ -66,10 +98,10 @@ Feed::Fetch()
 {
 	BFile cacheFile = BFile(cachePath, B_READ_WRITE | B_CREATE_FILE);
 
-	cacheFile.ReadAttrString("LastHash", &lastHash);
+	cacheFile.ReadAttrString("Feed:hash", &lastHash);
 
 	fetch(xmlUrl, &cacheFile, &hash, 30);
-	cacheFile.WriteAttrString("LastHash", &hash);
+	cacheFile.WriteAttrString("Feed:hash", &hash);
 
 	if (hash == lastHash)
 		updated = false;

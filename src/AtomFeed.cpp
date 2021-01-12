@@ -16,7 +16,6 @@
 AtomFeed::AtomFeed()
 {
 	title = BString("Untitled Feed");
-	xmlUrl = BString("");
 	cachePath = BString("");
 }
 
@@ -24,6 +23,7 @@ AtomFeed::AtomFeed()
 AtomFeed::AtomFeed(Feed* feed)
 	: AtomFeed::AtomFeed()
 {
+	SetXmlUrl(feed->GetXmlUrl());
 	SetCachePath(feed->GetCachePath());
 }
 
@@ -42,10 +42,7 @@ AtomFeed::Parse ()
 	RootParse(xfeed);
 	ParseEntries(xfeed);
 
-	BFile* feedFile = new BFile(cachePath, B_READ_WRITE);
-	time_t tt_date = date.Time_t();
-	feedFile->WriteAttr("LastDate", B_TIME_TYPE, 0, &tt_date,
-		sizeof(time_t));
+	_PostParse();
 }
 
 
