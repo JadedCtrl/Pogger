@@ -16,11 +16,8 @@
 AtomFeed::AtomFeed()
 {
 	title = BString("Untitled Feed");
-	description = BString("");
-	homeUrl = BString("");
 	xmlUrl = BString("");
 	cachePath = BString("");
-	outputDir = ((App*)be_app)->cfg->outDir;
 }
 
 
@@ -45,9 +42,9 @@ AtomFeed::Parse ()
 	RootParse(xfeed);
 	ParseEntries(xfeed);
 
-	BFile* feedFile = new BFile(GetCachePath().String(), B_READ_WRITE);
-	time_t tt_lastDate = lastDate.Time_t();
-	feedFile->WriteAttr("LastDate", B_TIME_TYPE, 0, &tt_lastDate,
+	BFile* feedFile = new BFile(cachePath, B_READ_WRITE);
+	time_t tt_date = date.Time_t();
+	feedFile->WriteAttr("LastDate", B_TIME_TYPE, 0, &tt_date,
 		sizeof(time_t));
 }
 
@@ -63,7 +60,6 @@ AtomFeed::RootParse(tinyxml2::XMLElement* xfeed)
 	bool set = false;
 
 	SetTitle(xfeed->FirstChildElement("title"));
-	SetDesc( xfeed->FirstChildElement("description"));
 
 	set = SetDate(xfeed->FirstChildElement("updated"));
 	if (!set)
@@ -73,14 +69,8 @@ AtomFeed::RootParse(tinyxml2::XMLElement* xfeed)
 	if (!set && xentry)
 		set = SetDate(xentry->FirstChildElement("published"));
 
-	set = SetHomeUrl(xlink->Attribute("href"));
-	if (!set && xauthor)
-		set = SetHomeUrl(xauthor->FirstChildElement("uri"));
-	if (!set && xauthlink)
-		set = SetHomeUrl(xauthlink->Attribute("href"));
-
-	if (((App*)be_app)->cfg->verbose)
-		printf("Channel '%s' at '%s':\n", title.String(), homeUrl.String());
+	printf("Channel '%s' at '%s':\n", title.String(),
+		xmlUrl.UrlString().String());
 }
 
 
@@ -88,7 +78,7 @@ void
 AtomFeed::EntryParse(tinyxml2::XMLElement* xentry)
 {
 	Entry* newEntry = (Entry*)malloc(sizeof(Entry));
-	newEntry = new Entry(outputDir);
+	newEntry = new Entry();
 
 	tinyxml2::XMLElement* xcontent = xentry->FirstChildElement("content");
 	tinyxml2::XMLElement* xmedia   = xentry->FirstChildElement("media:group");
@@ -109,8 +99,8 @@ AtomFeed::EntryParse(tinyxml2::XMLElement* xentry)
 	if (!set)
 		set = newEntry->SetDate(xentry->FirstChildElement("published"));
 
-	if (lastDate == NULL || lastDate < newEntry->date)
-		lastDate = newEntry->date;
+	if (date == NULL || date < newEntry->GetDate())
+		SetDate(newEntry->GetDate());
 
 	if (xcontent) {
 		xcontent->Accept(&xprinter);
@@ -131,8 +121,7 @@ AtomFeed::ParseEntries(tinyxml2::XMLElement* xfeed)
 	int entryCount = xmlCountSiblings(xentry, "entry");
 	entries = BList(entryCount);
 
-	if (((App*)be_app)->cfg->verbose)
-		printf("\t-%i entries-\n", entryCount);
+	printf("\t-%i entries-\n", entryCount);
 
 	while (xentry) {
 		EntryParse(xentry);

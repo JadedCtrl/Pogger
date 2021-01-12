@@ -82,12 +82,14 @@ void
 App::ArgvReceived(int32 argc, char** argv)
 {
 	for (int i = 1; i < argc; i++) {
-		Feed* newFeed = new Feed(argv[i]);
+		if (BUrl(argv[i]).IsValid()) {
+			Feed* newFeed = new Feed(BUrl(argv[i]));
 
-		BMessage* enqueue = new BMessage(kEnqueueFeed);
-		enqueue->AddData("feeds", B_RAW_TYPE, (void*)newFeed, sizeof(Feed));
+			BMessage* enqueue = new BMessage(kEnqueueFeed);
+			enqueue->AddData("feeds", B_RAW_TYPE, (void*)newFeed, sizeof(Feed));
 
-		MessageReceived(enqueue);
+			MessageReceived(enqueue);
+		}
 	}
 }
 		

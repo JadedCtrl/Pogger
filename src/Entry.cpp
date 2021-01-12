@@ -14,25 +14,23 @@
 #include "Util.h"
 
 
-Entry::Entry(BString outputPath)
+Entry::Entry()
 {
 	title = BString("");
 	description = BString("");
 	feedTitle = BString("");
 	postUrl  = BString("");
 	content  = BString("");
-	outputDir = outputPath;
 }
 
 
 bool
-Entry::Filetize(bool onlyIfNew = false)
+Entry::Filetize(BDirectory outDir)
 {
-	BDirectory* dir = new BDirectory(outputDir);
 	BFile* file = new BFile(title.String(), B_READ_WRITE);
 	time_t tt_date = date.Time_t();
 
-	dir->CreateFile(title.String(), file);
+	outDir.CreateFile(title.String(), file);
 
 	BString betype = BString("text/x-feed-entry");
 	file->WriteAttr("BEOS:TYPE", B_MIME_STRING_TYPE, 0, betype.String(),
@@ -57,7 +55,8 @@ Entry::Filetize(bool onlyIfNew = false)
 
 
 bool
-Entry::SetTitle(const char* titleStr) {
+Entry::SetTitle(const char* titleStr)
+{
 	if (titleStr != NULL)
 		title = BString(titleStr);
 	else return false;
@@ -66,7 +65,8 @@ Entry::SetTitle(const char* titleStr) {
 
 
 bool
-Entry::SetTitle(tinyxml2::XMLElement* elem) {
+Entry::SetTitle(tinyxml2::XMLElement* elem)
+{
 	if (elem != NULL)
 		return SetTitle(elem->GetText());
 	return false;
@@ -74,7 +74,8 @@ Entry::SetTitle(tinyxml2::XMLElement* elem) {
 
 
 bool
-Entry::SetDesc(const char* descStr) {
+Entry::SetDesc(const char* descStr)
+{
 	if (descStr != NULL)
 		description = BString(descStr);
 	else return false;
@@ -83,7 +84,8 @@ Entry::SetDesc(const char* descStr) {
 
 
 bool
-Entry::SetDesc(tinyxml2::XMLElement* elem) {
+Entry::SetDesc(tinyxml2::XMLElement* elem)
+{
 	if (elem != NULL)
 		return SetDesc(elem->GetText());
 	return false;
@@ -91,7 +93,8 @@ Entry::SetDesc(tinyxml2::XMLElement* elem) {
 
 
 bool
-Entry::SetFeedTitle(BString titleStr) {
+Entry::SetFeedTitle(BString titleStr)
+{
 	if (titleStr != NULL)
 		feedTitle = titleStr;
 	else return false;
@@ -119,7 +122,8 @@ Entry::SetContent(tinyxml2::XMLElement* elem)
 
 
 bool
-Entry::SetPostUrl(const char* urlStr) {
+Entry::SetPostUrl(const char* urlStr)
+{
 	if (urlStr != NULL)
 		postUrl = BString(urlStr);
 	else return false;
@@ -128,7 +132,8 @@ Entry::SetPostUrl(const char* urlStr) {
 
 
 bool
-Entry::SetPostUrl(tinyxml2::XMLElement* elem) {
+Entry::SetPostUrl(tinyxml2::XMLElement* elem)
+{
 	if (elem != NULL)
 		return SetPostUrl(elem->GetText());
 	return false;
@@ -136,7 +141,8 @@ Entry::SetPostUrl(tinyxml2::XMLElement* elem) {
 
 
 bool
-Entry::SetDate(const char* dateStr) {
+Entry::SetDate(const char* dateStr)
+{
 	if (dateStr == NULL)
 		return false;
 	BDateTime newDate = feedDateToBDate(dateStr);
@@ -148,10 +154,18 @@ Entry::SetDate(const char* dateStr) {
 
 
 bool
-Entry::SetDate(tinyxml2::XMLElement* elem) {
+Entry::SetDate(tinyxml2::XMLElement* elem)
+{
 	if (elem != NULL)
 		return SetDate(elem->GetText());
 	return false;
+}
+
+
+BDateTime
+Entry::GetDate()
+{
+	return date;
 }
 
 

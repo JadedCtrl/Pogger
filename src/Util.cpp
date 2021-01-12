@@ -84,7 +84,8 @@ withinDateRange(BDateTime minDate, BDateTime nowDate, BDateTime maxDate)
 
 // return whether or not the given path is remote
 bool
-isRemotePath(BString path) {
+isRemotePath(BString path)
+{
 	BUrl givenUrl = BUrl(path);
 	BString protocol = givenUrl.Protocol().String();
 
@@ -93,6 +94,24 @@ isRemotePath(BString path) {
 		return false;
 	return true;
 }
+
+
+BString
+urlToFilename(BUrl url)
+{
+	BString protocol = url.Protocol().String();
+
+	if (protocol == NULL && url.UrlString() != NULL) {
+		return BString("");
+	}
+
+	BString filename = url.Host();
+	filename.Append(url.Path());
+	filename.ReplaceAll("/", "_");
+
+	return filename;
+}
+	
 
 
 int32

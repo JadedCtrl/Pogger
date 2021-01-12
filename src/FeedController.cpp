@@ -89,7 +89,7 @@ FeedController::_DownloadLoop(void* ignored)
 
 	while (receive_data(&sender, (void*)feedBuffer, sizeof(Feed)) != 0) {
 		printf( "%s\n\n", feedBuffer->GetCachePath().String());
-		feedBuffer->FetchRemoteFeed();
+		feedBuffer->Fetch();
 
 		BMessage* downloaded = new BMessage(kDownloadComplete);
 		downloaded->AddData("feeds", B_RAW_TYPE, feedBuffer, sizeof(Feed));
@@ -110,24 +110,26 @@ FeedController::_ParseLoop(void* ignored)
 
 	while (receive_data(&sender, (void*)feedBuffer, sizeof(Feed)) != 0) {
 		BList entries;
+		BDirectory outDir = BDirectory(((App*)be_app)->cfg->outDir);
 
 		if (feedBuffer->IsAtom()) {
 			AtomFeed* feed = (AtomFeed*)malloc(sizeof(AtomFeed));
 			feed = new AtomFeed(feedBuffer);
 			feed->Parse();
-			entries = feed->GetEntries();
+			entries = feed->GetNewEntries();
 			delete(feed);
 		}
-		if (feedBuffer->IsRss()) {
+		else if (feedBuffer->IsRss()) {
 			RssFeed* feed = (RssFeed*)malloc(sizeof(RssFeed));
 			feed = new RssFeed(feedBuffer);
 			feed->Parse();
-			entries = feed->GetEntries();
+			entries = feed->GetNewEntries();
 			delete(feed);
 		}
 
-		for (int i = 0; i < entries.CountItems(); i++)
-			((Entry*)entries.ItemAt(i))->Filetize(true);
+		if (feedBuffer->IsAtom() || feedBuffer->IsRss())
+			for (int i = 0; i < entries.CountItems(); i++)
+				((Entry*)entries.ItemAt(i))->Filetize(outDir);
 	}
 	
 	delete (feedBuffer);

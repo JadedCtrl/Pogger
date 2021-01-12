@@ -19,9 +19,9 @@
 class Entry {
 public:
 	
-	Entry(BString);
+	Entry();
 
-	bool Filetize(bool);
+	bool Filetize(BDirectory outDir);
 
 	bool SetTitle(const char*);
 	bool SetTitle(tinyxml2::XMLElement*);
@@ -34,6 +34,7 @@ public:
 	bool SetPostUrl(tinyxml2::XMLElement*);
 	bool SetDate(const char*);
 	bool SetDate(tinyxml2::XMLElement*);
+	BDateTime GetDate();
 
 	BString  title;
 	BString  description;
@@ -41,7 +42,6 @@ public:
 	BDateTime date;
 	BString  postUrl;
 	BString  content;
-	BString  outputDir;
 };
 
 

@@ -23,6 +23,8 @@ bool withinDateRange(BDateTime, BDateTime, BDateTime);
 
 bool isRemotePath(BString);
 
+BString urlToFilename(BUrl url);
+
 int32 fetch(BUrl url, BDataIO* reply, BString* hash, int timeout);
 
 

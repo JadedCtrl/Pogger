@@ -19,53 +19,49 @@ class BUrl;
 
 class Feed {
 public:
-	Feed(BString);
+	Feed(BUrl);
+	Feed(BUrl, BString);
 	Feed(Feed*);
 	Feed();
 
 	virtual void Parse();
 
-	bool IsRemote();
-	bool IsUpdated();
-	bool IsRss();
-	bool IsAtom();
-
-	BString FetchRemoteFeed();
-
-	bool	AddEntry(Entry*);
 	BList	GetEntries();
-	bool	SetTitle(const char*);
-	bool	SetTitle(tinyxml2::XMLElement*);
+	BList	GetNewEntries();
+
+	BString	Fetch();
+
+	bool	IsRss();
+	bool	IsAtom();
+	bool	IsUpdated();
+
 	BString	GetTitle();
-	bool	SetDesc(const char*);
-	bool	SetDesc(tinyxml2::XMLElement*);
-	BString	GetDesc();
-	bool	SetHomeUrl(const char*);
-	bool	SetHomeUrl(tinyxml2::XMLElement*);
-	BString	GetHomeUrl();
-	BString	GetXmlUrl();
-	bool	SetDate(const char*);
-	bool	SetDate(tinyxml2::XMLElement*);
+	BUrl	GetXmlUrl();
 	BDateTime GetDate();
 
-	BString	SetCachePath(BString);
 	BString	GetCachePath();
 
 protected:
-	void EnsureCached();
-	int	xmlCountSiblings(tinyxml2::XMLElement*, const char*);
+	bool	SetTitle(const char*);
+	bool	SetTitle(tinyxml2::XMLElement*);
+	bool	SetDate(BDateTime);
+	bool	SetDate(const char*);
+	bool	SetDate(tinyxml2::XMLElement*);
+	bool	SetXmlUrl(BUrl newUrl);
+	bool	SetCachePath(BString path);
+
+	bool	AddEntry(Entry*);
+
+	int		xmlCountSiblings(tinyxml2::XMLElement*, const char*);
 
 	BString	title;
-	BString	description;
 	BDateTime date;
 	BDateTime lastDate;
-	BDateTime minDate;
-	BDateTime maxDate;
-	BString	homeUrl;
-	BString inputPath;
-	BString	xmlUrl;
+	BUrl	xmlUrl;
 	BString	cachePath;
-	BString outputDir;
+	BString hash;
+	BString lastHash;
+
 	BList	entries;
 	bool	fetched;
 	bool	updated;
