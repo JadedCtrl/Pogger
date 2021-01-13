@@ -6,6 +6,7 @@
 #include "FeedController.h"
 
 #include <Message.h>
+#include <Notification.h>
 
 #include <cstdio>
 
@@ -125,6 +126,7 @@ FeedController::_ParseLoop(void* ignored)
 
 	while (receive_data(&sender, (void*)feedBuffer, sizeof(Feed)) != 0) {
 		BList entries;
+		BString title;
 		BDirectory outDir = BDirectory(((App*)be_app)->cfg->outDir);
 
 		if (feedBuffer->IsAtom()) {
@@ -132,6 +134,7 @@ FeedController::_ParseLoop(void* ignored)
 			feed = new AtomFeed(feedBuffer);
 			feed->Parse();
 			entries = feed->GetNewEntries();
+			title = feed->GetTitle();
 			delete(feed);
 		}
 		else if (feedBuffer->IsRss()) {
@@ -139,12 +142,30 @@ FeedController::_ParseLoop(void* ignored)
 			feed = new RssFeed(feedBuffer);
 			feed->Parse();
 			entries = feed->GetNewEntries();
+			title = feed->GetTitle();
 			delete(feed);
 		}
 
-		if (feedBuffer->IsAtom() || feedBuffer->IsRss())
+		if ((feedBuffer->IsAtom() || feedBuffer->IsRss())
+			&& entries.CountItems() > 0)
+		{
 			for (int i = 0; i < entries.CountItems(); i++)
 				((Entry*)entries.ItemAt(i))->Filetize(outDir);
+
+			BNotification notifyNew = (B_INFORMATION_NOTIFICATION);
+			BString notifyLabel("New Feed Entries");
+			BString notifyText("%n% new entries from %source%");
+
+			BString numStr("");
+			numStr << entries.CountItems();
+			notifyText.ReplaceAll("%source%", title);
+			notifyText.ReplaceAll("%n%", numStr);
+
+
+			notifyNew.SetTitle(notifyLabel);
+			notifyNew.SetContent(notifyText);
+			notifyNew.Send();
+		}
 	}
 	
 	delete (feedBuffer);

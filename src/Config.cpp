@@ -11,7 +11,6 @@
 
 
 Config::Config() {
-	Load();
 }
 
 
@@ -33,7 +32,7 @@ Config::Load()
 	BMessage storage;
 	storage.Unflatten(&file);
 
-	updateInterval = storage.GetFloat("updateInterval", .5);	
+	updateInterval = storage.GetInt64("updateInterval", 3600000000);
 	outDir   = BString(storage.GetString("outDir", "/boot/home/feeds/"));
 	cacheDir = BString(storage.GetString("cacheDir",
 		"/boot/home/config/cache/Pogger/"));

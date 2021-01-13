@@ -4,8 +4,6 @@
 * Revamp configuration
 	* Fix saving, etc.
 * Notifications
-	* On new entries
-		* Sound effect, too
 	* On failures
 * Show progress
 	* With progress bar

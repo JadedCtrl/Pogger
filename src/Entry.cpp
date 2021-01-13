@@ -40,7 +40,7 @@ Entry::Filetize(BDirectory outDir)
 		title.String(), title.CountChars());
 	file->WriteAttr("Feed:description", B_STRING_TYPE, 0,
 		description.String(), description.CountChars());
-	file->WriteAttr("FEED:source", B_STRING_TYPE, 0,
+	file->WriteAttr("Feed:source", B_STRING_TYPE, 0,
 		feedTitle.String(), feedTitle.CountChars());
 	file->WriteAttr("META:url", B_STRING_TYPE, 0, postUrl.String(),
 		postUrl.CountChars());
