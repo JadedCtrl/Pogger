@@ -31,7 +31,7 @@ public:
 	BList	GetEntries();
 	BList	GetNewEntries();
 
-	BString	Fetch();
+	bool	Fetch();
 
 	bool	IsRss();
 	bool	IsAtom();

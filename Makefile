@@ -39,6 +39,7 @@ SRCS = \
 	src/FeedsView.cpp, \
 	src/MainWindow.cpp, \
 	src/Mimetypes.cpp, \
+	src/Notifier.cpp, \
 	src/ProtocolListener.cpp, \
 	src/RssFeed.cpp, \
 	src/UpdatesView.cpp, \

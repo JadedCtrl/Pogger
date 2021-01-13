@@ -15,6 +15,7 @@ class BMessageRunner;
 class Config;
 class FeedController;
 class MainWindow;
+class Notifier;
 
 
 class App : public BApplication
@@ -28,6 +29,7 @@ public:
 	Config* cfg;
 	MainWindow* fMainWindow;
 	BMessageRunner* fUpdateRunner;
+	Notifier* fNotifier;
 
 private:
 	FeedController* fFeedController;

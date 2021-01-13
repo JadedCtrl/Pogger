@@ -93,21 +93,19 @@ Feed::_PostParse()
 
 
 // Download a remote feed's XML to the cache path.
-BString
+bool
 Feed::Fetch()
 {
 	BFile cacheFile = BFile(cachePath, B_READ_WRITE | B_CREATE_FILE);
 
 	cacheFile.ReadAttrString("Feed:hash", &lastHash);
 
-	fetch(xmlUrl, &cacheFile, &hash, 30);
+	int32 result = fetch(xmlUrl, &cacheFile, &hash, 30);
 	cacheFile.WriteAttrString("Feed:hash", &hash);
 
-	if (hash == lastHash)
-		updated = false;
-
-	fetched = true;
-	return cachePath;
+	if (result == 0)
+		return true;
+	return false;
 }
 
 

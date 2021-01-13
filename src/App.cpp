@@ -18,6 +18,7 @@
 #include "FeedController.h"
 #include "MainWindow.h"
 #include "Mimetypes.h"
+#include "Notifier.h"
 #include "RssFeed.h"
 #include "Util.h"
 
@@ -40,6 +41,7 @@ App::App() : BApplication("application/x-vnd.Pogger")
 	cfg->Load();
 
 	fMainWindow = new MainWindow();
+	fNotifier = new Notifier();
 	fFeedController = new FeedController();
 	fMainWindow->Show();
 
@@ -69,13 +71,22 @@ App::MessageReceived(BMessage* msg)
 		{
 			break;
 		}
-		case kQueueProgress:
+		case kParseFail:
 		{
-			fMainWindow->MessageReceived(msg);
+			fNotifier->MessageReceived(msg);
+			fFeedController->MessageReceived(msg);
+			break;
+		}
+		case kDownloadFail:
+		{
+			fNotifier->MessageReceived(msg);
+			fFeedController->MessageReceived(msg);
+			break;
 		}
 		case kDownloadComplete:
 		{
 			fFeedController->MessageReceived(msg);
+			break;
 		}
 		default:
 		{

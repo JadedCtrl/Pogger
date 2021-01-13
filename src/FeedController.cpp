@@ -105,14 +105,17 @@ FeedController::_DownloadLoop(void* ignored)
 		printf( "Downloading feed from %s...\n",
 			feedBuffer->GetXmlUrl().UrlString().String());
 
-		feedBuffer->Fetch();
-
-		BMessage* downloaded = new BMessage(kDownloadComplete);
-		downloaded->AddData("feeds", B_RAW_TYPE, feedBuffer, sizeof(Feed));
-
-		((App*)be_app)->MessageReceived(downloaded);
+		if (feedBuffer->Fetch()) {
+			BMessage* downloaded = new BMessage(kDownloadComplete);
+			downloaded->AddData("feeds", B_RAW_TYPE, feedBuffer, sizeof(Feed));
+			((App*)be_app)->MessageReceived(downloaded);
+		}
+		else {
+			BMessage* failure = new BMessage(kDownloadFail);
+			failure->AddString("feed_url", feedBuffer->GetXmlUrl().UrlString());
+			((App*)be_app)->MessageReceived(failure);
+		}
 	}
-
 	delete(feedBuffer);
 	return 0;
 }
@@ -126,7 +129,8 @@ FeedController::_ParseLoop(void* ignored)
 
 	while (receive_data(&sender, (void*)feedBuffer, sizeof(Feed)) != 0) {
 		BList entries;
-		BString title;
+		BString feedTitle;
+		BUrl feedUrl = feedBuffer->GetXmlUrl();
 		BDirectory outDir = BDirectory(((App*)be_app)->cfg->outDir);
 
 		if (feedBuffer->IsAtom()) {
@@ -134,7 +138,7 @@ FeedController::_ParseLoop(void* ignored)
 			feed = new AtomFeed(feedBuffer);
 			feed->Parse();
 			entries = feed->GetNewEntries();
-			title = feed->GetTitle();
+			feedTitle = feed->GetTitle();
 			delete(feed);
 		}
 		else if (feedBuffer->IsRss()) {
@@ -142,29 +146,24 @@ FeedController::_ParseLoop(void* ignored)
 			feed = new RssFeed(feedBuffer);
 			feed->Parse();
 			entries = feed->GetNewEntries();
-			title = feed->GetTitle();
+			feedTitle = feed->GetTitle();
 			delete(feed);
 		}
 
-		if ((feedBuffer->IsAtom() || feedBuffer->IsRss())
-			&& entries.CountItems() > 0)
-		{
+
+		if (feedBuffer->IsAtom() || feedBuffer->IsRss()) {
 			for (int i = 0; i < entries.CountItems(); i++)
 				((Entry*)entries.ItemAt(i))->Filetize(outDir);
 
-			BNotification notifyNew = (B_INFORMATION_NOTIFICATION);
-			BString notifyLabel("New Feed Entries");
-			BString notifyText("%n% new entries from %source%");
-
-			BString numStr("");
-			numStr << entries.CountItems();
-			notifyText.ReplaceAll("%source%", title);
-			notifyText.ReplaceAll("%n%", numStr);
-
-
-			notifyNew.SetTitle(notifyLabel);
-			notifyNew.SetContent(notifyText);
-			notifyNew.Send();
+			BMessage* complete = new BMessage(kParseComplete);
+			complete->AddString("feed_name", feedTitle);
+			complete->AddInt32("entry_count", entries.CountItems());
+			((App*)be_app)->MessageReceived(complete);
+		}
+		else {
+			BMessage* failure = new BMessage(kParseFail);
+			failure->AddString("feed_url", feedUrl.UrlString());
+			((App*)be_app)->MessageReceived(failure);
 		}
 	}
 	
