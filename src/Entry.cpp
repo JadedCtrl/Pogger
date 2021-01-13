@@ -36,9 +36,9 @@ Entry::Filetize(BDirectory outDir)
 	file->WriteAttr("BEOS:TYPE", B_MIME_STRING_TYPE, 0, betype.String(),
 		betype.CountChars() + 1);
 
-	file->WriteAttr("FEED:name", B_STRING_TYPE, 0,
+	file->WriteAttr("Feed:name", B_STRING_TYPE, 0,
 		title.String(), title.CountChars());
-	file->WriteAttr("FEED:description", B_STRING_TYPE, 0,
+	file->WriteAttr("Feed:description", B_STRING_TYPE, 0,
 		description.String(), description.CountChars());
 	file->WriteAttr("FEED:source", B_STRING_TYPE, 0,
 		feedTitle.String(), feedTitle.CountChars());
@@ -46,7 +46,7 @@ Entry::Filetize(BDirectory outDir)
 		postUrl.CountChars());
 
 	if (date != NULL) {
-		file->WriteAttr("FEED:when", B_TIME_TYPE, 0, &tt_date, sizeof(time_t));
+		file->WriteAttr("Feed:when", B_TIME_TYPE, 0, &tt_date, sizeof(time_t));
 	}
 
 	file->Write(content.String(), content.Length());
