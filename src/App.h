@@ -11,6 +11,7 @@
 
 
 class BMessage;
+class BMessageRunner;
 class Config;
 class FeedController;
 class MainWindow;
@@ -26,6 +27,7 @@ public:
 
 	Config* cfg;
 	MainWindow* fMainWindow;
+	BMessageRunner* fUpdateRunner;
 
 private:
 	FeedController* fFeedController;

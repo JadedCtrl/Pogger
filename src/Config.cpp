@@ -11,20 +11,11 @@
 
 
 Config::Config() {
-	verbose		= false;
-	daemon		= true;
-	will_save	= false;
-	updateFeeds	= false;
+	Load();
 }
 
 
 Config::Config(Config* cfg) {
-	verbose		= cfg->verbose;
-	daemon		= cfg->daemon;
-	will_save	= cfg->will_save;
-	updateFeeds	= cfg->updateFeeds;
-	minDate		= cfg->minDate;
-	maxDate		= cfg->maxDate;
 }
 
 
@@ -32,23 +23,20 @@ Config::Config(Config* cfg) {
 void
 Config::Load()
 {
-	if (configDir == NULL)
-		configDir = BString("/boot/home/config/settings/Pogger/");
+	configDir = BString("/boot/home/config/settings/Pogger/");
 
 	BString filename = BString(configDir);
 	filename.Append("settings");
-	BFile* file = new BFile(filename.String(), B_READ_ONLY);
-	status_t result = file->InitCheck();
+	BFile file(filename.String(), B_READ_ONLY);
+	status_t result = file.InitCheck();
 
 	BMessage storage;
-	storage.Unflatten(file);
+	storage.Unflatten(&file);
 
-	if (outDir == NULL)
-		outDir   = BString(storage.GetString("outDir", "/boot/home/feeds/"));
-	if (cacheDir == NULL)
-		cacheDir = BString(storage.GetString("cacheDir",
-			"/boot/home/config/cache/Pogger/"));
-	delete file;
+	updateInterval = storage.GetFloat("updateInterval", .5);	
+	outDir   = BString(storage.GetString("outDir", "/boot/home/feeds/"));
+	cacheDir = BString(storage.GetString("cacheDir",
+		"/boot/home/config/cache/Pogger/"));
 }
 
 
@@ -75,6 +63,7 @@ Config::Save ()
 		| B_ERASE_FILE);
 	status_t result = file->InitCheck();
 
+	storage.AddFloat("updateInterval", updateInterval);
 	storage.AddString("outDir", outDir.String());
 	storage.AddString("cacheDir", cacheDir.String());
 

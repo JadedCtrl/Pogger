@@ -128,9 +128,6 @@ FeedController::_ParseLoop(void* ignored)
 		BDirectory outDir = BDirectory(((App*)be_app)->cfg->outDir);
 
 		if (feedBuffer->IsAtom()) {
-			printf("Parsing Atom feed from %s...\n",
-				feedBuffer->GetXmlUrl().UrlString().String());
-
 			AtomFeed* feed = (AtomFeed*)malloc(sizeof(AtomFeed));
 			feed = new AtomFeed(feedBuffer);
 			feed->Parse();
@@ -138,9 +135,6 @@ FeedController::_ParseLoop(void* ignored)
 			delete(feed);
 		}
 		else if (feedBuffer->IsRss()) {
-			printf("Parsing RSS feed from %s...\n",
-				feedBuffer->GetXmlUrl().UrlString().String());
-
 			RssFeed* feed = (RssFeed*)malloc(sizeof(RssFeed));
 			feed = new RssFeed(feedBuffer);
 			feed->Parse();

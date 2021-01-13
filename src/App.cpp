@@ -5,6 +5,7 @@
 
 #include "App.h"
 
+#include <MessageRunner.h>
 #include <StorageKit.h>
 #include <String.h>
 
@@ -24,26 +25,28 @@
 int
 main(int argc, char** argv)
 {
-	App* app = new App();
 	installMimeTypes();
 
-	app->cfg = new Config;
-	app->cfg->Load();
-
+	App* app = new App();
 	app->Run();
-		
-	if ( app->cfg->will_save == true )
-		app->cfg->Save();
-
+	app->cfg->Save();
 	return 0;
 }
 
 
 App::App() : BApplication("application/x-vnd.Pogger")
 {
+	cfg = new Config;
+	cfg->Load();
+
 	fMainWindow = new MainWindow();
 	fFeedController = new FeedController();
 	fMainWindow->Show();
+
+	BMessage* updateMessage = new BMessage(kUpdateSubscribed);
+	MessageReceived(updateMessage);
+	fUpdateRunner = new BMessageRunner(this, updateMessage,
+		cfg->updateInterval);
 }
 
 

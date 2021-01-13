@@ -22,11 +22,8 @@ public:
 	bool verbose;
 	bool daemon;
 	BString outDir;
-	BList targetFeeds; // strings of files or urls
 
-	BDateTime minDate;
-	BDateTime maxDate;
-
+	int64 updateInterval;
 	BString configDir;
 	BString cacheDir;
 	bool will_save;
