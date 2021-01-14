@@ -23,6 +23,7 @@ public:
 	Feed(BUrl);
 	Feed(BUrl, BString);
 	Feed(BEntry);
+	Feed(BUrl xml, BEntry entry);
 	Feed(Feed*);
 	Feed();
 

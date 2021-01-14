@@ -31,6 +31,7 @@ Feed::Feed(BUrl xml)
 }
 
 
+// For pre-existing feed
 Feed::Feed(BEntry entry)
 	: Feed()
 {
@@ -39,9 +40,32 @@ Feed::Feed(BEntry entry)
 	entry.GetPath(&path);
 	SetCachePath(BString(path.Path()));
 
+	BString name;
 	BString url;
 	file.ReadAttrString("META:url", &url);
-	xmlUrl = BUrl(url);
+	file.ReadAttrString("Feed:name", &name);
+
+	if (!url.IsEmpty())
+		SetXmlUrl(BUrl(url));
+	if (!name.IsEmpty())
+		SetTitle(name);
+}
+
+
+// For new feed
+Feed::Feed(BUrl xml, BEntry entry)
+	: Feed()
+{
+	BPath path;
+	BString pathString;
+	entry.GetPath(&path);
+	pathString = path.Path();
+	
+	if (entry.IsDirectory())
+		pathString += BString(urlToFilename(xml));
+
+	SetCachePath(pathString);
+	SetXmlUrl(xml);
 }
 
 

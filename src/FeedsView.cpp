@@ -14,6 +14,10 @@
 
 #include <cstdio>
 
+#include "FeedController.h"
+#include "FeedListItem.h"
+
+
 FeedsView::FeedsView(const char* name)
 	:
 	BGroupView(name, B_VERTICAL, B_USE_DEFAULT_SPACING)
@@ -44,16 +48,22 @@ FeedsView::_InitInterface()
 	fFeedsScrollView = new BScrollView("feedsScroll", fFeedsListView,
 		B_WILL_DRAW, false, true);
 
-	font_height fontHeight;
-	GetFontHeight(&fontHeight);
-	int16 buttonHeight = int16(fontHeight.ascent + fontHeight.descent + 12);
-	BSize charButtonSize(buttonHeight, buttonHeight);
+	BList feeds = FeedController::SubscribedFeeds();
+	for (int i = 0; i < feeds.CountItems(); i++) {
+		FeedListItem* item = new FeedListItem((Feed*)feeds.ItemAt(i));
+		fFeedsListView->AddItem(item);
+	}
 
 	// Add, Remove, Edit
 	fAddButton = new BButton("addFeed", "+",
 		new BMessage('fadd'));
 	fRemoveButton = new BButton("removeFeed", "-",
 		new BMessage('frem'));
+
+	font_height fontHeight;
+	GetFontHeight(&fontHeight);
+	int16 buttonHeight = int16(fontHeight.ascent + fontHeight.descent + 12);
+	BSize charButtonSize(buttonHeight, buttonHeight);
 
 	fAddButton->SetTarget(this);
 	fAddButton->SetExplicitSize(charButtonSize);

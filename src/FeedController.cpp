@@ -57,16 +57,14 @@ FeedController::MessageReceived(BMessage* msg)
 		}
 		case kUpdateSubscribed:
 		{
-			BDirectory subDir("/boot/home/config/settings/Pogger/Subscriptions");
-			BEntry feedEntry;
-			Feed* feed;
-
-			while (subDir.GetNextEntry(&feedEntry) == B_OK) {
-				feed = new Feed(feedEntry);
+			BList subFeeds = SubscribedFeeds();
+			for (int i = 0; i < subFeeds.CountItems(); i++) {
 				BMessage* getFeed = new BMessage(kEnqueueFeed);
-				getFeed->AddData("feeds", B_RAW_TYPE, feed, sizeof(Feed));
+				getFeed->AddData("feeds", B_RAW_TYPE, subFeeds.ItemAt(i),
+					sizeof(Feed));
 				((App*)be_app)->MessageReceived(getFeed);
 			}
+			break;
 		}
 		case kClearQueue:
 		{
@@ -92,6 +90,19 @@ FeedController::MessageReceived(BMessage* msg)
 			break;
 		}
 	}
+}
+
+
+BList
+FeedController::SubscribedFeeds()
+{
+	BDirectory subDir("/boot/home/config/settings/Pogger/Subscriptions");
+	BEntry feedEntry;
+	BList feeds;
+
+	while (subDir.GetNextEntry(&feedEntry) == B_OK)
+		feeds.AddItem(new Feed(feedEntry));
+	return feeds;
 }
 
 

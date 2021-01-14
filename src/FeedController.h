@@ -8,6 +8,7 @@
 #include <SupportDefs.h>
 #include <OS.h>
 
+class BList;
 class BMessage;
 
 
@@ -28,6 +29,7 @@ public:
 	FeedController();
 	~FeedController();
 	void MessageReceived(BMessage* msg);
+	static BList SubscribedFeeds();
 
 private:
 	static int32 _DownloadLoop(void* ignored);

@@ -3,8 +3,6 @@
 		* Do this for file refs when Feeds, too
 * Revamp configuration
 	* Fix saving, etc.
-* Notifications
-	* On failures
 * Show progress
 	* With progress bar
 	* With indicator in the feeds list
