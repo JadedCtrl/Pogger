@@ -1,6 +1,9 @@
-* Add subscriptions
-	* Adding/editing from GUI
-		* Do this for file refs when Feeds, too
+* Feeds list
+	* Update when feeds are edited
+* Store feeds in kEnqueueFeeds/etc messages as paths? hmm
+	* This way, if the user edits the feed after it is enqueued, the changes
+	  will be applied.
+* Support for clearing queue
 * Revamp configuration
 	* Fix saving, etc.
 * Show progress

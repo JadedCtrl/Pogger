@@ -46,7 +46,7 @@ App::App() : BApplication("application/x-vnd.Pogger")
 	fMainWindow->Show();
 
 	BMessage* updateMessage = new BMessage(kUpdateSubscribed);
-	MessageReceived(updateMessage);
+//	MessageReceived(updateMessage);
 	fUpdateRunner = new BMessageRunner(this, updateMessage,
 		cfg->updateInterval);
 }
@@ -58,11 +58,8 @@ App::MessageReceived(BMessage* msg)
 	switch (msg->what)
 	{
 		case kEnqueueFeed:
-		{
-			fFeedController->MessageReceived(msg);
-			break;
-		}
 		case kUpdateSubscribed:
+		case kDownloadComplete:
 		{
 			fFeedController->MessageReceived(msg);
 			break;
@@ -71,20 +68,15 @@ App::MessageReceived(BMessage* msg)
 		{
 			break;
 		}
-		case kParseFail:
+		case kParseComplete:
 		{
 			fNotifier->MessageReceived(msg);
-			fFeedController->MessageReceived(msg);
 			break;
 		}
+		case kParseFail:
 		case kDownloadFail:
 		{
 			fNotifier->MessageReceived(msg);
-			fFeedController->MessageReceived(msg);
-			break;
-		}
-		case kDownloadComplete:
-		{
 			fFeedController->MessageReceived(msg);
 			break;
 		}

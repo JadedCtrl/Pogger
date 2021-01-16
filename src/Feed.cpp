@@ -98,24 +98,6 @@ Feed::Parse()
 }
 
 
-void
-Feed::_PostParse()
-{
-	BFile feedFile(cachePath, B_WRITE_ONLY);
-	time_t tt_date = date.Time_t();
-	BString url = xmlUrl.UrlString();
-	BString name = GetTitle();
-	BString type("application/x-feed-source");
-
-	feedFile.WriteAttrString("Feed:name", &name);
-	feedFile.WriteAttrString("META:url", &url);
-	feedFile.WriteAttrString("BEOS:TYPE", &type);
-	feedFile.WriteAttr("Feed:when", B_TIME_TYPE, 0, &tt_date, sizeof(time_t));
-	feedFile.WriteAttr("BEOS:TYPE", B_MIME_STRING_TYPE, 0, type.String(),
-	type.CountChars() + 1);
-}
-
-
 // Download a remote feed's XML to the cache path.
 bool
 Feed::Fetch()
@@ -130,6 +112,32 @@ Feed::Fetch()
 	if (result == 0)
 		return true;
 	return false;
+}
+
+
+void
+Feed::Filetize()
+{
+	BFile feedFile(cachePath, B_WRITE_ONLY | B_CREATE_FILE);
+	time_t tt_date = date.Time_t();
+	BString url = xmlUrl.UrlString();
+	BString name = GetTitle();
+	BString type("application/x-feed-source");
+
+	feedFile.WriteAttrString("Feed:name", &name);
+	feedFile.WriteAttrString("META:url", &url);
+	feedFile.WriteAttrString("BEOS:TYPE", &type);
+	feedFile.WriteAttr("Feed:when", B_TIME_TYPE, 0, &tt_date, sizeof(time_t));
+	feedFile.WriteAttr("BEOS:TYPE", B_MIME_STRING_TYPE, 0, type.String(),
+	type.CountChars() + 1);
+}
+
+
+void
+Feed::Unfiletize()
+{
+	BEntry entry(GetCachePath().String());
+	entry.Remove();
 }
 
 

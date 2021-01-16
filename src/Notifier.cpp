@@ -24,7 +24,8 @@ Notifier::MessageReceived(BMessage* msg)
 			if (msg->FindString("feed_name", &feedName) == B_OK
 				&& msg->FindInt32("entry_count", &entryCount) == B_OK)
 			{
-				_NewEntryNotification(feedName, entryCount);
+				if (entryCount > 0)
+					_NewEntryNotification(feedName, entryCount);
 			}
 			break;
 		}

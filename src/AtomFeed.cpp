@@ -42,7 +42,7 @@ AtomFeed::Parse ()
 	RootParse(xfeed);
 	ParseEntries(xfeed);
 
-	_PostParse();
+	Filetize();
 }
 
 

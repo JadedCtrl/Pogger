@@ -17,3 +17,15 @@ FeedListItem::FeedListItem(Feed* feed)
 }
 
 
+BString
+FeedListItem::GetFeedPath()
+{
+	return fFeedPath;
+}
+
+
+BUrl
+FeedListItem::GetFeedUrl()
+{
+	return fFeedUrl;
+}

@@ -19,6 +19,9 @@ class FeedListItem : public BStringItem
 public:
 	FeedListItem(Feed* feed);
 
+	BUrl GetFeedUrl();
+	BString GetFeedPath();
+
 private:
 	BUrl fFeedUrl;
 	BString fFeedPath;

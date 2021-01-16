@@ -34,28 +34,32 @@ public:
 
 	bool	Fetch();
 
+	void	Filetize();
+	void	Unfiletize();
+
 	bool	IsRss();
 	bool	IsAtom();
 	bool	IsUpdated();
 
 	BString	GetTitle();
+	bool	SetDate(BDateTime);
+
 	BUrl	GetXmlUrl();
 	BDateTime GetDate();
+
+	bool	SetTitle(const char*);
+	bool	SetXmlUrl(BUrl newUrl);
+	bool	SetCachePath(BString path);
 
 	BString	GetCachePath();
 
 protected:
-	bool	SetTitle(const char*);
 	bool	SetTitle(tinyxml2::XMLElement*);
-	bool	SetDate(BDateTime);
 	bool	SetDate(const char*);
 	bool	SetDate(tinyxml2::XMLElement*);
-	bool	SetXmlUrl(BUrl newUrl);
-	bool	SetCachePath(BString path);
 
 	bool	AddEntry(Entry*);
 
-	void	_PostParse();
 	int		xmlCountSiblings(tinyxml2::XMLElement*, const char*);
 
 	BString	title;

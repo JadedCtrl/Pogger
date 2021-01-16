@@ -40,7 +40,7 @@ RssFeed::Parse()
 	RootParse(xchan);
 	ParseEntries(xchan);
 
-	_PostParse();
+	Filetize();
 }
 
 

@@ -21,10 +21,7 @@
 #include "UpdatesView.h"
 
 
-enum { M_BUTTON_CLICKED = 'btcl' };
-
-
-MainWindow::MainWindow (void)
+MainWindow::MainWindow()
 	:
 	BWindow(BRect(BPoint(-1000.0, -1000.0), BSize(520, 380)), "Pogger",
 		B_TITLED_WINDOW, B_NOT_RESIZABLE | B_NOT_ZOOMABLE)
@@ -39,6 +36,14 @@ MainWindow::MessageReceived(BMessage *msg)
 {
 	switch (msg->what)
 	{
+		case kFeedsAddButton:
+		case kFeedsRemoveButton:
+		case kFeedsEditButton:
+		case kFeedsSelected:
+		{
+			fFeedsView->MessageReceived(msg);
+			break;
+		}
 		default:
 		{
 			BWindow::MessageReceived(msg);

@@ -14,6 +14,16 @@ class BListView;
 class BScrollView;
 
 
+enum
+{
+	kFeedsAddButton		= 'sadd',
+	kFeedsRemoveButton	= 'srem',
+	kFeedsEditButton	= 'sedt',
+	kFeedsSelected		= 'flsl',
+	kFeedsEdited		= 'fedd'
+};
+
+
 class FeedsView : public BGroupView {
 public:
 	FeedsView(const char* name);
@@ -23,8 +33,12 @@ public:
 private:
 	void _InitInterface();
 
+	void _EditSelectedFeed();
+	void _RemoveSelectedFeed();
+
 	BButton* fAddButton;
 	BButton* fRemoveButton;
+	BButton* fEditButton;
 	BListView* fFeedsListView;
 	BScrollView* fFeedsScrollView;
 };
