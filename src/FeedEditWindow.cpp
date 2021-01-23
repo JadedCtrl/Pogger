@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * Copyright 2021, Jaidyn Levesque <jadedctrl@teknik.io>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
@@ -16,6 +16,7 @@
 #include "Feed.h"
 #include "FeedController.h"
 #include "FeedListItem.h"
+#include "FeedsView.h"
 
 
 FeedEditWindow::FeedEditWindow()
@@ -136,9 +137,11 @@ FeedEditWindow::_SaveFeed()
 	fFeed->SetXmlUrl(BUrl(urlString));
 	fFeed->Filetize();
 
-	BMessage* firstUpdate = new BMessage(kEnqueueFeed);
-	firstUpdate->AddData("feeds", B_RAW_TYPE, (void*)fFeed, sizeof(Feed));
-	((App*)be_app)->MessageReceived(firstUpdate);
+	BMessage* enqueueUpdated = new BMessage(kEnqueueFeed);
+	enqueueUpdated->AddData("feeds", B_RAW_TYPE, (void*)fFeed, sizeof(Feed));
+
+	((App*)be_app)->MessageReceived(enqueueUpdated);
+	((App*)be_app)->MessageReceived(new BMessage(kFeedsEdited));
 	Quit();
 }
 
@@ -147,6 +150,7 @@ void
 FeedEditWindow::_DeleteFeed()
 {
 	fFeed->Unfiletize();
+	((App*)be_app)->MessageReceived(new BMessage(kFeedsEdited));
 	Quit();
 }
 

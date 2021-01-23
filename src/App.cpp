@@ -16,6 +16,7 @@
 #include "Entry.h"
 #include "Feed.h"
 #include "FeedController.h"
+#include "FeedsView.h"
 #include "MainWindow.h"
 #include "Mimetypes.h"
 #include "Notifier.h"
@@ -57,11 +58,22 @@ App::MessageReceived(BMessage* msg)
 {
 	switch (msg->what)
 	{
-		case kEnqueueFeed:
 		case kUpdateSubscribed:
-		case kDownloadComplete:
 		{
 			fFeedController->MessageReceived(msg);
+			break;
+		}
+		case kEnqueueFeed:
+		case kDownloadComplete:
+		{
+			fNotifier->MessageReceived(msg);
+			fFeedController->MessageReceived(msg);
+			break;
+		}
+		case kFeedsEdited:
+		case kProgress:
+		{
+			fMainWindow->MessageReceived(msg);
 			break;
 		}
 		case kClearQueue:
@@ -69,20 +81,15 @@ App::MessageReceived(BMessage* msg)
 			break;
 		}
 		case kParseComplete:
-		{
-			fNotifier->MessageReceived(msg);
-			break;
-		}
 		case kParseFail:
 		case kDownloadFail:
 		{
 			fNotifier->MessageReceived(msg);
-			fFeedController->MessageReceived(msg);
 			break;
 		}
 		default:
 		{
-//			BApplication::MessageReceived(msg);
+			BApplication::MessageReceived(msg);
 			break;
 		}
 	}

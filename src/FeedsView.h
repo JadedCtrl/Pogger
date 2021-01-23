@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * Copyright 2021, Jaidyn Levesque <jadedctrl@teknik.io>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #ifndef FEEDSVIEW_H
@@ -28,13 +28,15 @@ class FeedsView : public BGroupView {
 public:
 	FeedsView(const char* name);
 
-	void MessageReceived(BMessage* msg);
+	virtual void MessageReceived(BMessage* msg);
 
 private:
 	void _InitInterface();
 
 	void _EditSelectedFeed();
 	void _RemoveSelectedFeed();
+
+	void _PopulateFeedList();
 
 	BButton* fAddButton;
 	BButton* fRemoveButton;

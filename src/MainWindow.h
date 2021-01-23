@@ -6,6 +6,7 @@
 
 class BButton;
 class BGroupView;
+class BStatusBar;
 class BTabView;
 class EntriesView;
 class FeedsView;
@@ -21,13 +22,16 @@ public:
 private:
 	void _InitInterface();
 
-	BGroupView*	 fBaseView;
+	void _UpdateProgress();
+
+	BGroupView*		fBaseView;
 	BTabView*		fTabView;
 	EntriesView*	fEntriesView;
 	FeedsView*		fFeedsView;
 	UpdatesView*	fUpdatesView;
 
-	BButton*	fUpdateNowButton;
+	BStatusBar*		fStatusBar;
+	BButton*		fUpdateNowButton;
 };
 
 

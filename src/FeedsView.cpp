@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * Copyright 2021, Jaidyn Levesque <jadedctrl@teknik.io>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
@@ -44,22 +44,25 @@ FeedsView::MessageReceived(BMessage* msg)
 		case kFeedsRemoveButton:
 		{
 			_RemoveSelectedFeed();
+			_PopulateFeedList();
 			break;
 		}
 		case kFeedsEditButton:
 		{
 			_EditSelectedFeed();
+			_PopulateFeedList();
 			break;
 		}
 		case kFeedsSelected:
 		{
-			fEditButton->SetEnabled(true);
-			fRemoveButton->SetEnabled(true);
+			bool enabled = msg->GetInt32("index", -1) >= 0;
+			fEditButton->SetEnabled(enabled);
+			fRemoveButton->SetEnabled(enabled);
 			break;
 		}
 		case kFeedsEdited:
 		{
-			break;
+//			_PopulateFeedList();
 		}
 		default:
 		{
@@ -80,11 +83,7 @@ FeedsView::_InitInterface()
 	fFeedsListView->SetSelectionMessage(new BMessage(kFeedsSelected));
 	fFeedsListView->SetInvocationMessage(new BMessage(kFeedsEditButton));
 
-	BList feeds = FeedController::SubscribedFeeds();
-	for (int i = 0; i < feeds.CountItems(); i++) {
-		FeedListItem* item = new FeedListItem((Feed*)feeds.ItemAt(i));
-		fFeedsListView->AddItem(item);
-	}
+	_PopulateFeedList();
 
 	// Add, Remove, Edit
 	fAddButton = new BButton("addFeed", "+", new BMessage(kFeedsAddButton));
@@ -159,6 +158,19 @@ FeedsView::_RemoveSelectedFeed()
 	Feed delFeed = Feed(BEntry(selected->GetFeedPath()));
 
 	delFeed.Unfiletize();
+}
+
+
+void
+FeedsView::_PopulateFeedList()
+{
+	BList feeds = FeedController::SubscribedFeeds();
+
+	fFeedsListView->MakeEmpty();
+	for (int i = 0; i < feeds.CountItems(); i++) {
+		FeedListItem* item = new FeedListItem((Feed*)feeds.ItemAt(i));
+		fFeedsListView->AddItem(item);
+	}
 }
 
 

@@ -78,8 +78,15 @@ FeedController::MessageReceived(BMessage* msg)
 
 			while (msg->HasData("feeds", B_RAW_TYPE, i)) {
 				msg->FindData("feeds", B_RAW_TYPE, i, &data, &size);
+
 				if (((Feed*)data)->IsUpdated() == true)
 					send_data(fParseThread, msg->what, data, size);
+				else {
+					BMessage* complete = new BMessage(kParseComplete);
+					complete->AddString("feed_name", ((Feed*)data)->GetTitle());
+					complete->AddInt32("entry_count", 0);
+					((App*)be_app)->MessageReceived(complete);
+				}
 				i++;
 			}
 			break;

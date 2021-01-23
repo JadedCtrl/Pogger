@@ -1,14 +1,23 @@
 /*
- * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * Copyright 2021, Jaidyn Levesque <jadedctrl@teknik.io>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
+
+#include "Notifier.h"
 
 #include <Message.h>
 #include <Notification.h>
 
+#include "App.h"
 #include "FeedController.h"
 
-#include "Notifier.h"
+
+Notifier::Notifier()
+	:
+	fEnqueuedFeeds(0),
+	fFeedsInProgress(0)
+{
+}
 
 
 void
@@ -16,6 +25,13 @@ Notifier::MessageReceived(BMessage* msg)
 {
 	switch (msg->what)
 	{
+		case kEnqueueFeed:
+		{
+			fEnqueuedFeeds++;
+			fFeedsInProgress++;
+			_UpdateProgress();
+			break;
+		}
 		case kParseComplete:
 		{
 			BString feedName;
@@ -27,18 +43,28 @@ Notifier::MessageReceived(BMessage* msg)
 				if (entryCount > 0)
 					_NewEntryNotification(feedName, entryCount);
 			}
+
+			fFeedsInProgress--;
+			_UpdateProgress();
 			break;
 		}
 		case kParseFail:
 		{
 			BString feedUrl = msg->GetString("feed_url", "");
 			_ParseFailNotification(feedUrl);
+
+			fFeedsInProgress--;
+			_UpdateProgress();
 			break;
 		}
 		case kDownloadFail:
 		{
 			BString feedUrl = msg->GetString("feed_url", "");
 			_DownloadFailNotification(feedUrl);
+
+			fFeedsInProgress--;
+			_UpdateProgress();
+			break;
 		}
 	}
 }
@@ -93,6 +119,20 @@ Notifier::_DownloadFailNotification(BString feedUrl)
 	notifyError.SetTitle("Download Failure");
 	notifyError.SetContent(notifyText);
 	notifyError.Send();
+}
+
+
+void
+Notifier::_UpdateProgress()
+{
+	BMessage* progress = new BMessage(kProgress);
+	progress->AddInt32("max", fEnqueuedFeeds);
+	progress->AddInt32("current", fFeedsInProgress);
+
+	((App*)be_app)->MessageReceived(progress);
+
+	if (fFeedsInProgress == 0)
+		fEnqueuedFeeds = 0;
 }
 
 

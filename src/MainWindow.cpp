@@ -7,10 +7,11 @@
 
 #include <Button.h>
 #include <GroupView.h>
-#include <TabView.h>
 #include <LayoutBuilder.h>
 #include <SeparatorView.h>
+#include <StatusBar.h>
 #include <String.h>
+#include <TabView.h>
 
 #include <cstdio>
 
@@ -18,6 +19,7 @@
 #include "EntriesView.h"
 #include "FeedController.h"
 #include "FeedsView.h"
+#include "Notifier.h"
 #include "UpdatesView.h"
 
 
@@ -40,8 +42,22 @@ MainWindow::MessageReceived(BMessage *msg)
 		case kFeedsRemoveButton:
 		case kFeedsEditButton:
 		case kFeedsSelected:
+		case kFeedsEdited:
 		{
 			fFeedsView->MessageReceived(msg);
+			break;
+		}
+		case kProgress:
+		{
+			int32 max = 0;
+			int32 current = 0;
+
+			if (msg->FindInt32("max", &max) == B_OK
+				&& msg->FindInt32("current", &current) == B_OK)
+			{
+				int32 prog = max - current;
+				printf("%i / %i\n", prog, max);
+			}
 			break;
 		}
 		default:
@@ -56,6 +72,7 @@ MainWindow::MessageReceived(BMessage *msg)
 void
 MainWindow::_InitInterface()
 {
+	// Tabs
 	fBaseView = new BGroupView("baseView");
 	fTabView = new BTabView("tabView", B_WIDTH_FROM_WIDEST);
 	fFeedsView = new FeedsView("Feeds");
@@ -68,22 +85,38 @@ MainWindow::_InitInterface()
 	fTabView->SetBorder(B_NO_BORDER);
 	fBaseView->AddChild(fTabView);
 
+	// Bottom bar
+	fStatusBar = new BStatusBar("feedProgress");
+
 	fUpdateNowButton = new BButton("updateNow", "Update Now",
 		new BMessage(kUpdateSubscribed));
 	fUpdateNowButton->SetTarget((App*)be_app);
 	fUpdateNowButton->SetExplicitAlignment(
 		BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 
+
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.SetInsets(0, B_USE_DEFAULT_SPACING, 0, 0)
 		.Add(fBaseView)
 		.Add(new BSeparatorView(B_HORIZONTAL))
 		.AddGroup(B_HORIZONTAL)
+			.Add(fStatusBar)
 			.Add(fUpdateNowButton)
 			.SetInsets(B_USE_WINDOW_SPACING, B_USE_DEFAULT_SPACING,
 				B_USE_DEFAULT_SPACING, B_USE_WINDOW_SPACING)
 		.End()
 	.End();
+}
+
+
+void
+MainWindow::_UpdateProgress()
+{
+	fStatusBar->SetTo(50.0);
+//	if (fInProgress == 0)
+//		printf("Done!\n");
+//	else
+//		printf("Current: %i\n", fInProgress);
 }
 
 
