@@ -12,7 +12,6 @@
 #include <getopt.h>
 
 #include "AtomFeed.h"
-#include "Config.h"
 #include "Entry.h"
 #include "Feed.h"
 #include "FeedController.h"
@@ -20,6 +19,7 @@
 #include "MainWindow.h"
 #include "Mimetypes.h"
 #include "Notifier.h"
+#include "Preferences.h"
 #include "RssFeed.h"
 #include "Util.h"
 
@@ -31,15 +31,15 @@ main(int argc, char** argv)
 
 	App* app = new App();
 	app->Run();
-	app->cfg->Save();
+	app->fPreferences->Save();
 	return 0;
 }
 
 
 App::App() : BApplication("application/x-vnd.Pogger")
 {
-	cfg = new Config;
-	cfg->Load();
+	fPreferences = new Preferences;
+	fPreferences->Load();
 
 	fMainWindow = new MainWindow();
 	fNotifier = new Notifier();
@@ -49,7 +49,7 @@ App::App() : BApplication("application/x-vnd.Pogger")
 	BMessage* updateMessage = new BMessage(kUpdateSubscribed);
 //	MessageReceived(updateMessage);
 	fUpdateRunner = new BMessageRunner(this, updateMessage,
-		cfg->updateInterval);
+		fPreferences->updateInterval);
 }
 
 

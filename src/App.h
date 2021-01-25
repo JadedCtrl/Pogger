@@ -9,10 +9,10 @@
 #include <SupportDefs.h>
 #include <Application.h>
 
+#include "Preferences.h"
 
 class BMessage;
 class BMessageRunner;
-class Config;
 class FeedController;
 class MainWindow;
 class Notifier;
@@ -26,10 +26,10 @@ public:
 	void ArgvReceived(int32 argc, char** argv);
 	
 
-	Config* cfg;
 	MainWindow* fMainWindow;
-	BMessageRunner* fUpdateRunner;
+	Preferences* fPreferences;
 	Notifier* fNotifier;
+	BMessageRunner* fUpdateRunner;
 
 private:
 	FeedController* fFeedController;

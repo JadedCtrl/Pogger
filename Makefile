@@ -31,7 +31,6 @@ APP_MIME_SIG = application/x-vnd.Pogger
 SRCS = \
 	src/App.cpp, \
 	src/AtomFeed.cpp, \
-	src/Config.cpp, \
 	src/Entry.cpp, \
 	src/EntriesView.cpp, \
 	src/Feed.cpp, \
@@ -42,6 +41,7 @@ SRCS = \
 	src/MainWindow.cpp, \
 	src/Mimetypes.cpp, \
 	src/Notifier.cpp, \
+	src/Preferences.cpp, \
 	src/ProtocolListener.cpp, \
 	src/RssFeed.cpp, \
 	src/UpdatesView.cpp, \

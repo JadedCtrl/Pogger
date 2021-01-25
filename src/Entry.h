@@ -13,8 +13,6 @@
 
 #include <tinyxml2.h>
 
-#include "Config.h"
-
 
 class Entry {
 public:

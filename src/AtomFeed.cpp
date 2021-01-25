@@ -8,7 +8,6 @@
 #include <tinyxml2.h>
 
 #include "App.h"
-#include "Config.h"
 #include "Entry.h"
 #include "Util.h"
 

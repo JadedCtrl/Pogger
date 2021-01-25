@@ -5,11 +5,12 @@
 
 #include "Feed.h"
 
+#include <File.h>
+
 #include <tinyxml2.h>
 
 #include "App.h"
 #include "Entry.h"
-#include "Config.h"
 #include "Util.h"
 
 
@@ -188,8 +189,6 @@ Feed::xmlCountSiblings (tinyxml2::XMLElement* xsibling, const char* sibling_name
 bool
 Feed::AddEntry (Entry* newEntry)
 {
-	Config* cfg = ((App*)be_app)->cfg;
-
 	entries.AddItem(newEntry);
 	return true;
 }

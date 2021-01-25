@@ -6,7 +6,6 @@
 #include "RssFeed.h"
 
 #include "App.h"
-#include "Config.h"
 #include "Entry.h"
 #include "Util.h"
 

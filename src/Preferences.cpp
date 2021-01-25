@@ -3,24 +3,24 @@
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
-#include "Config.h"
+#include "Preferences.h"
 
 #include <String.h>
 
 #include <iostream>
 
 
-Config::Config() {
+Preferences::Preferences() {
 }
 
 
-Config::Config(Config* cfg) {
+Preferences::Preferences(Preferences* pref) {
 }
 
 
 // !! handle file status
 void
-Config::Load()
+Preferences::Load()
 {
 	configDir = BString("/boot/home/config/settings/Pogger/");
 
@@ -41,7 +41,7 @@ Config::Load()
 
 // !! handle file status
 void
-Config::Save ()
+Preferences::Save ()
 {
 	if (configDir == NULL)
 		configDir = BString("/boot/home/config/settings/Pogger/");

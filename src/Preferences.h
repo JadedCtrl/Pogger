@@ -2,8 +2,8 @@
  * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef PREFS_H
+#define PREFS_H
 
 
 #include <DateTime.h>
@@ -11,10 +11,10 @@
 #include <StorageKit.h>
 
 
-class Config {
+class Preferences {
 public:
-	Config();
-	Config(Config*);
+	Preferences();
+	Preferences(Preferences*);
 
 	void Load();
 	void Save();
@@ -32,5 +32,5 @@ public:
 };
 
 
-#endif
+#endif // PREFS_H
 

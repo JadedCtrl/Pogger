@@ -5,6 +5,7 @@
 
 #include "FeedController.h"
 
+#include <Directory.h>
 #include <Message.h>
 #include <Notification.h>
 
@@ -149,7 +150,7 @@ FeedController::_ParseLoop(void* ignored)
 		BList entries;
 		BString feedTitle;
 		BUrl feedUrl = feedBuffer->GetXmlUrl();
-		BDirectory outDir = BDirectory(((App*)be_app)->cfg->outDir);
+		BDirectory outDir = BDirectory(((App*)be_app)->fPreferences->outDir);
 
 		if (feedBuffer->IsAtom()) {
 			AtomFeed* feed = (AtomFeed*)malloc(sizeof(AtomFeed));

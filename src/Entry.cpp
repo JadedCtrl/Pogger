@@ -10,7 +10,6 @@
 #include <iostream>
 #include <fstream>
 
-#include "Config.h"
 #include "Util.h"
 
 
