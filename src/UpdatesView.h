@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * Copyright 2021, Jaidyn Levesque <jadedctrl@teknik.io>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #ifndef UPDATESVIEW_H
@@ -15,6 +15,14 @@ class BMessage;
 class BSlider;
 
 
+enum
+{
+	kIntervalChanged	= 'intu',
+	kNotifyNewCheckbox	= 'chnn',
+	kNotifyFailCheckbox	= 'chnf'
+};
+
+
 class UpdatesView : public BGroupView {
 public:
 	UpdatesView(const char* name);
@@ -24,13 +32,15 @@ public:
 
 private:
 	void _InitInterface();
+
+	void _UpdateIntervalPreference();
 	void _UpdateIntervalLabel();
 
 	BBox* fNotificationsBox;
 	BBox* fSchedulingBox;
 
 	BCheckBox*	fNotifyNewCheck;
-	BCheckBox*	fNotifyErrorCheck;
+	BCheckBox*	fNotifyFailCheck;
 	BSlider*	fIntervalSlider;
 };
 

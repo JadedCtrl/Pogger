@@ -73,6 +73,9 @@ Notifier::MessageReceived(BMessage* msg)
 void
 Notifier::_NewEntryNotification(BString feedName, int32 entryCount)
 {
+	if (((App*)be_app)->fPreferences->NotifyOnNew() == false)
+		return;
+
 	BNotification notifyNew(B_INFORMATION_NOTIFICATION);
 	BString notifyLabel("New Feed Entries");
 	BString notifyText("%n% new entries from %source%");
@@ -91,6 +94,9 @@ Notifier::_NewEntryNotification(BString feedName, int32 entryCount)
 void
 Notifier::_ParseFailNotification(BString feedUrl)
 {
+	if (((App*)be_app)->fPreferences->NotifyOnFailure() == false)
+		return;
+
 	BNotification notifyError(B_ERROR_NOTIFICATION);
 	BString notifyText("Failed to parse feed from %url%");
 
@@ -108,6 +114,9 @@ Notifier::_ParseFailNotification(BString feedUrl)
 void
 Notifier::_DownloadFailNotification(BString feedUrl)
 {
+	if (((App*)be_app)->fPreferences->NotifyOnFailure() == false)
+		return;
+
 	BNotification notifyError(B_ERROR_NOTIFICATION);
 	BString notifyText("Failed to download feed from %url%");
 

@@ -150,7 +150,7 @@ FeedController::_ParseLoop(void* ignored)
 		BList entries;
 		BString feedTitle;
 		BUrl feedUrl = feedBuffer->GetXmlUrl();
-		BDirectory outDir = BDirectory(((App*)be_app)->fPreferences->outDir);
+		BDirectory outDir = BDirectory(((App*)be_app)->fPreferences->fEntryDir);
 
 		if (feedBuffer->IsAtom()) {
 			AtomFeed* feed = (AtomFeed*)malloc(sizeof(AtomFeed));

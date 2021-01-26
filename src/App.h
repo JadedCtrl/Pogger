@@ -5,7 +5,6 @@
 #ifndef APP_H
 #define APP_H
 
-
 #include <SupportDefs.h>
 #include <Application.h>
 
@@ -24,7 +23,6 @@ public:
 	App(void);
 	void MessageReceived(BMessage* msg);
 	void ArgvReceived(int32 argc, char** argv);
-	
 
 	MainWindow* fMainWindow;
 	Preferences* fPreferences;
@@ -35,7 +33,8 @@ private:
 	FeedController* fFeedController;
 };
 
-int  main	( int, char** );
+
+int main(int argc, char** argv);
 
 extern const char* configPath;
 

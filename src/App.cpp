@@ -9,7 +9,7 @@
 #include <StorageKit.h>
 #include <String.h>
 
-#include <getopt.h>
+#include <iostream>
 
 #include "AtomFeed.h"
 #include "Entry.h"
@@ -42,14 +42,21 @@ App::App() : BApplication("application/x-vnd.Pogger")
 	fPreferences->Load();
 
 	fMainWindow = new MainWindow();
-	fNotifier = new Notifier();
-	fFeedController = new FeedController();
 	fMainWindow->Show();
 
+	fNotifier = new Notifier();
+	fFeedController = new FeedController();
+
 	BMessage* updateMessage = new BMessage(kUpdateSubscribed);
-//	MessageReceived(updateMessage);
-	fUpdateRunner = new BMessageRunner(this, updateMessage,
-		fPreferences->updateInterval);
+	int64 interval = fPreferences->UpdateInterval();
+	int32 count = -1;
+
+	if (interval == -1)
+		count = 0;
+//	else
+//		MessageReceived(updateMessage);
+
+	fUpdateRunner = new BMessageRunner(this, updateMessage, interval, count);
 }
 
 

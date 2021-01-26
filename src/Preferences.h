@@ -11,6 +11,9 @@
 #include <StorageKit.h>
 
 
+const int64 HOUR_IN_MICROSECONDS = 3600000000;
+
+
 class Preferences {
 public:
 	Preferences();
@@ -18,17 +21,28 @@ public:
 
 	void Load();
 	void Save();
+
+	int64 UpdateInterval();
+	int UpdateIntervalIndex();
+	void SetUpdateIntervalIndex(int8 index);
+
+	bool NotifyOnFailure();
+	bool NotifyOnNew();
+	void SetNotifyOnFailure(bool value);
+	void SetNotifyOnNew(bool value);
+
 	
-	bool verbose;
-	bool daemon;
-	BString outDir;
+	BString fEntryDir;
+	BString fEntryFileExt;
+	bool fOpenAsHtml;
+	BString fOpenWith;
 
-	int64 updateInterval;
-	BString configDir;
-	BString cacheDir;
-	bool will_save;
 
-	bool updateFeeds;
+private:
+	int8 fUpdateInterval;
+
+	bool fNewNotify;
+	bool fFailureNotify;
 };
 
 

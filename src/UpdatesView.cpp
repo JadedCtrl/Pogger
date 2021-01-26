@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * Copyright 2021, Jaidyn Levesque <jadedctrl@teknik.io>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
@@ -8,10 +8,13 @@
 #include <Box.h>
 #include <CheckBox.h>
 #include <Message.h>
+#include <MessageRunner.h>
 #include <LayoutBuilder.h>
 #include <Slider.h>
 
 #include <cstdio>
+
+#include "App.h"
 
 
 UpdatesView::UpdatesView(const char* name)
@@ -26,7 +29,7 @@ void
 UpdatesView::AttachedToWindow()
 {
 	fNotifyNewCheck->SetTarget(this);
-	fNotifyErrorCheck->SetTarget(this);
+	fNotifyFailCheck->SetTarget(this);
 	fIntervalSlider->SetTarget(this);
 }
 
@@ -36,14 +39,31 @@ UpdatesView::MessageReceived(BMessage* msg)
 {
 	switch (msg->what)
 	{
-		case 'iiii':
+		case kNotifyNewCheckbox:
 		{
+			if (fNotifyNewCheck->Value() == B_CONTROL_ON)
+				((App*)be_app)->fPreferences->SetNotifyOnNew(true);
+			else
+				((App*)be_app)->fPreferences->SetNotifyOnNew(false);
+			break;
+		}
+		case kNotifyFailCheckbox:
+		{
+			if (fNotifyFailCheck->Value() == B_CONTROL_ON)
+				((App*)be_app)->fPreferences->SetNotifyOnFailure(true);
+			else
+				((App*)be_app)->fPreferences->SetNotifyOnFailure(false);
+			break;
+		}
+		case kIntervalChanged:
+		{
+			_UpdateIntervalPreference();
 			_UpdateIntervalLabel();
 			break;
 		}
 		default:
 		{
-//			BWindow::MessageReceived(msg);
+			BGroupView::MessageReceived(msg);
 			break;
 		}
 	}
@@ -53,32 +73,44 @@ UpdatesView::MessageReceived(BMessage* msg)
 void
 UpdatesView::_InitInterface()
 {
-	fNotifyNewCheck = new BCheckBox("newNotify", "Notify about new entries",
-		new BMessage('nnnc'));
-	fNotifyErrorCheck = new BCheckBox("errorNotify",
-		"Notify about update failures", new BMessage('nnnc'));
-
+	// Notifications
 	fNotificationsBox = new BBox("notifications");
 	fNotificationsBox->SetLabel("Notifications");
 
+	fNotifyNewCheck = new BCheckBox("newNotify", "Notify about new entries",
+		new BMessage(kNotifyNewCheckbox));
+	fNotifyFailCheck = new BCheckBox("errorNotify",
+		"Notify about update failures", new BMessage(kNotifyFailCheckbox));
+
+
+	// Update scheduling
+	fSchedulingBox = new BBox("scheduling");
+	fSchedulingBox->SetLabel("Scheduling");
+
 	fIntervalSlider =
 		new BSlider("interval", "Never automatically update",
-			new BMessage('iiii'), 0, 25, B_HORIZONTAL);
+			new BMessage(kIntervalChanged), 0, 25, B_HORIZONTAL);
 
 	fIntervalSlider->SetHashMarkCount(26);
 	fIntervalSlider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	fIntervalSlider->SetLimitLabels("Never", "24 hours");
 	fIntervalSlider->SetModificationMessage(new BMessage('iiii'));
 
-	fSchedulingBox = new BBox("scheduling");
-	fSchedulingBox->SetLabel("Scheduling");
+	// Display current settings
+	if (((App*)be_app)->fPreferences->NotifyOnNew() == true)
+		fNotifyNewCheck->SetValue(B_CONTROL_ON);
+	if (((App*)be_app)->fPreferences->NotifyOnFailure() == true)
+		fNotifyFailCheck->SetValue(B_CONTROL_ON);
+
+	fIntervalSlider->SetValue(((App*)be_app)->fPreferences->UpdateIntervalIndex());
+	_UpdateIntervalLabel();
 
 
 	BLayoutBuilder::Group<>(fNotificationsBox, B_VERTICAL, B_USE_HALF_ITEM_SPACING)
 		.SetInsets(B_USE_ITEM_INSETS)
 		.AddStrut(B_USE_ITEM_SPACING)
 		.Add(fNotifyNewCheck)
-		.Add(fNotifyErrorCheck)
+		.Add(fNotifyFailCheck)
 	.End();
 
 	BLayoutBuilder::Group<>(fSchedulingBox, B_VERTICAL, B_USE_HALF_ITEM_SPACING)
@@ -94,29 +126,53 @@ UpdatesView::_InitInterface()
 		.Add(fSchedulingBox)
 		.AddGlue()
 	.End();
+}
 
-	_UpdateIntervalLabel();
+
+void
+UpdatesView::_UpdateIntervalPreference()
+{
+	int32 limit;
+	fIntervalSlider->GetLimits(NULL, &limit);
+	int8 index = fIntervalSlider->Position() / (1/(float)limit);
+	int8 oldIndex = ((App*)be_app)->fPreferences->UpdateIntervalIndex();
+
+	((App*)be_app)->fPreferences->SetUpdateIntervalIndex(index);
+
+	if (oldIndex == 0)
+		((App*)be_app)->fUpdateRunner->SetCount(-1);
+	else if (index == 0)
+		((App*)be_app)->fUpdateRunner->SetCount(0);
+
+	((App*)be_app)->fUpdateRunner->SetInterval(
+		((App*)be_app)->fPreferences->UpdateInterval());
 }
 
 
 void
 UpdatesView::_UpdateIntervalLabel()
 {
-	int32 limit;
-	fIntervalSlider->GetLimits(NULL, &limit);
-	int index = fIntervalSlider->Position() / (1/(float)limit);
-	int hours = index - 1;
+	int8 hours = ((App*)be_app)->fPreferences->UpdateIntervalIndex() - 1;
 
 	BString newLabel;
 	BString strHour;
-	strHour << (int)hours;
+	strHour << hours;
 
-	if (hours == -1 )
-		newLabel = "Never automatically update";
-	else if (hours == 0)
-		newLabel = "Update every 30 minutes";
-	else
-		newLabel = "Update every %hour% hours";
+	switch (hours)
+	{
+		case -1:
+		{
+			newLabel = "Never automatically update";
+			break;
+		}
+		case 0:
+		{
+			newLabel = "Update every 30 minutes";
+			break;
+		}
+		default:
+			newLabel = "Update every %hour% hours";
+	}
 
 	newLabel.ReplaceAll("%hour%", strHour);
 	fIntervalSlider->SetLabel(newLabel.String());
