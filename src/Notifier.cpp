@@ -73,7 +73,7 @@ Notifier::MessageReceived(BMessage* msg)
 void
 Notifier::_NewEntryNotification(BString feedName, int32 entryCount)
 {
-	if (((App*)be_app)->fPreferences->NotifyOnNew() == false)
+	if (((App*)be_app)->fPreferences->fNewNotify == false)
 		return;
 
 	BNotification notifyNew(B_INFORMATION_NOTIFICATION);
@@ -94,7 +94,7 @@ Notifier::_NewEntryNotification(BString feedName, int32 entryCount)
 void
 Notifier::_ParseFailNotification(BString feedUrl)
 {
-	if (((App*)be_app)->fPreferences->NotifyOnFailure() == false)
+	if (((App*)be_app)->fPreferences->fFailureNotify == false)
 		return;
 
 	BNotification notifyError(B_ERROR_NOTIFICATION);
@@ -114,7 +114,7 @@ Notifier::_ParseFailNotification(BString feedUrl)
 void
 Notifier::_DownloadFailNotification(BString feedUrl)
 {
-	if (((App*)be_app)->fPreferences->NotifyOnFailure() == false)
+	if (((App*)be_app)->fPreferences->fFailureNotify == false)
 		return;
 
 	BNotification notifyError(B_ERROR_NOTIFICATION);

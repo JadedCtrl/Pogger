@@ -18,6 +18,19 @@ class BStringView;
 class BTextControl;
 
 
+enum
+{
+	kEntryFolderText	= 'txef',
+	kEntryFolderBrowse	= 'tbef',
+	kEntryExtText		= 'txee',
+	kOpenHtmlRadio		= 'rdow',
+	kOpenUrlRadio		= 'roow',
+	kOpenAutoRadio		= 'raow',
+	kOpenWithSelect		= 'mnow',
+	kOpenWithBrowse		= 'tbow'
+};
+
+
 class EntriesView : public BGroupView {
 public:
 	EntriesView(const char* name);
@@ -27,6 +40,7 @@ public:
 
 private:
 	void _InitInterface();
+	void _PopulateOpenWithMenu();
 
 
 	BBox*			fSavingBox;
@@ -38,6 +52,7 @@ private:
 
 	BBox*			fOpeningBox;
 	BStringView*	fOpenAsLabel;
+	BRadioButton*	fOpenAsAutoRadio;
 	BRadioButton*	fOpenAsHtmlRadio;
 	BRadioButton*	fOpenAsUrlRadio;
 	BStringView*	fOpenWithLabel;

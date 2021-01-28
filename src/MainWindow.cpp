@@ -47,6 +47,11 @@ MainWindow::MessageReceived(BMessage *msg)
 			fFeedsView->MessageReceived(msg);
 			break;
 		}
+		case kOpenWithSelect:
+		{
+			fEntriesView->MessageReceived(msg);
+			break;
+		}
 		case kProgress:
 		{
 			int32 max = 0;

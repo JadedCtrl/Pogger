@@ -27,6 +27,8 @@ BString urlToFilename(BUrl url);
 
 int32 fetch(BUrl url, BDataIO* reply, BString* hash, int timeout);
 
+void userFileError(status_t status, const char* path);
 
-#endif
+
+#endif // UTIL_H
 

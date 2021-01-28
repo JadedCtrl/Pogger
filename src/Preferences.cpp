@@ -34,8 +34,9 @@ Preferences::Load()
 
 	fEntryDir		= BString(storage.GetString("entryDir", "/boot/home/feeds/"));
 	fEntryFileExt	= BString(storage.GetString("entryExt", ""));
-	fOpenAsHtml		= storage.GetBool("openAsHtml", false);
-	fOpenWith		= BString(storage.GetString("openWith", "WebPositive"));
+	fOpenAs			= storage.GetInt8("openAs", kOpenAsUrl);
+	fOpenWith		= BString(storage.GetString("openWith",
+		"application/x-vnd.Haiku-WebPositive"));
 
 	fNewNotify		= storage.GetBool("notifyNew", true);
 	fFailureNotify	= storage.GetBool("notifyFailure", true);
@@ -67,8 +68,8 @@ Preferences::Save()
 
 	storage.AddString("entryDir", fEntryDir.String());
 	storage.AddString("entryExt", fEntryFileExt.String());
-	storage.AddBool("openAsHtml", fOpenAsHtml);
 	storage.AddString("openWith", fOpenWith.String());
+	storage.AddInt8("openAs", fOpenAs);
 
 	storage.AddBool("notifyNew", fNewNotify);
 	storage.AddBool("notifyFailure", fFailureNotify);
@@ -109,31 +110,38 @@ Preferences::SetUpdateIntervalIndex(int8 index)
 }
 
 
-bool
-Preferences::NotifyOnFailure()
+BString
+Preferences::EntryDir()
 {
-	return fFailureNotify;
+	return fEntryDir;
 }
 
 
-bool
-Preferences::NotifyOnNew()
+status_t
+Preferences::SetEntryDir(const char* path)
 {
-	return fNewNotify;
+	status_t testStatus = BEntry(path).InitCheck();
+	if (testStatus == B_OK)
+		fEntryDir = BString(path);
+	return testStatus;
 }
 
 
-void
-Preferences::SetNotifyOnFailure(bool value)
+BString
+Preferences::EntryOpenWith()
 {
-	fFailureNotify = value;
+	return fOpenWith;
 }
 
 
-void
-Preferences::SetNotifyOnNew(bool value)
+status_t
+Preferences::SetEntryOpenWith(const char* binPath)
 {
-	fNewNotify = value;
+//	status_t testStatus = BEntry(binPath).InitCheck();
+//	if (testStatus == B_OK)
+		fOpenWith = BString(binPath);
+		return B_OK;
+//	return testStatus;
 }
 
 

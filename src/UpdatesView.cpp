@@ -42,17 +42,17 @@ UpdatesView::MessageReceived(BMessage* msg)
 		case kNotifyNewCheckbox:
 		{
 			if (fNotifyNewCheck->Value() == B_CONTROL_ON)
-				((App*)be_app)->fPreferences->SetNotifyOnNew(true);
+				((App*)be_app)->fPreferences->fNewNotify = true;
 			else
-				((App*)be_app)->fPreferences->SetNotifyOnNew(false);
+				((App*)be_app)->fPreferences->fNewNotify = false;
 			break;
 		}
 		case kNotifyFailCheckbox:
 		{
 			if (fNotifyFailCheck->Value() == B_CONTROL_ON)
-				((App*)be_app)->fPreferences->SetNotifyOnFailure(true);
+				((App*)be_app)->fPreferences->fFailureNotify = true;
 			else
-				((App*)be_app)->fPreferences->SetNotifyOnFailure(false);
+				((App*)be_app)->fPreferences->fFailureNotify = false;
 			break;
 		}
 		case kIntervalChanged:
@@ -82,7 +82,6 @@ UpdatesView::_InitInterface()
 	fNotifyFailCheck = new BCheckBox("errorNotify",
 		"Notify about update failures", new BMessage(kNotifyFailCheckbox));
 
-
 	// Update scheduling
 	fSchedulingBox = new BBox("scheduling");
 	fSchedulingBox->SetLabel("Scheduling");
@@ -96,13 +95,15 @@ UpdatesView::_InitInterface()
 	fIntervalSlider->SetLimitLabels("Never", "24 hours");
 	fIntervalSlider->SetModificationMessage(new BMessage('iiii'));
 
+
 	// Display current settings
-	if (((App*)be_app)->fPreferences->NotifyOnNew() == true)
+	Preferences* prefs = ((App*)be_app)->fPreferences;
+	if (prefs->fNewNotify == true)
 		fNotifyNewCheck->SetValue(B_CONTROL_ON);
-	if (((App*)be_app)->fPreferences->NotifyOnFailure() == true)
+	if (prefs->fFailureNotify == true)
 		fNotifyFailCheck->SetValue(B_CONTROL_ON);
 
-	fIntervalSlider->SetValue(((App*)be_app)->fPreferences->UpdateIntervalIndex());
+	fIntervalSlider->SetValue(prefs->UpdateIntervalIndex());
 	_UpdateIntervalLabel();
 
 

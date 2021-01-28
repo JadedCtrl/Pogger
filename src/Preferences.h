@@ -5,13 +5,19 @@
 #ifndef PREFS_H
 #define PREFS_H
 
-
 #include <DateTime.h>
 #include <String.h>
 #include <StorageKit.h>
 
 
-const int64 HOUR_IN_MICROSECONDS = 3600000000;
+static const int64 HOUR_IN_MICROSECONDS = 3600000000;
+
+enum
+{
+	kOpenAsAuto = 0,
+	kOpenAsHtml = 1,
+	kOpenAsUrl = 2
+};
 
 
 class Preferences {
@@ -26,23 +32,23 @@ public:
 	int UpdateIntervalIndex();
 	void SetUpdateIntervalIndex(int8 index);
 
-	bool NotifyOnFailure();
-	bool NotifyOnNew();
-	void SetNotifyOnFailure(bool value);
-	void SetNotifyOnNew(bool value);
+	BString EntryDir();
+	status_t SetEntryDir(const char* path);
 
-	
-	BString fEntryDir;
+	BString EntryOpenWith();
+	status_t SetEntryOpenWith(const char* binPath);
+
+
 	BString fEntryFileExt;
-	bool fOpenAsHtml;
-	BString fOpenWith;
-
+	bool	fNewNotify;
+	bool	fFailureNotify;
+	int8	fOpenAs;
 
 private:
 	int8 fUpdateInterval;
 
-	bool fNewNotify;
-	bool fFailureNotify;
+	BString fEntryDir;
+	BString fOpenWith;
 };
 
 

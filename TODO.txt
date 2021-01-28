@@ -2,8 +2,6 @@
 	* This way, if the user edits the feed after it is enqueued but before
 	processing, the changes will be applied.
 * Support for clearing queue
-* Revamp configuration
-	* Fix saving, etc.
 * Show progress
 	* With progress bar
 		* Ran into a slight problem when trying to set the maxValue and
@@ -11,7 +9,8 @@
 		crash every time, without fail. Even with float constants that
 		work when used in MainWindow::_InitInterface. Weird, idk
 	* With indicator in the feeds list
-* Configurations
+* File error-handling
+	* e.g., Utils.cpp's userFileError
 * Remove unnecessary `new`-- make sure to delete everything
 * Check if arg is a file or not (treat appropriately)
 * No hardcoded paths
@@ -29,3 +28,6 @@
 				* Using a proper queue list would give faster 
 				  results to Notifer about how many feeds are
 				  enqueued (so things *feel* faster)
+* Open With support
+* Open As support
+* File extension support

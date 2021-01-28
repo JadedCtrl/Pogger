@@ -10,9 +10,15 @@
 #include <Message.h>
 #include <LayoutBuilder.h>
 #include <PopUpMenu.h>
+#include <StringList.h>
 #include <RadioButton.h>
 #include <StringView.h>
 #include <TextControl.h>
+
+#include <iostream>
+
+#include "App.h"
+#include "Util.h"
 
 
 EntriesView::EntriesView(const char* name)
@@ -30,6 +36,7 @@ EntriesView::AttachedToWindow()
 	fEntryFolderBrowseButton->SetTarget(this);
 	fFileExtText->SetTarget(this);
 
+	fOpenAsAutoRadio->SetTarget(this);
 	fOpenAsHtmlRadio->SetTarget(this);
 	fOpenAsUrlRadio->SetTarget(this);
 	fOpenWithSelectButton->SetTarget(this);
@@ -41,9 +48,43 @@ EntriesView::MessageReceived(BMessage* msg)
 {
 	switch (msg->what)
 	{
+		case kEntryFolderText:
+		{
+			status_t result = ((App*)be_app)->fPreferences->SetEntryDir(
+				fEntryFolderText->Text());
+			if (result != B_OK)
+				userFileError(result, fEntryFolderText->Text());
+			break;
+		}
+		case kEntryExtText:
+		{
+			((App*)be_app)->fPreferences->fEntryFileExt = fFileExtText->Text();
+			break;
+		}
+		case kOpenHtmlRadio:
+		{
+			((App*)be_app)->fPreferences->fOpenAs = kOpenAsHtml;
+			break;
+		}
+		case kOpenUrlRadio:
+		{
+			((App*)be_app)->fPreferences->fOpenAs = kOpenAsUrl;
+			break;
+		}
+		case kOpenAutoRadio:
+		{
+			((App*)be_app)->fPreferences->fOpenAs = kOpenAsAuto;
+			break;
+		}
+		case kOpenWithSelect:
+		{
+			((App*)be_app)->fPreferences->SetEntryOpenWith(
+				fOpenWithMenuField->MenuItem()->Label());
+			break;
+		}
 		default:
 		{
-//			BWindow::MessageReceived(msg);
+			BGroupView::MessageReceived(msg);
 			break;
 		}
 	}
@@ -58,28 +99,47 @@ EntriesView::_InitInterface()
 	fSavingBox->SetLabel("Saving");
 
 	fEntryFolderLabel = new BStringView("entryFolderLabel", "Entry folder:");
-	fEntryFolderText = new BTextControl("entryFolder", "",
-		"/boot/home/feeds/", new BMessage('ssss'));
+	fEntryFolderText = new BTextControl("entryFolder", "", "",
+		new BMessage(kEntryFolderText));
 	fEntryFolderBrowseButton = new BButton("entryFolderBrowse", "Browse…",
-		new BMessage('mmmm'));
+		new BMessage(kEntryFolderBrowse));
 
 	fFileExtLabel = new BStringView("fileExtLabel", "File extension:");
-	fFileExtText = new BTextControl("fileExt", "", "", new BMessage('ffff'));
+	fFileExtText = new BTextControl("fileExt", "", "",
+		new BMessage(kEntryExtText));
 
 	// Opening
 	fOpeningBox = new BBox("opening");
 	fOpeningBox->SetLabel("Opening");
 
 	fOpenAsLabel = new BStringView("openAsLabel", "Open as:");
-	fOpenAsHtmlRadio = new BRadioButton("asHtml", "HTML", new BMessage('ii'));
-	fOpenAsUrlRadio = new BRadioButton("asUrl", "URL", new BMessage('ii'));
+	fOpenAsAutoRadio = new BRadioButton("asAuto", "Auto",
+		new BMessage(kOpenAutoRadio));
+	fOpenAsHtmlRadio = new BRadioButton("asHtml", "HTML",
+		new BMessage(kOpenHtmlRadio));
+	fOpenAsUrlRadio = new BRadioButton("asUrl", "URL",
+		new BMessage(kOpenUrlRadio));
 
 	fOpenWithLabel = new BStringView("openWithLabel", "Open with:");
 	fOpenWithMenu = new BPopUpMenu("openWith");
 	fOpenWithMenuField = new BMenuField("openWithMenu", NULL, fOpenWithMenu);
-	fOpenWithMenu->AddItem(new BMenuItem("WebPositive", new BMessage('wwww')));
 	fOpenWithSelectButton = new BButton("openWithSelect", "Select…",
-		new BMessage('mmmm'));
+		new BMessage(kOpenWithBrowse));
+
+
+	// Display current settings
+	Preferences* prefs = ((App*)be_app)->fPreferences;
+	if (prefs->fOpenAs == kOpenAsHtml)
+		fOpenAsHtmlRadio->SetValue(B_CONTROL_ON);
+	else if (prefs->fOpenAs == kOpenAsUrl)
+		fOpenAsUrlRadio->SetValue(B_CONTROL_ON);
+	else
+		fOpenAsAutoRadio->SetValue(B_CONTROL_ON);
+
+	fFileExtText->SetText(prefs->fEntryFileExt);
+	fEntryFolderText->SetText(prefs->EntryDir());
+
+	_PopulateOpenWithMenu();
 
 
 	BLayoutBuilder::Group<>(fSavingBox, B_HORIZONTAL)
@@ -109,6 +169,7 @@ EntriesView::_InitInterface()
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 			.SetInsets(0, 20, B_USE_ITEM_INSETS, 0)
 			.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
+				.Add(fOpenAsAutoRadio)
 				.Add(fOpenAsHtmlRadio)
 				.Add(fOpenAsUrlRadio)
 				.AddGlue()
@@ -127,6 +188,30 @@ EntriesView::_InitInterface()
 		.Add(fOpeningBox)
 		.AddGlue()
 	.End();
+}
+
+
+void
+EntriesView::_PopulateOpenWithMenu()
+{
+	BString preferred = ((App*)be_app)->fPreferences->EntryOpenWith();
+	BMimeType html("text/html");
+	BStringList signatures;
+	BMessage types;
+	
+	html.GetSupportingApps(&types);
+	if (types.FindStrings("applications", &signatures) != B_OK)
+		return;
+
+	for (int i = 0; i < signatures.CountStrings(); i++) {
+		BString string = signatures.StringAt(i);
+		if (string != preferred)
+			fOpenWithMenu->AddItem(
+				new BMenuItem(string, new BMessage(kOpenWithSelect)));
+	}
+
+	fOpenWithMenu->AddItem(
+		new BMenuItem(preferred, new BMessage(kOpenWithSelect)), 0);
 }
 
 

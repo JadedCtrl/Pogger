@@ -140,3 +140,9 @@ fetch(BUrl url, BDataIO* reply, BString* hash, int timeout)
 }
 
 
+void
+userFileError(status_t status, const char* path)
+{
+}
+
+
