@@ -10,6 +10,11 @@
 #include <UrlProtocolListener.h>
 
 
+#ifndef LIBNETAPI_DEPRECATED
+using namespace BPrivate::Network;
+#endif
+
+
 class ProtocolListener : public BUrlProtocolListener
 {
 public:

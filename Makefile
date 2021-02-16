@@ -78,7 +78,7 @@ RSRCS = \
 #	- 	if your library does not follow the standard library naming scheme,
 #		you need to specify the path to the library and it's name.
 #		(e.g. for mylib.a, specify "mylib.a" or "path/mylib.a")
-LIBS =  be tracker bnetapi network shared tinyxml2 $(STDCPPLIBS)
+LIBS =  be tracker bnetapi network netservices shared tinyxml2 $(STDCPPLIBS)
 
 #	Specify additional paths to directories following the standard libXXX.so
 #	or libXXX.a naming scheme. You can specify full paths or paths relative
@@ -91,7 +91,7 @@ LIBPATHS =
 #	"#include <header>". Directories that contain the files in SRCS are
 #	NOT auto-included here.
 SYSTEM_INCLUDE_PATHS = \
-#	$(shell findpaths -e B_FIND_PATH_HEADERS_DIRECTORY private/shared) \
+	$(shell findpaths -e B_FIND_PATH_HEADERS_DIRECTORY private/netservices) \
 #	$(shell findpaths -e B_FIND_PATH_HEADERS_DIRECTORY private/interface) \
 #	$(shell findpaths -e B_FIND_PATH_HEADERS_DIRECTORY private/support)
 
