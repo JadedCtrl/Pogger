@@ -93,7 +93,7 @@ FeedsView::_InitInterface()
 
 	_PopulateFeedList();
 
-	fProgressLabel = new BStringView("progressLabel", "Progress…");
+	fProgressLabel = new BStringView("progressLabel", "");
 
 	// Add, Remove, Edit
 	fAddButton = new BButton("addFeed", "+", new BMessage(kFeedsAddButton));

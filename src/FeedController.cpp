@@ -9,7 +9,7 @@
 #include <Message.h>
 #include <Notification.h>
 
-#include <cstdio>
+#include <iostream>
 
 #include "App.h"
 #include "AtomFeed.h"
@@ -121,8 +121,8 @@ FeedController::_DownloadLoop(void* ignored)
 	Feed* feedBuffer = new Feed();
 
 	while (receive_data(&sender, (void*)feedBuffer, sizeof(Feed)) != 0) {
-		printf( "Downloading feed from %s...\n",
-			feedBuffer->GetXmlUrl().UrlString().String());
+		std::cout << "Downloading feed from "
+			<< feedBuffer->GetXmlUrl().UrlString() << "…\n";
 
 		BMessage* downloadInit = new BMessage(kDownloadStart);
 		downloadInit->AddString("feed", feedBuffer->GetTitle());

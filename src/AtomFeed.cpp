@@ -7,6 +7,8 @@
 
 #include <tinyxml2.h>
 
+#include <iostream>
+
 #include "App.h"
 #include "Entry.h"
 #include "Util.h"
@@ -65,8 +67,8 @@ AtomFeed::RootParse(tinyxml2::XMLElement* xfeed)
 	if (!set && xentry)
 		set = SetDate(xentry->FirstChildElement("published"));
 
-	printf("Channel '%s' at '%s':\n", title.String(),
-		xmlUrl.UrlString().String());
+	std::cout << "Channel '" << title << "' at '" << xmlUrl.UrlString()
+		<< "':\n";
 }
 
 
@@ -117,7 +119,7 @@ AtomFeed::ParseEntries(tinyxml2::XMLElement* xfeed)
 	int entryCount = xmlCountSiblings(xentry, "entry");
 	entries = BList(entryCount);
 
-	printf("\t-%i entries-\n", entryCount);
+	std::cout << "\t-" << entryCount << "-\n";
 
 	while (xentry) {
 		EntryParse(xentry);

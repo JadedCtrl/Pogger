@@ -5,6 +5,8 @@
 
 #include "RssFeed.h"
 
+#include <iostream>
+
 #include "App.h"
 #include "Entry.h"
 #include "Util.h"
@@ -49,8 +51,8 @@ RssFeed::RootParse(tinyxml2::XMLElement* xchan)
 	SetTitle(xchan->FirstChildElement("title"));
 	SetDate(xchan->FirstChildElement("lastBuildDate"));
 
-	printf("Channel '%s' at '%s':\n", title.String(),
-		xmlUrl.UrlString().String());
+	std::cout << "Channel '" << title.String() << "' at '" << xmlUrl.UrlString()
+		<< ":\n";
 }
 
 
@@ -84,7 +86,7 @@ RssFeed::ParseEntries(tinyxml2::XMLElement* xchan)
 	int entryCount = xmlCountSiblings(xitem, "item");
 	entries = BList(entryCount);
 
-	printf("\t-%i entries-\n", entryCount);
+	std::cout << "\t-" << entryCount << " entries-\n";
 
 	while (xitem) {
 		EntryParse(xitem);

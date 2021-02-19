@@ -13,7 +13,7 @@
 #include <String.h>
 #include <TabView.h>
 
-#include <cstdio>
+#include <iostream>
 
 #include "App.h"
 #include "EntriesView.h"
@@ -123,7 +123,7 @@ MainWindow::_UpdateProgress(int32 max, int32 current)
 	fStatusBar->SetMaxValue(max);
 	fStatusBar->SetTo(prog);
 
-	printf("%i / %i\n", prog, max);
+//	std::cout << prog << "/" << max << std::endl;
 }
 
 
