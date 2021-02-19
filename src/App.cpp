@@ -80,7 +80,7 @@ App::MessageReceived(BMessage* msg)
 		case kFeedsEdited:
 		case kProgress:
 		{
-			fMainWindow->MessageReceived(msg);
+			fMainWindow->PostMessage(msg);
 			break;
 		}
 		case kClearQueue:

@@ -64,5 +64,5 @@ point soon.
 BORING INFO
 --------------------------------------------------
 Pogger is under the MIT license.
-https://git.feneas.org/detruota/pogger
+https://github.com/JadedCtrl/Pogger
 jadedctrl@teknik.io

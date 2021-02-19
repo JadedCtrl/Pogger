@@ -22,7 +22,7 @@ public:
 private:
 	void _InitInterface();
 
-	void _UpdateProgress();
+	void _UpdateProgress(int32 max, int32 current);
 
 	BGroupView*		fBaseView;
 	BTabView*		fTabView;

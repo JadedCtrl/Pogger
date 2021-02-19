@@ -60,8 +60,7 @@ MainWindow::MessageReceived(BMessage *msg)
 			if (msg->FindInt32("max", &max) == B_OK
 				&& msg->FindInt32("current", &current) == B_OK)
 			{
-				int32 prog = max - current;
-				printf("%i / %i\n", prog, max);
+				_UpdateProgress(max, current);
 			}
 			break;
 		}
@@ -115,13 +114,14 @@ MainWindow::_InitInterface()
 
 
 void
-MainWindow::_UpdateProgress()
+MainWindow::_UpdateProgress(int32 max, int32 current)
 {
-	fStatusBar->SetTo(50.0);
-//	if (fInProgress == 0)
-//		printf("Done!\n");
-//	else
-//		printf("Current: %i\n", fInProgress);
+	int32 prog = max - current;
+
+	fStatusBar->SetMaxValue(max);
+	fStatusBar->SetTo(prog);
+
+	printf("%i / %i\n", prog, max);
 }
 
 
