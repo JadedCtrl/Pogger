@@ -124,6 +124,10 @@ FeedController::_DownloadLoop(void* ignored)
 		printf( "Downloading feed from %s...\n",
 			feedBuffer->GetXmlUrl().UrlString().String());
 
+		BMessage* downloadInit = new BMessage(kDownloadStart);
+		downloadInit->AddString("feed", feedBuffer->GetTitle());
+		((App*)be_app)->MessageReceived(downloadInit);
+
 		if (feedBuffer->Fetch()) {
 			BMessage* downloaded = new BMessage(kDownloadComplete);
 			downloaded->AddData("feeds", B_RAW_TYPE, feedBuffer, sizeof(Feed));

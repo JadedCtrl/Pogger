@@ -16,6 +16,7 @@ enum
 {
 	kEnqueueFeed		= 'fenq',
 	kClearQueue			= 'frmq',
+	kDownloadStart		= 'fdst',
 	kDownloadComplete	= 'fdlc',
 	kDownloadFail		= 'fdlf',
 	kParseComplete		= 'fpec',

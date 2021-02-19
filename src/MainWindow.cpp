@@ -43,6 +43,7 @@ MainWindow::MessageReceived(BMessage *msg)
 		case kFeedsEditButton:
 		case kFeedsSelected:
 		case kFeedsEdited:
+		case kDownloadStart:
 		{
 			fFeedsView->MessageReceived(msg);
 			break;
@@ -54,6 +55,7 @@ MainWindow::MessageReceived(BMessage *msg)
 		}
 		case kProgress:
 		{
+			fFeedsView->MessageReceived(msg);
 			int32 max = 0;
 			int32 current = 0;
 

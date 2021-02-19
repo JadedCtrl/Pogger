@@ -12,6 +12,7 @@
 class BMessage;
 class BListView;
 class BScrollView;
+class BStringView;
 
 
 enum
@@ -38,9 +39,12 @@ private:
 
 	void _PopulateFeedList();
 
+	void _UpdateProgress(BString feedName);
+
 	BButton* fAddButton;
 	BButton* fRemoveButton;
 	BButton* fEditButton;
+	BStringView* fProgressLabel;
 	BListView* fFeedsListView;
 	BScrollView* fFeedsScrollView;
 };

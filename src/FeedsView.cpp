@@ -11,6 +11,7 @@
 #include <ListView.h>
 #include <ScrollView.h>
 #include <SeparatorView.h>
+#include <StringView.h>
 
 #include <cstdio>
 
@@ -19,6 +20,7 @@
 #include "FeedController.h"
 #include "FeedEditWindow.h"
 #include "FeedListItem.h"
+#include "Notifier.h"
 
 
 FeedsView::FeedsView(const char* name)
@@ -64,6 +66,12 @@ FeedsView::MessageReceived(BMessage* msg)
 		{
 //			_PopulateFeedList();
 		}
+		case kDownloadStart:
+		{
+			BString feedName;
+			if (msg->FindString("feed", &feedName) == B_OK)
+				_UpdateProgress(feedName);
+		}
 		default:
 		{
 //			BWindow::MessageReceived(msg);
@@ -84,6 +92,8 @@ FeedsView::_InitInterface()
 	fFeedsListView->SetInvocationMessage(new BMessage(kFeedsEditButton));
 
 	_PopulateFeedList();
+
+	fProgressLabel = new BStringView("progressLabel", "Progress…");
 
 	// Add, Remove, Edit
 	fAddButton = new BButton("addFeed", "+", new BMessage(kFeedsAddButton));
@@ -122,6 +132,9 @@ FeedsView::_InitInterface()
 				.Add(new BSeparatorView(B_HORIZONTAL))
 			.End()
 			.Add(new BSeparatorView(B_VERTICAL))
+
+			.AddGlue()
+			.Add(fProgressLabel)
 			.AddGlue()
 
 			// Edit button
@@ -171,6 +184,15 @@ FeedsView::_PopulateFeedList()
 		FeedListItem* item = new FeedListItem((Feed*)feeds.ItemAt(i));
 		fFeedsListView->AddItem(item);
 	}
+}
+
+
+void
+FeedsView::_UpdateProgress(BString feedName)
+{
+	BString label("Fetching ");
+	label << feedName << "…";
+	fProgressLabel->SetText(label);
 }
 
 

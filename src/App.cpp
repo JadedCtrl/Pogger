@@ -79,6 +79,7 @@ App::MessageReceived(BMessage* msg)
 		}
 		case kFeedsEdited:
 		case kProgress:
+		case kDownloadStart:
 		{
 			fMainWindow->PostMessage(msg);
 			break;
