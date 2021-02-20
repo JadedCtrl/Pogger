@@ -82,6 +82,27 @@ EntriesView::MessageReceived(BMessage* msg)
 				fOpenWithMenuField->MenuItem()->Label());
 			break;
 		}
+		case kOpenWithPath:
+		{
+			entry_ref ref;
+			if (msg->HasRef("refs") && msg->FindRef("refs", &ref) == B_OK) {
+				((App*)be_app)->fPreferences->SetEntryOpenWith(
+					BPath(&ref).Path());
+			}
+
+			delete fOpenWithPanel;
+			break;
+		}
+		case kOpenWithBrowse:
+		{
+			entry_ref appsRef;
+			BEntry("/boot/system/apps/").GetRef(&appsRef);
+
+			fOpenWithPanel = new BFilePanel(B_OPEN_PANEL, NULL, &appsRef,
+				B_FILE_NODE, false, new BMessage(kOpenWithPath));
+			fOpenWithPanel->Show();
+			fOpenWithPanel->SetTarget(this);
+		}
 		default:
 		{
 			BGroupView::MessageReceived(msg);
@@ -199,19 +220,20 @@ EntriesView::_PopulateOpenWithMenu()
 	BStringList signatures;
 	BMessage types;
 	
+	BMenuItem* prefItem = new BMenuItem(preferred, new BMessage(kOpenWithSelect));
+	prefItem->SetMarked(true);
+	fOpenWithMenu->AddItem(prefItem);
+
 	html.GetSupportingApps(&types);
 	if (types.FindStrings("applications", &signatures) != B_OK)
 		return;
 
 	for (int i = 0; i < signatures.CountStrings(); i++) {
 		BString string = signatures.StringAt(i);
+		BMenuItem* item = new BMenuItem(string, new BMessage(kOpenWithSelect));
 		if (string != preferred)
-			fOpenWithMenu->AddItem(
-				new BMenuItem(string, new BMessage(kOpenWithSelect)));
+			fOpenWithMenu->AddItem(item);
 	}
-
-	fOpenWithMenu->AddItem(
-		new BMenuItem(preferred, new BMessage(kOpenWithSelect)), 0);
 }
 
 

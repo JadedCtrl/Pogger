@@ -1,7 +1,8 @@
 Important Features:
-* Open With support
 * Open As support
 * File extension support
+* Show download progress/failures in FeedView's feedlist
+* Update FeedView's feedlist when feeds added/removed
 * Show in desktray
 	* Make archivable
 	* Get menu working
@@ -13,6 +14,7 @@ Important improvements:
 * Proper queue list (see Multiple downloads at once?)
 * No hardcoded paths
 * Remove unnecessary `new`-- make sure to delete everything
+* General input sanitization
 * File error-handling
 	* e.g., Utils.cpp's userFileError
 * Check if arg is a file or not (treat appropriately)

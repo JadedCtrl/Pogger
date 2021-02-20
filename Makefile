@@ -49,8 +49,8 @@ SRCS = \
 
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.
-RDEFS = # \
-	# src/Pogger.rdef  \
+RDEFS =  \
+	 src/Pogger.rdef  \
 
 
 #	Specify the resource files to use. Full or relative paths can be used.

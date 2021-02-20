@@ -23,6 +23,7 @@ public:
 	App(void);
 	void MessageReceived(BMessage* msg);
 	void ArgvReceived(int32 argc, char** argv);
+	void RefsReceived(BMessage* message);
 
 	MainWindow* fMainWindow;
 	Preferences* fPreferences;
@@ -30,6 +31,9 @@ public:
 	BMessageRunner* fUpdateRunner;
 
 private:
+	void _OpenEntryFile(BMessage* refMessage);
+	void _OpenSourceFile(BMessage* refMessage);
+
 	FeedController* fFeedController;
 };
 

@@ -6,6 +6,7 @@
 #include "App.h"
 
 #include <MessageRunner.h>
+#include <Roster.h>
 #include <StorageKit.h>
 #include <String.h>
 
@@ -107,8 +108,17 @@ App::MessageReceived(BMessage* msg)
 void
 App::ArgvReceived(int32 argc, char** argv)
 {
+	BMessage refMsg(B_REFS_RECEIVED);
+
 	for (int i = 1; i < argc; i++) {
-		if (BUrl(argv[i]).IsValid()) {
+		entry_ref ref;
+		BEntry entry(argv[i]);
+		std::cout << "ARGV" << std::endl;
+
+		if (entry.Exists() && entry.GetRef(&ref) == B_OK) {
+			refMsg.AddRef("refs", &ref);
+		}
+		else if (BUrl(argv[i]).IsValid()) {
 			Feed* newFeed = new Feed(BUrl(argv[i]));
 
 			BMessage* enqueue = new BMessage(kEnqueueFeed);
@@ -117,8 +127,55 @@ App::ArgvReceived(int32 argc, char** argv)
 			MessageReceived(enqueue);
 		}
 	}
+	RefsReceived(&refMsg);
 }
-		
+
+
+void
+App::RefsReceived(BMessage* message)
+{
+	int i = 0;
+	entry_ref ref;
+	BFile file;
+	BNodeInfo info;
+	char type[B_FILE_NAME_LENGTH];
+
+	while (message->HasRef("refs", i)) {
+		BMessage msg = BMessage(B_REFS_RECEIVED);
+		message->FindRef("refs", i++, &ref);
+		msg.AddRef("refs", &ref);
+
+		file.SetTo(&ref, B_READ_ONLY);
+		info.SetTo(&file);
+		info.GetType(type);
+
+		if (BString(type) == BString("text/x-feed-entry"))
+			_OpenEntryFile(&msg);
+		else if (BString(type) == BString("application/x-feed-source"))
+			_OpenSourceFile(&msg);
+	}
+}
+
+
+void
+App::_OpenEntryFile(BMessage* refMessage)
+{
+	const char* openWith = fPreferences->EntryOpenWith();
+	entry_ref openRef;
+
+
+	if (BMimeType(openWith).IsValid())
+		BRoster().Launch(openWith, refMessage);
+	else if (BEntry(openWith).GetRef(&openRef) == B_OK)
+		BRoster().Launch(&openRef, refMessage);
+}
+
+
+void
+App::_OpenSourceFile(BMessage* refMessage)
+{
+}
+
 
 const char* configPath = "/boot/home/config/settings/Pogger/";
 

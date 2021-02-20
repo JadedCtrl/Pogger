@@ -10,6 +10,7 @@
 
 class BBox;
 class BButton;
+class BFilePanel;
 class BMenuField;
 class BMessage;
 class BPopUpMenu;
@@ -27,6 +28,7 @@ enum
 	kOpenUrlRadio		= 'roow',
 	kOpenAutoRadio		= 'raow',
 	kOpenWithSelect		= 'mnow',
+	kOpenWithPath		= 'pbow',
 	kOpenWithBrowse		= 'tbow'
 };
 
@@ -59,6 +61,7 @@ private:
 	BPopUpMenu*		fOpenWithMenu;
 	BMenuField*		fOpenWithMenuField;
 	BButton*		fOpenWithSelectButton;
+	BFilePanel*		fOpenWithPanel;
 };
 
 
