@@ -23,7 +23,6 @@ enum
 {
 	kEntryFolderText	= 'txef',
 	kEntryFolderBrowse	= 'tbef',
-	kEntryExtText		= 'txee',
 	kOpenHtmlRadio		= 'rdow',
 	kOpenUrlRadio		= 'roow',
 	kOpenAutoRadio		= 'raow',
@@ -49,8 +48,6 @@ private:
 	BStringView*	fEntryFolderLabel;
 	BTextControl*	fEntryFolderText;
 	BButton*		fEntryFolderBrowseButton;
-	BStringView*	fFileExtLabel;
-	BTextControl*	fFileExtText;
 
 	BBox*			fOpeningBox;
 	BStringView*	fOpenAsLabel;

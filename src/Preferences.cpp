@@ -33,7 +33,6 @@ Preferences::Load()
 	storage.Unflatten(&file);
 
 	fEntryDir		= BString(storage.GetString("entryDir", "/boot/home/feeds/"));
-	fEntryFileExt	= BString(storage.GetString("entryExt", ""));
 	fOpenAs			= storage.GetInt8("openAs", kOpenAsUrl);
 	fOpenWith		= BString(storage.GetString("openWith",
 		"application/x-vnd.Haiku-WebPositive"));
@@ -67,7 +66,6 @@ Preferences::Save()
 	status_t result = file->InitCheck();
 
 	storage.AddString("entryDir", fEntryDir.String());
-	storage.AddString("entryExt", fEntryFileExt.String());
 	storage.AddString("openWith", fOpenWith.String());
 	storage.AddInt8("openAs", fOpenAs);
 

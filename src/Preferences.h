@@ -38,8 +38,6 @@ public:
 	BString EntryOpenWith();
 	status_t SetEntryOpenWith(const char* binPath);
 
-
-	BString fEntryFileExt;
 	bool	fNewNotify;
 	bool	fFailureNotify;
 	int8	fOpenAs;

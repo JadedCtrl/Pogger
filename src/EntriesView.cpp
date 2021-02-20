@@ -34,7 +34,6 @@ EntriesView::AttachedToWindow()
 {
 	fEntryFolderText->SetTarget(this);
 	fEntryFolderBrowseButton->SetTarget(this);
-	fFileExtText->SetTarget(this);
 
 	fOpenAsAutoRadio->SetTarget(this);
 	fOpenAsHtmlRadio->SetTarget(this);
@@ -54,11 +53,6 @@ EntriesView::MessageReceived(BMessage* msg)
 				fEntryFolderText->Text());
 			if (result != B_OK)
 				userFileError(result, fEntryFolderText->Text());
-			break;
-		}
-		case kEntryExtText:
-		{
-			((App*)be_app)->fPreferences->fEntryFileExt = fFileExtText->Text();
 			break;
 		}
 		case kOpenHtmlRadio:
@@ -125,10 +119,6 @@ EntriesView::_InitInterface()
 	fEntryFolderBrowseButton = new BButton("entryFolderBrowse", "Browse…",
 		new BMessage(kEntryFolderBrowse));
 
-	fFileExtLabel = new BStringView("fileExtLabel", "File extension:");
-	fFileExtText = new BTextControl("fileExt", "", "",
-		new BMessage(kEntryExtText));
-
 	// Opening
 	fOpeningBox = new BBox("opening");
 	fOpeningBox->SetLabel("Opening");
@@ -157,7 +147,6 @@ EntriesView::_InitInterface()
 	else
 		fOpenAsAutoRadio->SetValue(B_CONTROL_ON);
 
-	fFileExtText->SetText(prefs->fEntryFileExt);
 	fEntryFolderText->SetText(prefs->EntryDir());
 
 	_PopulateOpenWithMenu();
@@ -168,7 +157,6 @@ EntriesView::_InitInterface()
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 			.SetInsets(0, 20, B_USE_ITEM_INSETS, 0)
 			.Add(fEntryFolderLabel)
-			.Add(fFileExtLabel)
 		.End()
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 			.SetInsets(0, 20, B_USE_ITEM_INSETS, 0)
@@ -176,7 +164,6 @@ EntriesView::_InitInterface()
 				.Add(fEntryFolderText)
 				.Add(fEntryFolderBrowseButton)
 			.End()
-			.Add(fFileExtText)
 		.End()
 	.End();
 
