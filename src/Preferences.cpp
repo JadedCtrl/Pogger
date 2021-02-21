@@ -143,3 +143,21 @@ Preferences::SetEntryOpenWith(const char* binPath)
 }
 
 
+bool
+Preferences::EntryOpenAsHtml()
+{
+	return fOpenAs == kOpenAsHtml;
+}
+
+
+bool
+Preferences::SetEntryOpenAsHtml(bool asHtml)
+{
+	if (asHtml == true)
+		fOpenAs = kOpenAsHtml;
+	else
+		fOpenAs = kOpenAsUrl;
+	return asHtml;
+}
+
+

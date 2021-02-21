@@ -1,5 +1,4 @@
 Important Features:
-* Open As support
 * Show download progress/failures in FeedView's feedlist
 * Update FeedView's feedlist when feeds added/removed
 * Show in desktray

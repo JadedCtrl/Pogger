@@ -35,7 +35,6 @@ EntriesView::AttachedToWindow()
 	fEntryFolderText->SetTarget(this);
 	fEntryFolderBrowseButton->SetTarget(this);
 
-	fOpenAsAutoRadio->SetTarget(this);
 	fOpenAsHtmlRadio->SetTarget(this);
 	fOpenAsUrlRadio->SetTarget(this);
 	fOpenWithSelectButton->SetTarget(this);
@@ -63,11 +62,6 @@ EntriesView::MessageReceived(BMessage* msg)
 		case kOpenUrlRadio:
 		{
 			((App*)be_app)->fPreferences->fOpenAs = kOpenAsUrl;
-			break;
-		}
-		case kOpenAutoRadio:
-		{
-			((App*)be_app)->fPreferences->fOpenAs = kOpenAsAuto;
 			break;
 		}
 		case kOpenWithSelect:
@@ -124,8 +118,6 @@ EntriesView::_InitInterface()
 	fOpeningBox->SetLabel("Opening");
 
 	fOpenAsLabel = new BStringView("openAsLabel", "Open as:");
-	fOpenAsAutoRadio = new BRadioButton("asAuto", "Auto",
-		new BMessage(kOpenAutoRadio));
 	fOpenAsHtmlRadio = new BRadioButton("asHtml", "HTML",
 		new BMessage(kOpenHtmlRadio));
 	fOpenAsUrlRadio = new BRadioButton("asUrl", "URL",
@@ -142,10 +134,8 @@ EntriesView::_InitInterface()
 	Preferences* prefs = ((App*)be_app)->fPreferences;
 	if (prefs->fOpenAs == kOpenAsHtml)
 		fOpenAsHtmlRadio->SetValue(B_CONTROL_ON);
-	else if (prefs->fOpenAs == kOpenAsUrl)
+	else 
 		fOpenAsUrlRadio->SetValue(B_CONTROL_ON);
-	else
-		fOpenAsAutoRadio->SetValue(B_CONTROL_ON);
 
 	fEntryFolderText->SetText(prefs->EntryDir());
 
@@ -177,7 +167,6 @@ EntriesView::_InitInterface()
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 			.SetInsets(0, 20, B_USE_ITEM_INSETS, 0)
 			.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
-				.Add(fOpenAsAutoRadio)
 				.Add(fOpenAsHtmlRadio)
 				.Add(fOpenAsUrlRadio)
 				.AddGlue()

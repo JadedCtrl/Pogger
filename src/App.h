@@ -32,6 +32,8 @@ public:
 
 private:
 	void _OpenEntryFile(BMessage* refMessage);
+	void _OpenEntryFileAsHtml(entry_ref ref);
+	void _OpenEntryFileAsUrl(entry_ref ref);
 	void _OpenSourceFile(BMessage* refMessage);
 
 	FeedController* fFeedController;

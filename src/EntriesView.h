@@ -25,7 +25,6 @@ enum
 	kEntryFolderBrowse	= 'tbef',
 	kOpenHtmlRadio		= 'rdow',
 	kOpenUrlRadio		= 'roow',
-	kOpenAutoRadio		= 'raow',
 	kOpenWithSelect		= 'mnow',
 	kOpenWithPath		= 'pbow',
 	kOpenWithBrowse		= 'tbow'
@@ -51,7 +50,6 @@ private:
 
 	BBox*			fOpeningBox;
 	BStringView*	fOpenAsLabel;
-	BRadioButton*	fOpenAsAutoRadio;
 	BRadioButton*	fOpenAsHtmlRadio;
 	BRadioButton*	fOpenAsUrlRadio;
 	BStringView*	fOpenWithLabel;

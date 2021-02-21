@@ -14,7 +14,6 @@ static const int64 HOUR_IN_MICROSECONDS = 3600000000;
 
 enum
 {
-	kOpenAsAuto = 0,
 	kOpenAsHtml = 1,
 	kOpenAsUrl = 2
 };
@@ -37,6 +36,9 @@ public:
 
 	BString EntryOpenWith();
 	status_t SetEntryOpenWith(const char* binPath);
+
+	bool EntryOpenAsHtml();
+	bool SetEntryOpenAsHtml(bool asHtml);
 
 	bool	fNewNotify;
 	bool	fFailureNotify;

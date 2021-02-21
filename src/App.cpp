@@ -28,6 +28,7 @@
 int
 main(int argc, char** argv)
 {
+	srand(time(0));
 	installMimeTypes();
 
 	App* app = new App();
@@ -113,7 +114,6 @@ App::ArgvReceived(int32 argc, char** argv)
 	for (int i = 1; i < argc; i++) {
 		entry_ref ref;
 		BEntry entry(argv[i]);
-		std::cout << "ARGV" << std::endl;
 
 		if (entry.Exists() && entry.GetRef(&ref) == B_OK) {
 			refMsg.AddRef("refs", &ref);
@@ -141,7 +141,7 @@ App::RefsReceived(BMessage* message)
 	char type[B_FILE_NAME_LENGTH];
 
 	while (message->HasRef("refs", i)) {
-		BMessage msg = BMessage(B_REFS_RECEIVED);
+		BMessage msg(B_REFS_RECEIVED);
 		message->FindRef("refs", i++, &ref);
 		msg.AddRef("refs", &ref);
 
@@ -160,14 +160,50 @@ App::RefsReceived(BMessage* message)
 void
 App::_OpenEntryFile(BMessage* refMessage)
 {
-	const char* openWith = fPreferences->EntryOpenWith();
-	entry_ref openRef;
+	entry_ref entryRef;
+	refMessage->FindRef("refs", &entryRef);
 
+	if (fPreferences->EntryOpenAsHtml())
+		_OpenEntryFileAsHtml(entryRef);
+	else
+		_OpenEntryFileAsUrl(entryRef);
+}
+
+
+void
+App::_OpenEntryFileAsHtml(entry_ref ref)
+{
+	const char* openWith = fPreferences->EntryOpenWith();
+	entry_ref openWithRef;
+	BString entryTitle("untitled");
+	BFile(&ref, B_READ_ONLY).ReadAttrString("Feed:name", &entryTitle);
+
+	entry_ref tempRef = tempHtmlFile(&ref, entryTitle.String());
+	BMessage newRefMessage(B_REFS_RECEIVED);
+	newRefMessage.AddRef("refs", &tempRef);
 
 	if (BMimeType(openWith).IsValid())
-		BRoster().Launch(openWith, refMessage);
-	else if (BEntry(openWith).GetRef(&openRef) == B_OK)
-		BRoster().Launch(&openRef, refMessage);
+		BRoster().Launch(openWith, &newRefMessage);
+	else if (BEntry(openWith).GetRef(&openWithRef) == B_OK)
+		BRoster().Launch(&openWithRef, &newRefMessage);
+}
+
+
+void
+App::_OpenEntryFileAsUrl(entry_ref ref)
+{
+	const char* openWith = fPreferences->EntryOpenWith();
+	entry_ref openWithRef;
+	BString entryUrl;
+	if (BFile(&ref, B_READ_ONLY).ReadAttrString("META:url", &entryUrl) != B_OK)
+		return;
+
+	const char* urlArg = entryUrl.String();
+
+	if (BMimeType(openWith).IsValid())
+		BRoster().Launch(openWith, 1, &urlArg);
+	else if (BEntry(openWith).GetRef(&openWithRef) == B_OK)
+		BRoster().Launch(&openWithRef, 1, &urlArg);
 }
 
 

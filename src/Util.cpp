@@ -5,6 +5,8 @@
 
 #include "Util.h"
 
+#include <Directory.h>
+#include <File.h>
 #include <OS.h>
 #include <Url.h>
 #include <UrlProtocolRoster.h>
@@ -111,7 +113,18 @@ urlToFilename(BUrl url)
 
 	return filename;
 }
-	
+
+
+const char*
+tempFileName(const char* dir, const char* name, const char* suffix)
+{
+	BString tmpDir("/tmp/");
+	tmpDir << dir;
+	BDirectory().CreateDirectory(tmpDir.String(), NULL);
+
+	tmpDir << "/" << name << "-" << (rand() % 1000) << "." << suffix;
+	return tmpDir.String();
+}
 
 
 int32
@@ -143,6 +156,37 @@ fetch(BUrl url, BDataIO* reply, BString* hash, int timeout)
 void
 userFileError(status_t status, const char* path)
 {
+}
+
+
+entry_ref
+tempHtmlFile(entry_ref* ref, const char* title)
+{
+	entry_ref tempRef;
+	BEntry(tempFileName("Pogger", title, "html")).GetRef(&tempRef);
+
+	BFile ogFile(ref, B_READ_ONLY);
+	BFile htmlFile(&tempRef, B_WRITE_ONLY | B_CREATE_FILE);
+
+	char readBuf[100] = {'\0'};
+	ssize_t readLen = 1;
+
+	BString head("<html>\n<head>\n<title>");
+	head << title << "</title>\n</head>\n<body>\n";
+	BString tail("</body>\n</html>\n");
+	const void* headBuf = head.String();
+	const void* tailBuf = tail.String();
+
+	htmlFile.Write(headBuf, head.Length());
+
+	while (readLen > 0) {
+		readLen = ogFile.Read(readBuf, 100);
+		htmlFile.Write(readBuf, readLen);
+	}
+
+	htmlFile.Write(tailBuf, tail.Length());
+
+	return tempRef;
 }
 
 
