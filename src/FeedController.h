@@ -29,6 +29,7 @@ class FeedController{
 public:
 	FeedController();
 	~FeedController();
+
 	void MessageReceived(BMessage* msg);
 	static BList SubscribedFeeds();
 

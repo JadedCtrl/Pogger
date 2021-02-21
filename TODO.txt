@@ -8,9 +8,16 @@ Important Features:
 
 
 Important improvements:
+* Stop locking during updates
+* Stop memory accumulation
+	* A few MB accumulate on every update
+	* ime it's than .1 MB per feed― but if you have several feeds, it can
+	  accumulate to a hefty sum after some time. In my case, with ~40 feeds
+	  and updates every 30 minutes, it got to about 200MB after a week or
+	  so.
+	* _Huge_ problem, but I haven't had luck figuring it out yet…
 * Proper queue list (see Multiple downloads at once?)
 * No hardcoded paths
-* Remove unnecessary `new`-- make sure to delete everything
 * General input sanitization
 * File error-handling
 	* e.g., Utils.cpp's userFileError

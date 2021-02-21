@@ -75,8 +75,7 @@ AtomFeed::RootParse(tinyxml2::XMLElement* xfeed)
 void
 AtomFeed::EntryParse(tinyxml2::XMLElement* xentry)
 {
-	Entry* newEntry = (Entry*)malloc(sizeof(Entry));
-	newEntry = new Entry();
+	Entry* newEntry = new Entry();
 
 	tinyxml2::XMLElement* xcontent = xentry->FirstChildElement("content");
 	tinyxml2::XMLElement* xmedia   = xentry->FirstChildElement("media:group");

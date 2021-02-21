@@ -27,6 +27,8 @@ public:
 	Feed(Feed*);
 	Feed();
 
+	~Feed();
+
 	virtual void Parse();
 
 	BList	GetEntries();

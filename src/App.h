@@ -20,8 +20,11 @@ class Notifier;
 class App : public BApplication
 {
 public:
-	App(void);
+	App();
+
 	void MessageReceived(BMessage* msg);
+	bool QuitRequested();
+
 	void ArgvReceived(int32 argc, char** argv);
 	void RefsReceived(BMessage* message);
 

@@ -134,11 +134,11 @@ Notifier::_DownloadFailNotification(BString feedUrl)
 void
 Notifier::_UpdateProgress()
 {
-	BMessage* progress = new BMessage(kProgress);
-	progress->AddInt32("max", fEnqueuedFeeds);
-	progress->AddInt32("current", fFeedsInProgress);
+	BMessage progress = BMessage(kProgress);
+	progress.AddInt32("max", fEnqueuedFeeds);
+	progress.AddInt32("current", fFeedsInProgress);
 
-	((App*)be_app)->MessageReceived(progress);
+	((App*)be_app)->MessageReceived(&progress);
 
 	if (fFeedsInProgress == 0)
 		fEnqueuedFeeds = 0;

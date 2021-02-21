@@ -86,6 +86,13 @@ Feed::Feed()
 }
 
 
+Feed::~Feed()
+{
+	for (int i = entries.CountItems(); i >= 0; i--)
+		delete ((Entry*)entries.RemoveItem(i));
+}
+
+
 void
 Feed::Parse()
 {

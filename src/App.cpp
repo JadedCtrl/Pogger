@@ -25,19 +25,6 @@
 #include "Util.h"
 
 
-int
-main(int argc, char** argv)
-{
-	srand(time(0));
-	installMimeTypes();
-
-	App* app = new App();
-	app->Run();
-	app->fPreferences->Save();
-	return 0;
-}
-
-
 App::App() : BApplication("application/x-vnd.Pogger")
 {
 	fPreferences = new Preferences;
@@ -49,14 +36,14 @@ App::App() : BApplication("application/x-vnd.Pogger")
 	fNotifier = new Notifier();
 	fFeedController = new FeedController();
 
-	BMessage* updateMessage = new BMessage(kUpdateSubscribed);
+	BMessage updateMessage(kUpdateSubscribed);
 	int64 interval = fPreferences->UpdateInterval();
 	int32 count = -1;
 
 	if (interval == -1)
 		count = 0;
 //	else
-//		MessageReceived(updateMessage);
+//		MessageReceived(&updateMessage);
 
 	fUpdateRunner = new BMessageRunner(this, updateMessage, interval, count);
 }
@@ -106,6 +93,19 @@ App::MessageReceived(BMessage* msg)
 }
 
 
+bool
+App::QuitRequested()
+{
+	delete fUpdateRunner, fFeedController, fNotifier;
+	if (fMainWindow->Lock())
+		fMainWindow->Quit();
+
+	fPreferences->Save();
+	delete fPreferences;
+	return true;
+}
+
+
 void
 App::ArgvReceived(int32 argc, char** argv)
 {
@@ -121,10 +121,10 @@ App::ArgvReceived(int32 argc, char** argv)
 		else if (BUrl(argv[i]).IsValid()) {
 			Feed* newFeed = new Feed(BUrl(argv[i]));
 
-			BMessage* enqueue = new BMessage(kEnqueueFeed);
-			enqueue->AddData("feeds", B_RAW_TYPE, (void*)newFeed, sizeof(Feed));
+			BMessage enqueue = BMessage(kEnqueueFeed);
+			enqueue.AddData("feeds", B_RAW_TYPE, (void*)newFeed, sizeof(Feed));
 
-			MessageReceived(enqueue);
+			MessageReceived(&enqueue);
 		}
 	}
 	RefsReceived(&refMsg);
@@ -214,5 +214,17 @@ App::_OpenSourceFile(BMessage* refMessage)
 
 
 const char* configPath = "/boot/home/config/settings/Pogger/";
+
+
+int
+main(int argc, char** argv)
+{
+	srand(time(0));
+	installMimeTypes();
+
+	App* app = new App();
+	app->Run();
+	return 0;
+}
 
 

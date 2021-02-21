@@ -93,7 +93,7 @@ UpdatesView::_InitInterface()
 	fIntervalSlider->SetHashMarkCount(26);
 	fIntervalSlider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	fIntervalSlider->SetLimitLabels("Never", "24 hours");
-	fIntervalSlider->SetModificationMessage(new BMessage('iiii'));
+	fIntervalSlider->SetModificationMessage(new BMessage(kIntervalChanged));
 
 
 	// Display current settings

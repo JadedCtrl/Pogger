@@ -18,6 +18,7 @@ class Entry {
 public:
 	
 	Entry();
+	~Entry();
 
 	bool Filetize(BDirectory outDir);
 

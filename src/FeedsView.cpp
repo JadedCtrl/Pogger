@@ -13,8 +13,6 @@
 #include <SeparatorView.h>
 #include <StringView.h>
 
-#include <cstdio>
-
 #include "App.h"
 #include "Feed.h"
 #include "FeedController.h"
@@ -52,7 +50,6 @@ FeedsView::MessageReceived(BMessage* msg)
 		case kFeedsEditButton:
 		{
 			_EditSelectedFeed();
-			_PopulateFeedList();
 			break;
 		}
 		case kFeedsSelected:
@@ -180,11 +177,16 @@ FeedsView::_PopulateFeedList()
 	BList feeds = FeedController::SubscribedFeeds();
 	int32 selected = fFeedsListView->CurrentSelection();
 
-	fFeedsListView->MakeEmpty();
+	for (int i = fFeedsListView->CountItems(); i >= 0; i--)
+		delete ((FeedListItem*)fFeedsListView->RemoveItem(i));
+
 	for (int i = 0; i < feeds.CountItems(); i++) {
 		FeedListItem* item = new FeedListItem((Feed*)feeds.ItemAt(i));
 		fFeedsListView->AddItem(item);
 	}
+
+	for (int i = feeds.CountItems(); i >= 0; i--)
+		delete ((Feed*)feeds.RemoveItem(i));
 
 	if (fFeedsListView->CountItems() < selected)
 		selected = fFeedsListView->CountItems();

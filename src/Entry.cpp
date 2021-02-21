@@ -23,32 +23,36 @@ Entry::Entry()
 }
 
 
+Entry::~Entry()
+{}
+
+
 bool
 Entry::Filetize(BDirectory outDir)
 {
-	BFile* file = new BFile(title.String(), B_READ_WRITE);
+	BFile file(title.String(), B_READ_WRITE);
 	time_t tt_date = date.Time_t();
 
-	outDir.CreateFile(title.String(), file);
+	outDir.CreateFile(title.String(), &file);
 
 	BString betype = BString("text/x-feed-entry");
-	file->WriteAttr("BEOS:TYPE", B_MIME_STRING_TYPE, 0, betype.String(),
+	file.WriteAttr("BEOS:TYPE", B_MIME_STRING_TYPE, 0, betype.String(),
 		betype.CountChars() + 1);
 
-	file->WriteAttr("Feed:name", B_STRING_TYPE, 0,
+	file.WriteAttr("Feed:name", B_STRING_TYPE, 0,
 		title.String(), title.CountChars());
-	file->WriteAttr("Feed:description", B_STRING_TYPE, 0,
+	file.WriteAttr("Feed:description", B_STRING_TYPE, 0,
 		description.String(), description.CountChars());
-	file->WriteAttr("Feed:source", B_STRING_TYPE, 0,
+	file.WriteAttr("Feed:source", B_STRING_TYPE, 0,
 		feedTitle.String(), feedTitle.CountChars());
-	file->WriteAttr("META:url", B_STRING_TYPE, 0, postUrl.String(),
+	file.WriteAttr("META:url", B_STRING_TYPE, 0, postUrl.String(),
 		postUrl.CountChars());
 
 	if (date != NULL) {
-		file->WriteAttr("Feed:when", B_TIME_TYPE, 0, &tt_date, sizeof(time_t));
+		file.WriteAttr("Feed:when", B_TIME_TYPE, 0, &tt_date, sizeof(time_t));
 	}
 
-	file->Write(content.String(), content.Length());
+	file.Write(content.String(), content.Length());
 	return false;
 }
 

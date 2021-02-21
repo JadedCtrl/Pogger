@@ -59,8 +59,7 @@ RssFeed::RootParse(tinyxml2::XMLElement* xchan)
 void
 RssFeed::EntryParse(tinyxml2::XMLElement* xitem)
 {
-	Entry* newEntry = (Entry*)malloc(sizeof(Entry));
-	newEntry = new Entry();
+	Entry* newEntry = new Entry();
 
 	newEntry->SetTitle(xitem->FirstChildElement("title"));
 	newEntry->SetDesc(xitem->FirstChildElement("description"));

@@ -137,11 +137,12 @@ FeedEditWindow::_SaveFeed()
 	fFeed->SetXmlUrl(BUrl(urlString));
 	fFeed->Filetize();
 
-	BMessage* enqueueUpdated = new BMessage(kEnqueueFeed);
-	enqueueUpdated->AddData("feeds", B_RAW_TYPE, (void*)fFeed, sizeof(Feed));
+	BMessage edited(kFeedsEdited);
+	BMessage enqueueUpdated(kEnqueueFeed);
+	enqueueUpdated.AddData("feeds", B_RAW_TYPE, (void*)fFeed, sizeof(Feed));
 
-	((App*)be_app)->MessageReceived(enqueueUpdated);
-	((App*)be_app)->PostMessage(new BMessage(kFeedsEdited));
+	((App*)be_app)->MessageReceived(&enqueueUpdated);
+	((App*)be_app)->PostMessage(&edited);
 	Quit();
 }
 
@@ -150,7 +151,8 @@ void
 FeedEditWindow::_DeleteFeed()
 {
 	fFeed->Unfiletize();
-	((App*)be_app)->PostMessage(new BMessage(kFeedsEdited));
+	BMessage edited(kFeedsEdited);
+	((App*)be_app)->PostMessage(&edited);
 	Quit();
 }
 
