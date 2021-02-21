@@ -141,7 +141,7 @@ FeedEditWindow::_SaveFeed()
 	enqueueUpdated->AddData("feeds", B_RAW_TYPE, (void*)fFeed, sizeof(Feed));
 
 	((App*)be_app)->MessageReceived(enqueueUpdated);
-	((App*)be_app)->MessageReceived(new BMessage(kFeedsEdited));
+	((App*)be_app)->PostMessage(new BMessage(kFeedsEdited));
 	Quit();
 }
 
@@ -150,7 +150,7 @@ void
 FeedEditWindow::_DeleteFeed()
 {
 	fFeed->Unfiletize();
-	((App*)be_app)->MessageReceived(new BMessage(kFeedsEdited));
+	((App*)be_app)->PostMessage(new BMessage(kFeedsEdited));
 	Quit();
 }
 

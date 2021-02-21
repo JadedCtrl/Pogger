@@ -64,7 +64,7 @@ FeedsView::MessageReceived(BMessage* msg)
 		}
 		case kFeedsEdited:
 		{
-//			_PopulateFeedList();
+			_PopulateFeedList();
 		}
 		case kDownloadStart:
 		{
@@ -178,12 +178,17 @@ void
 FeedsView::_PopulateFeedList()
 {
 	BList feeds = FeedController::SubscribedFeeds();
+	int32 selected = fFeedsListView->CurrentSelection();
 
 	fFeedsListView->MakeEmpty();
 	for (int i = 0; i < feeds.CountItems(); i++) {
 		FeedListItem* item = new FeedListItem((Feed*)feeds.ItemAt(i));
 		fFeedsListView->AddItem(item);
 	}
+
+	if (fFeedsListView->CountItems() < selected)
+		selected = fFeedsListView->CountItems();
+	fFeedsListView->Select(selected);
 }
 
 

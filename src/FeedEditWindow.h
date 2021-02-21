@@ -45,7 +45,6 @@ private:
 
 	BButton* fSaveButton;
 	BButton* fDeleteButton;
-
 };
 
 
