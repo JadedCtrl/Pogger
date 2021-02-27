@@ -55,6 +55,7 @@ App::MessageReceived(BMessage* msg)
 	switch (msg->what)
 	{
 		case kUpdateSubscribed:
+		case kControllerCheck:
 		{
 			fFeedController->MessageReceived(msg);
 			break;

@@ -10,6 +10,8 @@
 
 class BList;
 class BMessage;
+class BMessageRunner;
+class Feed;
 
 
 enum
@@ -21,7 +23,8 @@ enum
 	kDownloadFail		= 'fdlf',
 	kParseComplete		= 'fpec',
 	kParseFail			= 'fpef',
-	kUpdateSubscribed	= 'fups'
+	kUpdateSubscribed	= 'fups',
+	kControllerCheck	= 'coch'
 };
 
 
@@ -31,14 +34,23 @@ public:
 	~FeedController();
 
 	void MessageReceived(BMessage* msg);
+
 	static BList SubscribedFeeds();
 
 private:
-	static int32 _DownloadLoop(void* ignored);
-	static int32 _ParseLoop(void* ignored);
+	static int32 _DownloadLoop(void* data);
+	static int32 _ParseLoop(void* data);
 
+	void _EnqueueFeed(Feed* feed);
+	void _ProcessQueueItem();
+	void _CheckStatus();
+
+	thread_id	fMainThread;
 	thread_id	fDownloadThread;
 	thread_id	fParseThread;
+
+	BList*			fDownloadQueue;
+	BMessageRunner*	fMessageRunner;
 };
 
 

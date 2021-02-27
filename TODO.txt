@@ -8,7 +8,6 @@ Important Features:
 
 
 Important improvements:
-* Stop locking during updates
 * Stop memory accumulation
 	* A few MB accumulate on every update
 	* ime it's than .1 MB per feed― but if you have several feeds, it can
@@ -16,7 +15,6 @@ Important improvements:
 	  and updates every 30 minutes, it got to about 200MB after a week or
 	  so.
 	* _Huge_ problem, but I haven't had luck figuring it out yet…
-* Proper queue list (see Multiple downloads at once?)
 * No hardcoded paths
 * General input sanitization
 * File error-handling
@@ -29,7 +27,6 @@ Important improvements:
 
 
 Nice Improvements:
-* 'About' window
 * Save window positions
 	* Main window
 	* Subscription-edit window
@@ -37,6 +34,8 @@ Nice Improvements:
 * Store feeds in kEnqueueFeeds/etc messages as paths? hmm
 	* This way, if the user edits the feed after it is enqueued but before
 	processing, the changes will be applied.
+* Move the provisional BList download queue to a BJob + JobQueue system
+	* This might add some more flexibility
 * Multiple downloads at once?
 	* Array of thread_ids for multiple DL threads?
 		* In which case, it'd probably make sense to only spin them
