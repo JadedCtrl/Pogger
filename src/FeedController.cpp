@@ -5,12 +5,12 @@
 
 #include "FeedController.h"
 
+#include <iostream>
+
 #include <Directory.h>
 #include <Message.h>
 #include <MessageRunner.h>
 #include <Notification.h>
-
-#include <iostream>
 
 #include "App.h"
 #include "AtomFeed.h"

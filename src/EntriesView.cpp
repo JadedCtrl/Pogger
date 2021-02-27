@@ -5,6 +5,8 @@
 
 #include "EntriesView.h"
 
+#include <iostream>
+
 #include <Box.h>
 #include <Button.h>
 #include <Message.h>
@@ -14,8 +16,6 @@
 #include <RadioButton.h>
 #include <StringView.h>
 #include <TextControl.h>
-
-#include <iostream>
 
 #include "App.h"
 #include "Util.h"

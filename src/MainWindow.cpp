@@ -5,6 +5,8 @@
 
 #include "MainWindow.h"
 
+#include <iostream>
+
 #include <Button.h>
 #include <GroupView.h>
 #include <LayoutBuilder.h>
@@ -12,8 +14,6 @@
 #include <StatusBar.h>
 #include <String.h>
 #include <TabView.h>
-
-#include <iostream>
 
 #include "App.h"
 #include "EntriesView.h"
@@ -44,6 +44,10 @@ MainWindow::MessageReceived(BMessage *msg)
 		case kFeedsSelected:
 		case kFeedsEdited:
 		case kDownloadStart:
+		case kDownloadComplete:
+		case kDownloadFail:
+		case kParseComplete:
+		case kParseFail:
 		{
 			fFeedsView->MessageReceived(msg);
 			break;
@@ -122,8 +126,6 @@ MainWindow::_UpdateProgress(int32 max, int32 current)
 
 	fStatusBar->SetMaxValue(max);
 	fStatusBar->SetTo(prog);
-
-//	std::cout << prog << "/" << max << std::endl;
 }
 
 

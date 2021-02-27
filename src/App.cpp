@@ -5,12 +5,12 @@
 
 #include "App.h"
 
+#include <iostream>
+
 #include <MessageRunner.h>
 #include <Roster.h>
 #include <StorageKit.h>
 #include <String.h>
-
-#include <iostream>
 
 #include "AtomFeed.h"
 #include "Entry.h"

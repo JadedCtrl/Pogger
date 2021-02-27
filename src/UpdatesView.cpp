@@ -12,8 +12,6 @@
 #include <LayoutBuilder.h>
 #include <Slider.h>
 
-#include <cstdio>
-
 #include "App.h"
 
 

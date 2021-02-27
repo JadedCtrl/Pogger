@@ -5,6 +5,9 @@
 
 #include "Util.h"
 
+#include <iostream>
+#include <iomanip>
+
 #include <Directory.h>
 #include <File.h>
 #include <OS.h>
@@ -13,8 +16,6 @@
 #include <UrlRequest.h>
 
 #include <boost/uuid/detail/sha1.hpp>
-#include <iostream>
-#include <iomanip>
 
 #include "ProtocolListener.h"
 

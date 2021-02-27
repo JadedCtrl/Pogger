@@ -1,4 +1,7 @@
 /*
+ * Copyright 2007-2016, Haiku, Inc. All rights reserved.
+ * Copyright 2001-2002 Dr. Zoidberg Enterprises. All rights reserved.
+ * Copyright 2011, Clemens Zeidler <haiku@clemens-zeidler.de>
  * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
  * All rights reserved. Distributed under the terms of the MIT license.
  */

@@ -5,9 +5,9 @@
 
 #include "Preferences.h"
 
-#include <String.h>
-
 #include <iostream>
+
+#include <String.h>
 
 
 Preferences::Preferences() {

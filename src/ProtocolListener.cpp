@@ -5,10 +5,10 @@
 
 #include "ProtocolListener.h"
 
-#include <Url.h>
-
 #include <iostream>
 #include <sstream>
+
+#include <Url.h>
 
 
 ProtocolListener::ProtocolListener(bool traceLogging)
