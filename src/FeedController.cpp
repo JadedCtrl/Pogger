@@ -116,7 +116,8 @@ FeedController::_ProcessQueueItem()
 		send_data(fDownloadThread, 0, (void*)buffer, sizeof(Feed));
 
 		BMessage downloadInit = BMessage(kDownloadStart);
-		downloadInit.AddString("feed", buffer->GetTitle());
+		downloadInit.AddString("feed_url", buffer->GetXmlUrl().UrlString());
+		downloadInit.AddString("feed_name", buffer->GetTitle());
 		((App*)be_app)->MessageReceived(&downloadInit);
 	}
 }
@@ -154,7 +155,7 @@ FeedController::_CheckStatus()
 			case kParseComplete:
 			{
 				BMessage complete = BMessage(kParseComplete);
-				complete.AddString("feed_name", feedBuffer->GetTitle());
+				complete.AddString("feed_url", feedBuffer->GetXmlUrl().UrlString());
 				complete.AddInt32("entry_count", feedBuffer->GetNewEntries().CountItems());
 				((App*)be_app)->MessageReceived(&complete);
 				break;

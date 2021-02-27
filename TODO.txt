@@ -1,5 +1,5 @@
 Important Features:
-* Show download progress/failures in FeedView's feedlist
+* Show progress in FeedView's feedlist as icons
 * Show in desktray
 	* Make archivable
 	* Get menu working

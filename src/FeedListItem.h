@@ -9,9 +9,16 @@
 #include <StringItem.h>
 #include <Url.h>
 
-//class BString;
-//class BUrl;
 class Feed;
+
+
+enum
+{
+	kClearStatus = 0,
+	kDownloadingStatus = 1,
+	kParsingStatus = 2,
+	kErrorStatus = 3
+};
 
 
 class FeedListItem : public BStringItem
@@ -19,10 +26,15 @@ class FeedListItem : public BStringItem
 public:
 	FeedListItem(Feed* feed);
 
+	void DrawItem(BView* owner, BRect frame, bool complete);
+
 	BUrl GetFeedUrl();
 	BString GetFeedPath();
 
+	void SetStatus(int8 status);
+
 private:
+	int8 fStatus;
 	BUrl fFeedUrl;
 	BString fFeedPath;
 };

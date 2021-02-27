@@ -60,8 +60,9 @@ App::MessageReceived(BMessage* msg)
 			fFeedController->MessageReceived(msg);
 			break;
 		}
-		case kEnqueueFeed:
 		case kDownloadComplete:
+			fMainWindow->PostMessage(msg);
+		case kEnqueueFeed:
 		{
 			fNotifier->MessageReceived(msg);
 			fFeedController->MessageReceived(msg);
@@ -83,6 +84,7 @@ App::MessageReceived(BMessage* msg)
 		case kDownloadFail:
 		{
 			fNotifier->MessageReceived(msg);
+			fMainWindow->PostMessage(msg);
 			break;
 		}
 		default:

@@ -39,7 +39,7 @@ private:
 
 	void _PopulateFeedList();
 
-	void _UpdateProgress(BString feedName);
+	void _UpdateProgress(BMessage* msg, int8 status);
 
 	BButton* fAddButton;
 	BButton* fRemoveButton;

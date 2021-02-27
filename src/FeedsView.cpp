@@ -65,14 +65,23 @@ FeedsView::MessageReceived(BMessage* msg)
 		}
 		case kDownloadStart:
 		{
-			BString feedName;
-			if (msg->FindString("feed", &feedName) == B_OK)
-				_UpdateProgress(feedName);
-		}
-		default:
-		{
-//			BWindow::MessageReceived(msg);
+			_UpdateProgress(msg, kDownloadingStatus);
 			break;
+		}
+		case kDownloadComplete:
+		{
+			_UpdateProgress(msg, kParsingStatus);
+			break;
+		}
+		case kDownloadFail:
+		case kParseFail:
+		{
+			_UpdateProgress(msg, kErrorStatus);
+			break;
+		}
+		case kParseComplete:
+		{
+			_UpdateProgress(msg, kClearStatus);
 		}
 	}
 }
@@ -195,11 +204,27 @@ FeedsView::_PopulateFeedList()
 
 
 void
-FeedsView::_UpdateProgress(BString feedName)
+FeedsView::_UpdateProgress(BMessage* msg, int8 status)
 {
-	BString label("Fetching ");
-	label << feedName << "…";
-	fProgressLabel->SetText(label);
+	BString feedName, feedUrl;
+	if (msg->FindString("feed_url", &feedUrl) != B_OK)
+		return;
+	if (msg->FindString("feed_name", &feedName) != B_OK)
+		feedName = feedUrl;
+
+	if (status == kDownloadingStatus) {
+		BString label("Fetching ");
+		label << feedName << "…";
+		fProgressLabel->SetText(label);
+	}
+
+	for (int i = 0; i < fFeedsListView->CountItems(); i++) {
+		FeedListItem* item  = (FeedListItem*)fFeedsListView->ItemAt(i);
+		if (item->GetFeedUrl().UrlString() == feedUrl) {
+			item->SetStatus(status);
+			fFeedsListView->InvalidateItem(i);
+		}
+	}
 }
 
 
