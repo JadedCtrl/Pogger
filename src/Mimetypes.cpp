@@ -1,8 +1,8 @@
 /*
- * Copyright 2007-2016, Haiku, Inc. All rights reserved.
- * Copyright 2001-2002 Dr. Zoidberg Enterprises. All rights reserved.
- * Copyright 2011, Clemens Zeidler <haiku@clemens-zeidler.de>
  * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * Copyright 2007-2016, Haiku, Inc. All rights reserved.
+ * Copyright 2011, Clemens Zeidler <haiku@clemens-zeidler.de>
+ * Copyright 2001-2002 Dr. Zoidberg Enterprises. All rights reserved.
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
@@ -12,6 +12,7 @@
 #include <DateTime.h>
 #include <Message.h>
 #include <MimeType.h>
+#include <Resources.h>
 
 
 bool installMimeTypes()
@@ -27,6 +28,13 @@ feedMimeType()
 	BMimeType mime("application/x-feed-source");
 	if (mime.IsInstalled())
 		return true;
+
+	BResources* res = BApplication::AppResources();
+	size_t length = 0;
+	const void* data = res->LoadResource(B_VECTOR_ICON_TYPE, "feed-type-icon", &length);
+	mime.SetIcon((uint8*)data, length);
+
+	mime.SetPreferredApp("application/x-vnd.Pogger");
 
 	mime.GetAttrInfo(&info);
 
@@ -50,6 +58,13 @@ feedEntryMimeType()
 	BMimeType mime("text/x-feed-entry");
 	if (mime.IsInstalled())
 		return true;
+
+	BResources* res = BApplication::AppResources();
+	size_t length = 0;
+	const void* data = res->LoadResource(B_VECTOR_ICON_TYPE, "entry-type-icon", &length);
+	mime.SetIcon((uint8*)data, length);
+
+	mime.SetPreferredApp("application/x-vnd.Pogger");
 
 	mime.GetAttrInfo(&info);
 
