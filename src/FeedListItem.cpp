@@ -8,6 +8,7 @@
 #include <View.h>
 
 #include "Feed.h"
+#include "Util.h"
 
 
 FeedListItem::FeedListItem(Feed* feed)
@@ -25,22 +26,23 @@ FeedListItem::DrawItem(BView* owner, BRect frame, bool complete)
 {
 	BStringItem::DrawItem(owner, frame, complete);
 
-	owner->MovePenTo(frame.right - 20, frame.top + BaselineOffset());
+	font_height fontHeight;
+	owner->GetFontHeight(&fontHeight);
+	int16 imageHeight = int16(fontHeight.ascent + fontHeight.descent + 6);
 
 	switch (fStatus) {
 		case kDownloadingStatus:
-		{
-			owner->DrawString("…");
-			break;
-		}
 		case kParsingStatus:
 		{
-			owner->DrawString("―");
+			owner->MovePenTo(frame.right - 20, frame.top + BaselineOffset());
+			owner->DrawString("…");
 			break;
 		}
 		case kErrorStatus:
 		{
-			owner->DrawString("X");
+			owner->MovePenTo(frame.right - imageHeight, frame.top);
+			owner->DrawBitmap(loadVectorIcon("error-status", imageHeight,
+				imageHeight));
 			break;
 		}
 	}

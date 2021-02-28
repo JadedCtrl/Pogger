@@ -53,6 +53,8 @@ RDEFS =  \
 	 src/Pogger.rdef  \
 	 art/FeedIcon.rdef  \
 	 art/EntryIcon.rdef  \
+	 art/DownloadStatus.rdef  \
+	 art/ErrorStatus.rdef  \
 
 
 #	Specify the resource files to use. Full or relative paths can be used.

@@ -1,5 +1,4 @@
 Important Features:
-* Show progress in FeedView's feedlist as icons
 * Show in desktray
 	* Make archivable
 	* Get menu working
@@ -19,6 +18,7 @@ Important improvements:
 * General input sanitization
 * File error-handling
 	* e.g., Utils.cpp's userFileError
+* Fix background of Feeds List error status icon (it's black, not transparent)
 * Check if arg is a file or not (treat appropriately)
 * Make UI friendly to whatever font-size you throw at it
 	* Give a max size to the progress label in FeedsView

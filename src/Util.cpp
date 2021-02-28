@@ -1,5 +1,6 @@
 /*
  * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * Copyight 2017 Akshay Agarwal, agarwal.akshay.akshay8@gmail.com
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
@@ -8,9 +9,13 @@
 #include <iostream>
 #include <iomanip>
 
+#include <Application.h>
+#include <Bitmap.h>
 #include <Directory.h>
 #include <File.h>
+#include <IconUtils.h>
 #include <OS.h>
+#include <Resources.h>
 #include <Url.h>
 #include <UrlProtocolRoster.h>
 #include <UrlRequest.h>
@@ -188,6 +193,31 @@ tempHtmlFile(entry_ref* ref, const char* title)
 	htmlFile.Write(tailBuf, tail.Length());
 
 	return tempRef;
+}
+
+
+BBitmap*
+loadVectorIcon(const char* name, int32 iconSize, int32 cropSize)
+{
+	BResources* res = BApplication::AppResources();
+	size_t length = 0;
+	const void* data = res->LoadResource(B_VECTOR_ICON_TYPE, name, &length);
+	BBitmap* temp = new BBitmap(BRect(0, 0, iconSize - 1, iconSize - 1),
+		B_BITMAP_NO_SERVER_LINK, B_RGBA32);
+	BBitmap* dest = new BBitmap(BRect(0, 0, cropSize - 1, cropSize - 1),
+		B_RGBA32);
+	if (data != NULL
+		&& BIconUtils::GetVectorIcon((uint8*)data, length, temp)
+			== B_OK
+		&& dest->ImportBits(temp, BPoint(0, 0), BPoint(0, 0),
+			cropSize, cropSize) == B_OK)  {
+			delete temp;
+			return dest;
+	}
+
+	delete temp;
+	delete dest;
+	return NULL;
 }
 
 

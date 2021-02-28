@@ -31,7 +31,7 @@ feedMimeType()
 
 	BResources* res = BApplication::AppResources();
 	size_t length = 0;
-	const void* data = res->LoadResource(B_VECTOR_ICON_TYPE, "feed-type-icon", &length);
+	const void* data = res->LoadResource(B_VECTOR_ICON_TYPE, "feed-type", &length);
 	mime.SetIcon((uint8*)data, length);
 
 	mime.SetPreferredApp("application/x-vnd.Pogger");
@@ -61,7 +61,7 @@ feedEntryMimeType()
 
 	BResources* res = BApplication::AppResources();
 	size_t length = 0;
-	const void* data = res->LoadResource(B_VECTOR_ICON_TYPE, "entry-type-icon", &length);
+	const void* data = res->LoadResource(B_VECTOR_ICON_TYPE, "entry-type", &length);
 	mime.SetIcon((uint8*)data, length);
 
 	mime.SetPreferredApp("application/x-vnd.Pogger");

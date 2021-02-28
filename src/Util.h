@@ -1,5 +1,6 @@
 /*
  * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * Copyight 2017 Akshay Agarwal, agarwal.akshay.akshay8@gmail.com
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #ifndef UTIL_H 
@@ -9,6 +10,7 @@
 
 #include "ProtocolListener.h"
 
+class BBitmap;
 class BUrl;
 
 
@@ -34,6 +36,9 @@ void userFileError(status_t status, const char* path);
 // temporary copy. Returns an entry_ref to said temporary copy.
 entry_ref tempHtmlFile(entry_ref* ref, const char* title);
 
+// Ripped from Calendar (utils/ResourceLoader.cpp)
+BBitmap* loadVectorIcon(const char* name, int32 iconSize = 32,
+	int32 cropSize = 22);
 
 #endif // UTIL_H
 
