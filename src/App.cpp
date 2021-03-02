@@ -54,22 +54,16 @@ App::MessageReceived(BMessage* msg)
 {
 	switch (msg->what)
 	{
+		case kDownloadComplete:
+			fMainWindow->PostMessage(msg);
+		case kEnqueueFeed:
 		case kUpdateSubscribed:
 		case kControllerCheck:
 		{
 			fFeedController->MessageReceived(msg);
 			break;
 		}
-		case kDownloadComplete:
-			fMainWindow->PostMessage(msg);
-		case kEnqueueFeed:
-		{
-			fNotifier->MessageReceived(msg);
-			fFeedController->MessageReceived(msg);
-			break;
-		}
 		case kFeedsEdited:
-		case kProgress:
 		case kDownloadStart:
 		{
 			fMainWindow->PostMessage(msg);
@@ -77,8 +71,10 @@ App::MessageReceived(BMessage* msg)
 		}
 		case kClearQueue:
 		{
+			fFeedController->MessageReceived(msg);
 			break;
 		}
+		case kProgress:
 		case kParseComplete:
 		case kParseFail:
 		case kDownloadFail:

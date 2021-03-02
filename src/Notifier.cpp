@@ -5,6 +5,7 @@
 
 #include "Notifier.h"
 
+#include <List.h>
 #include <Message.h>
 #include <Notification.h>
 
@@ -14,8 +15,9 @@
 
 Notifier::Notifier()
 	:
-	fEnqueuedFeeds(0),
-	fFeedsInProgress(0)
+	fFailedFeeds(new BList()),
+	fUpdatedFeeds(new BList()),
+	fTotalEntries(0)
 {
 }
 
@@ -25,45 +27,44 @@ Notifier::MessageReceived(BMessage* msg)
 {
 	switch (msg->what)
 	{
-		case kEnqueueFeed:
+		case kProgress:
 		{
-			fEnqueuedFeeds++;
-			fFeedsInProgress++;
-			_UpdateProgress();
+			int32 total, current = 0;
+
+			if (msg->FindInt32("total", &total) == B_OK
+				&& msg->FindInt32("current", &current) == B_OK
+				&& total == current)
+			{
+				_SendNotifications();
+			}
 			break;
 		}
 		case kParseComplete:
 		{
 			BString feedName;
+			BString feedUrl;
 			int32 entryCount;
 
-			if (msg->FindString("feed_name", &feedName) == B_OK
+			if ((msg->FindString("feed_name", &feedName) == B_OK
+					 || msg->FindString("feed_url", &feedUrl) == B_OK)
 				&& msg->FindInt32("entry_count", &entryCount) == B_OK)
 			{
 				if (entryCount > 0)
-					_NewEntryNotification(feedName, entryCount);
+					_SaveUpdated(feedName, feedUrl, entryCount);
 			}
-
-			fFeedsInProgress--;
-			_UpdateProgress();
-			break;
-		}
-		case kParseFail:
-		{
-			BString feedUrl = msg->GetString("feed_url", "");
-			_ParseFailNotification(feedUrl);
-
-			fFeedsInProgress--;
-			_UpdateProgress();
 			break;
 		}
 		case kDownloadFail:
+		case kParseFail:
 		{
-			BString feedUrl = msg->GetString("feed_url", "");
-			_DownloadFailNotification(feedUrl);
+			BString feedName;
+			BString feedUrl;
 
-			fFeedsInProgress--;
-			_UpdateProgress();
+			if (msg->FindString("feed_name", &feedName) == B_OK
+				|| msg->FindString("feed_url", &feedUrl) == B_OK)
+			{
+				_SaveFailed(feedName, feedUrl);
+			}
 			break;
 		}
 	}
@@ -71,19 +72,40 @@ Notifier::MessageReceived(BMessage* msg)
 
 
 void
-Notifier::_NewEntryNotification(BString feedName, int32 entryCount)
+Notifier::_SendNotifications()
 {
-	if (((App*)be_app)->fPreferences->fNewNotify == false)
+	_SendUpdatedNotification();
+	_SendFailedNotification();
+
+	fFailedFeeds->MakeEmpty();
+	fUpdatedFeeds->MakeEmpty();
+	fTotalEntries = 0;
+}
+
+
+void
+Notifier::_SendUpdatedNotification()
+{
+	if (((App*)be_app)->fPreferences->fNewNotify == false
+		|| fTotalEntries == 0) {
 		return;
+	}
 
 	BNotification notifyNew(B_INFORMATION_NOTIFICATION);
-	BString notifyLabel("New Feed Entries");
+	BString notifyLabel("Feed Updates");
 	BString notifyText("%n% new entries from %source%");
 
-	BString numStr("");
-	numStr << entryCount;
-	notifyText.ReplaceAll("%source%", feedName);
-	notifyText.ReplaceAll("%n%", numStr);
+	if (fUpdatedFeeds->CountItems() > 1) 
+		notifyText = "%n% new entries from %source% and %m% others";
+
+	BString entryNum,feedNum = "";
+	entryNum << fTotalEntries;
+	feedNum << fUpdatedFeeds->CountItems();
+
+	notifyText.ReplaceAll("%n%", entryNum);
+	notifyText.ReplaceAll("%m%", feedNum);
+	notifyText.ReplaceAll("%source%",
+		((BString*)fUpdatedFeeds->ItemAt(0))->String());
 
 	notifyNew.SetTitle(notifyLabel);
 	notifyNew.SetContent(notifyText);
@@ -92,56 +114,53 @@ Notifier::_NewEntryNotification(BString feedName, int32 entryCount)
 
 
 void
-Notifier::_ParseFailNotification(BString feedUrl)
+Notifier::_SendFailedNotification()
 {
-	if (((App*)be_app)->fPreferences->fFailureNotify == false)
+	if (((App*)be_app)->fPreferences->fFailureNotify == false
+		|| fFailedFeeds->CountItems() == 0) {
 		return;
+	}
 
 	BNotification notifyError(B_ERROR_NOTIFICATION);
-	BString notifyText("Failed to parse feed from %url%");
+	BString notifyLabel("Update Failure");
+	BString notifyText("Failed to update %source%");
 
-	if (feedUrl.IsEmpty())
-		notifyText = "Failed to parse a feed";
+	if (fFailedFeeds->CountItems() > 1) 
+		notifyText = "Failed to update %source% and %m% others";
 
-	notifyText.ReplaceAll("%url%", feedUrl);
+	BString feedNum = "";
+	feedNum << fFailedFeeds->CountItems();
 
-	notifyError.SetTitle("Parse Failure");
+	notifyText.ReplaceAll("%m%", feedNum);
+	notifyText.ReplaceAll("%source%",
+		((BString*)fFailedFeeds->ItemAt(0))->String());
+
+	notifyError.SetTitle(notifyLabel);
 	notifyError.SetContent(notifyText);
 	notifyError.Send();
 }
 
 
 void
-Notifier::_DownloadFailNotification(BString feedUrl)
+Notifier::_SaveUpdated(BString feedName, BString feedUrl, int32 entryCount)
 {
-	if (((App*)be_app)->fPreferences->fFailureNotify == false)
-		return;
+	BString name = feedName;
+	if (feedName.IsEmpty())
+		name = feedUrl;
 
-	BNotification notifyError(B_ERROR_NOTIFICATION);
-	BString notifyText("Failed to download feed from %url%");
-
-	if (feedUrl.IsEmpty())
-		notifyText = "Failed to download a feed";
-
-	notifyText.ReplaceAll("%url%", feedUrl);
-
-	notifyError.SetTitle("Download Failure");
-	notifyError.SetContent(notifyText);
-	notifyError.Send();
+	fTotalEntries += entryCount;
+	fUpdatedFeeds->AddItem(new BString(feedName));
 }
 
 
 void
-Notifier::_UpdateProgress()
+Notifier::_SaveFailed(BString feedName, BString feedUrl)
 {
-	BMessage progress = BMessage(kProgress);
-	progress.AddInt32("max", fEnqueuedFeeds);
-	progress.AddInt32("current", fFeedsInProgress);
+	BString name = feedName;
+	if (feedName.IsEmpty())
+		name = feedUrl;
 
-	((App*)be_app)->MessageReceived(&progress);
-
-	if (fFeedsInProgress == 0)
-		fEnqueuedFeeds = 0;
+	fFailedFeeds->AddItem(new BString(feedName));
 }
 
 

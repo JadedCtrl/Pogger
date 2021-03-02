@@ -7,14 +7,9 @@
 
 #include <SupportDefs.h>
 
+class BList;
 class BString;
 class BMessage;
-
-
-enum
-{
-	kProgress	= 'npro'
-};
 
 
 class Notifier {
@@ -24,14 +19,16 @@ public:
 	void MessageReceived(BMessage* msg);
 
 private:
-	void _NewEntryNotification(BString feedName, int32 feedCount);
-	void _ParseFailNotification(BString feedUrl);
-	void _DownloadFailNotification(BString feedUrl);
+	void _SendNotifications();
+	void _SendUpdatedNotification();
+	void _SendFailedNotification();
 
-	void _UpdateProgress();
+	void _SaveUpdated(BString feedName, BString feedUrl, int32 feedCount);
+	void _SaveFailed(BString feedName, BString feedUrl);
 
-	int32 fEnqueuedFeeds;
-	int32 fFeedsInProgress;
+	BList*	fFailedFeeds;
+	BList*	fUpdatedFeeds;
+	int32	fTotalEntries;
 };
 
 

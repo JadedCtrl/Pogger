@@ -16,6 +16,7 @@ class Feed;
 
 enum
 {
+	kProgress			= 'npro',
 	kEnqueueFeed		= 'fenq',
 	kClearQueue			= 'frmq',
 	kDownloadStart		= 'fdst',
@@ -38,12 +39,17 @@ public:
 	static BList SubscribedFeeds();
 
 private:
+	void _SendProgress();
+
+	void _EnqueueFeed(Feed* feed);
+
+	void _ProcessQueueItem();
+	void _ReceiveStatus();
+
 	static int32 _DownloadLoop(void* data);
 	static int32 _ParseLoop(void* data);
 
-	void _EnqueueFeed(Feed* feed);
-	void _ProcessQueueItem();
-	void _CheckStatus();
+	int32 fEnqueuedTotal;
 
 	thread_id	fMainThread;
 	thread_id	fDownloadThread;

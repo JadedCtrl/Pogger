@@ -1,7 +1,4 @@
 Important Features:
-* Show in desktray
-	* Make archivable
-	* Get menu working
 * Default column layouts for ~/feeds and ~/config/settings/Pogger/Subscriptions
 * Localization
 
@@ -14,6 +11,7 @@ Important improvements:
 	  and updates every 30 minutes, it got to about 200MB after a week or
 	  so.
 	* _Huge_ problem, but I haven't had luck figuring it out yet…
+* Move from BLists to BObjectLists where possible
 * No hardcoded paths
 * General input sanitization
 * File error-handling
@@ -31,6 +29,7 @@ Nice Improvements:
 	* Main window
 	* Subscription-edit window
 * Proper scripting support
+* Show in desktray
 * Store feeds in kEnqueueFeeds/etc messages as paths? hmm
 	* This way, if the user edits the feed after it is enqueued but before
 	processing, the changes will be applied.

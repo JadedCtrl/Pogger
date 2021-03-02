@@ -60,13 +60,12 @@ MainWindow::MessageReceived(BMessage *msg)
 		case kProgress:
 		{
 			fFeedsView->MessageReceived(msg);
-			int32 max = 0;
-			int32 current = 0;
+			int32 total,current = 0;
 
-			if (msg->FindInt32("max", &max) == B_OK
+			if (msg->FindInt32("total", &total) == B_OK
 				&& msg->FindInt32("current", &current) == B_OK)
 			{
-				_UpdateProgress(max, current);
+				_UpdateProgress(total, current);
 			}
 			break;
 		}
@@ -120,12 +119,12 @@ MainWindow::_InitInterface()
 
 
 void
-MainWindow::_UpdateProgress(int32 max, int32 current)
+MainWindow::_UpdateProgress(int32 total, int32 current)
 {
-	int32 prog = max - current;
-
-	fStatusBar->SetMaxValue(max);
-	fStatusBar->SetTo(prog);
+	if (current < fStatusBar->CurrentValue())
+		fStatusBar->Reset();
+	fStatusBar->SetMaxValue(total);
+	fStatusBar->SetTo(current);
 }
 
 

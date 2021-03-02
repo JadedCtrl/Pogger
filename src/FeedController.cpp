@@ -20,11 +20,13 @@
 
 FeedController::FeedController()
 	:
+	fEnqueuedTotal(0),
 	fMainThread(find_thread(NULL)),
 	fDownloadThread(0),
 	fParseThread(0),
 	fDownloadQueue(new BList()),
 	fMessageRunner(new BMessageRunner(be_app, BMessage(kControllerCheck), 50000, -1))
+
 {
 	fDownloadThread = spawn_thread(_DownloadLoop, "here, eat this",
 		B_NORMAL_PRIORITY, &fMainThread);
@@ -58,6 +60,7 @@ FeedController::MessageReceived(BMessage* msg)
 				_EnqueueFeed((Feed*)data);
 				i++;
 			}
+			_SendProgress();
 			break;
 		}
 		case kUpdateSubscribed:
@@ -66,21 +69,18 @@ FeedController::MessageReceived(BMessage* msg)
 			for (int i = 0; i < subFeeds.CountItems(); i++) {
 				_EnqueueFeed((Feed*)subFeeds.ItemAt(i));
 			}
+			_SendProgress();
 			break;
 		}
 		case kClearQueue:
 		{
+			fDownloadQueue->MakeEmpty();
 			break;
 		}
 		case kControllerCheck:
 		{
 			_ProcessQueueItem();
-			_CheckStatus();
-			break;
-		}
-		default:
-		{
-//			BWindow::MessageReceived(msg);
+			_ReceiveStatus();
 			break;
 		}
 	}
@@ -101,6 +101,24 @@ FeedController::SubscribedFeeds()
 
 
 void
+FeedController::_SendProgress()
+{
+	int32 dqCount = fDownloadQueue->CountItems();
+
+	if (fEnqueuedTotal < dqCount)
+		fEnqueuedTotal = dqCount;
+
+	BMessage progress(kProgress);
+	progress.AddInt32("total", fEnqueuedTotal);
+	progress.AddInt32("current", fEnqueuedTotal - dqCount);
+	be_app->MessageReceived(&progress);
+
+	if (dqCount == 0)
+		fEnqueuedTotal = 0;
+}
+
+
+void
 FeedController::_EnqueueFeed(Feed* feed)
 {
 	fMessageRunner->SetCount(-1);
@@ -116,15 +134,15 @@ FeedController::_ProcessQueueItem()
 		send_data(fDownloadThread, 0, (void*)buffer, sizeof(Feed));
 
 		BMessage downloadInit = BMessage(kDownloadStart);
-		downloadInit.AddString("feed_url", buffer->GetXmlUrl().UrlString());
 		downloadInit.AddString("feed_name", buffer->GetTitle());
+		downloadInit.AddString("feed_url", buffer->GetXmlUrl().UrlString());
 		((App*)be_app)->MessageReceived(&downloadInit);
 	}
 }
 
 
 void
-FeedController::_CheckStatus()
+FeedController::_ReceiveStatus()
 {
 	thread_id sender;
 
@@ -137,6 +155,7 @@ FeedController::_CheckStatus()
 			case kDownloadComplete: 
 			{
 				BMessage complete = BMessage(kDownloadComplete);
+				complete.AddString("feed_name", feedBuffer->GetTitle());
 				complete.AddString("feed_url",
 					feedBuffer->GetXmlUrl().UrlString());
 				((App*)be_app)->MessageReceived(&complete);
@@ -147,26 +166,31 @@ FeedController::_CheckStatus()
 			case kDownloadFail:
 			{
 				BMessage failure = BMessage(kDownloadFail);
+				failure.AddString("feed_name", feedBuffer->GetTitle());
 				failure.AddString("feed_url",
 					feedBuffer->GetXmlUrl().UrlString());
 				((App*)be_app)->MessageReceived(&failure);
-				break;
-			}
-			case kParseComplete:
-			{
-				BMessage complete = BMessage(kParseComplete);
-				complete.AddString("feed_url", feedBuffer->GetXmlUrl().UrlString());
-				complete.AddInt32("entry_count", feedBuffer->GetNewEntries().CountItems());
-				((App*)be_app)->MessageReceived(&complete);
+				_SendProgress();
 				break;
 			}
 			case kParseFail:
 			{
 				BMessage failure = BMessage(kParseFail);
+				failure.AddString("feed_name", feedBuffer->GetTitle());
 				failure.AddString("feed_url", feedBuffer->GetXmlUrl().UrlString());
 				((App*)be_app)->MessageReceived(&failure);
+				_SendProgress();
 				break;
 			}
+			// If parse was successful, the code is the amount of new entries
+			default:
+				BMessage complete = BMessage(kParseComplete);
+				complete.AddString("feed_name", feedBuffer->GetTitle());
+				complete.AddString("feed_url", feedBuffer->GetXmlUrl().UrlString());
+				complete.AddInt32("entry_count", code);
+				((App*)be_app)->MessageReceived(&complete);
+				_SendProgress();
+				break;
 		}
 	}
 }
@@ -209,6 +233,7 @@ FeedController::_ParseLoop(void* data)
 		int32 code = receive_data(&sender, (void*)feedBuffer, sizeof(Feed));
 
 		BList entries;
+		int32 entriesCount;
 		BString feedTitle;
 		BUrl feedUrl = feedBuffer->GetXmlUrl();
 		BDirectory outDir = BDirectory(((App*)be_app)->fPreferences->EntryDir());
@@ -218,9 +243,10 @@ FeedController::_ParseLoop(void* data)
 			feed = new AtomFeed(feedBuffer);
 			feed->Parse();
 			entries = feed->GetNewEntries();
+			entriesCount = entries.CountItems();
 			feedTitle = feed->GetTitle();
 
-			for (int i = 0; i < entries.CountItems(); i++)
+			for (int i = 0; i < entriesCount; i++)
 				((Entry*)entries.ItemAt(i))->Filetize(outDir);
 			delete feed;
 		}
@@ -229,19 +255,20 @@ FeedController::_ParseLoop(void* data)
 			feed = new RssFeed(feedBuffer);
 			feed->Parse();
 			entries = feed->GetNewEntries();
+			entriesCount = entries.CountItems();
 			feedTitle = feed->GetTitle();
 
-			for (int i = 0; i < entries.CountItems(); i++)
+			for (int i = 0; i < entriesCount; i++)
 				((Entry*)entries.ItemAt(i))->Filetize(outDir);
 			delete feed;
 		}
 
 
 		if (feedBuffer->IsAtom() || feedBuffer->IsRss()) {
-			send_data(main, kParseComplete, (void*)feedBuffer, sizeof(Feed));
+			send_data(main, entriesCount, (void*)feedBuffer, sizeof(Feed));
 		}
 		else {
-			send_data(main, kParseFail, (void*)feedBuffer, sizeof(Feed));
+			send_data(main, entriesCount, (void*)feedBuffer, sizeof(Feed));
 		}
 	}
 
