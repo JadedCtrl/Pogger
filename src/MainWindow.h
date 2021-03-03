@@ -16,6 +16,7 @@ class UpdatesView;
 class MainWindow : public BWindow {
 public:
 	MainWindow();
+	~MainWindow();
 
 	void MessageReceived(BMessage*);
 

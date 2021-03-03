@@ -25,11 +25,18 @@
 
 MainWindow::MainWindow()
 	:
-	BWindow(BRect(BPoint(-1000.0, -1000.0), BSize(520, 380)), "Pogger",
+	BWindow(((App*)be_app)->fPreferences->fMainWindowRect, "Pogger",
 		B_TITLED_WINDOW, B_NOT_RESIZABLE | B_NOT_ZOOMABLE)
 {
 	_InitInterface();
 	MoveOnScreen();
+}
+
+
+MainWindow::~MainWindow()
+{
+	((App*)be_app)->fPreferences->fMainWindowRect = ConvertToScreen(Bounds());
+	((App*)be_app)->fPreferences->fTabSelection = fTabView->Selection();
 }
 
 
@@ -92,6 +99,7 @@ MainWindow::_InitInterface()
 	fTabView->AddTab(fEntriesView);
 	fTabView->AddTab(fUpdatesView);
 	fTabView->SetBorder(B_NO_BORDER);
+	fTabView->Select(((App*)be_app)->fPreferences->fTabSelection);
 	fBaseView->AddChild(fTabView);
 
 	// Bottom bar

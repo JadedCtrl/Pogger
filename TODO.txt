@@ -25,9 +25,6 @@ Important improvements:
 
 
 Nice Improvements:
-* Save window positions
-	* Main window
-	* Subscription-edit window
 * Proper scripting support
 * Show in desktray
 * Store feeds in kEnqueueFeeds/etc messages as paths? hmm
@@ -35,12 +32,5 @@ Nice Improvements:
 	processing, the changes will be applied.
 * Move the provisional BList download queue to a BJob + JobQueue system
 	* This might add some more flexibility
-* Multiple downloads at once?
+* Multiple downloads at once
 	* Array of thread_ids for multiple DL threads?
-		* In which case, it'd probably make sense to only spin them
-		  up as necessary, and kill when everything's done.
-			* That'd require a proper queue system, instead of just
-			  spamming data to the download thread lol
-				* Using a proper queue list would give faster 
-				  results to Notifer about how many feeds are
-				  enqueued (so things *feel* faster)

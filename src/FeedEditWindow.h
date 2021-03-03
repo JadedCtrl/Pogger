@@ -26,6 +26,7 @@ public:
 	FeedEditWindow();
 	FeedEditWindow(BEntry feedEntry);
 	FeedEditWindow(FeedListItem* feedItem);
+	~FeedEditWindow();
 
 	void MessageReceived(BMessage* msg);
 

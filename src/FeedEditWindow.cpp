@@ -21,7 +21,7 @@
 
 FeedEditWindow::FeedEditWindow()
 	:
-	BWindow(BRect(BPoint(-1000.0, -1000.0), BSize(500, 150)), "New Feed",
+	BWindow(((App*)be_app)->fPreferences->fFeedEditRect, "New Feed",
 		B_TITLED_WINDOW, B_NOT_RESIZABLE | B_NOT_ZOOMABLE)
 {
 	_InitInterface();
@@ -50,6 +50,12 @@ FeedEditWindow::FeedEditWindow(FeedListItem* feedItem)
 	:
 	FeedEditWindow(BEntry(feedItem->GetFeedPath()))
 {
+}
+
+
+FeedEditWindow::~FeedEditWindow()
+{
+	((App*)be_app)->fPreferences->fFeedEditRect = ConvertToScreen(Bounds());
 }
 
 

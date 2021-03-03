@@ -44,6 +44,10 @@ public:
 	bool	fFailureNotify;
 	int8	fOpenAs;
 
+	BRect	fMainWindowRect;
+	BRect	fFeedEditRect;
+	int32	fTabSelection;
+
 private:
 	int8 fUpdateInterval;
 

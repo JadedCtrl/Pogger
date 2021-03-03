@@ -40,6 +40,12 @@ Preferences::Load()
 	fNewNotify		= storage.GetBool("notifyNew", true);
 	fFailureNotify	= storage.GetBool("notifyFailure", true);
 	fUpdateInterval	= storage.GetInt8("updateInterval", 1);
+
+	fMainWindowRect	= storage.GetRect("mainWindow",
+		BRect(BPoint(-1000.0, -1000.0), BSize(520, 380)));
+	fFeedEditRect	= storage.GetRect("feedEditWindow",
+		BRect(BPoint(-1000.0, -1000.0), BSize(500, 150)));
+	fTabSelection	= storage.GetInt32("tabSelection", 0);
 }
 
 
@@ -72,6 +78,10 @@ Preferences::Save()
 	storage.AddBool("notifyNew", fNewNotify);
 	storage.AddBool("notifyFailure", fFailureNotify);
 	storage.AddInt8("updateInterval", fUpdateInterval);
+
+	storage.AddRect("mainWindow", fMainWindowRect);
+	storage.AddRect("feedEditWindow", fFeedEditRect);
+	storage.AddInt32("tabSelection", fTabSelection);
 
 	storage.Flatten(file);
 }
