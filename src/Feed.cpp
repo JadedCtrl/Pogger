@@ -26,9 +26,13 @@ Feed::Feed(BUrl xml)
 	: Feed()
 {
 	SetXmlUrl(xml);
-	BString cache("/boot/home/config/cache/Pogger/");
+
+	BPath cache;
+	find_directory(B_USER_CACHE_DIRECTORY, &cache);
+	cache.Append("Pogger");
+
 	cache.Append(urlToFilename(xmlUrl));
-	SetCachePath(cache);
+	SetCachePath(cache.Path());
 }
 
 

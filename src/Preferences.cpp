@@ -22,10 +22,11 @@ Preferences::Preferences(Preferences* pref) {
 void
 Preferences::Load()
 {
-	BString configDir("/boot/home/config/settings/Pogger/");
+	BPath cfgPath;
+	find_directory(B_USER_SETTINGS_DIRECTORY, &cfgPath);
+	cfgPath.Append("Pogger");
+	BString filename = BString(cfgPath.Path()).Append("/Settings");
 
-	BString filename = BString(configDir);
-	filename.Append("Settings");
 	BFile file(filename.String(), B_READ_ONLY);
 	status_t result = file.InitCheck();
 
@@ -53,23 +54,22 @@ Preferences::Load()
 void
 Preferences::Save()
 {
-	BString configDir = BString("/boot/home/config/settings/Pogger/");
+	BPath cfgPath;
+	find_directory(B_USER_SETTINGS_DIRECTORY, &cfgPath);
+	cfgPath.Append("Pogger");
+	BEntry		cfgEntry	= BEntry(cfgPath.Path());
+	BDirectory	cfgDir;
 
-	BPath*		cfgPath		= new BPath(configDir.String(), NULL, true);
-	BEntry*		cfgEntry	= new BEntry(cfgPath->Path());
-	BDirectory*	cfgDir		= new BDirectory;
-
-	cfgDir->CreateDirectory(cfgPath->Path(), NULL);
+	cfgDir.CreateDirectory(cfgPath.Path(), NULL);
 	
-	if (cfgEntry->Exists() == false)
-		cfgDir->CreateDirectory(cfgPath->Path(), NULL);
+	if (cfgEntry.Exists() == false)
+		cfgDir.CreateDirectory(cfgPath.Path(), NULL);
 
 	BMessage storage;
-	BString filename = BString(configDir).Append("/Settings");
+	BString filename = BString(cfgPath.Path()).Append("/Settings");
 
-	BFile* file = new BFile(filename.String(), B_WRITE_ONLY | B_CREATE_FILE
-		| B_ERASE_FILE);
-	status_t result = file->InitCheck();
+	BFile file(filename.String(), B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE);
+	status_t result = file.InitCheck();
 
 	storage.AddString("entryDir", fEntryDir.String());
 	storage.AddString("openWith", fOpenWith.String());
@@ -83,7 +83,7 @@ Preferences::Save()
 	storage.AddRect("feedEditWindow", fFeedEditRect);
 	storage.AddInt32("tabSelection", fTabSelection);
 
-	storage.Flatten(file);
+	storage.Flatten(&file);
 }
 
 

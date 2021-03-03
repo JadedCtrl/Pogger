@@ -12,7 +12,6 @@ Important improvements:
 	  so.
 	* _Huge_ problem, but I haven't had luck figuring it out yet…
 * Move from BLists to BObjectLists where possible
-* No hardcoded paths
 * General input sanitization
 * File error-handling
 	* e.g., Utils.cpp's userFileError

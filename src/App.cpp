@@ -212,9 +212,6 @@ App::_OpenSourceFile(BMessage* refMessage)
 }
 
 
-const char* configPath = "/boot/home/config/settings/Pogger/";
-
-
 int
 main(int argc, char** argv)
 {

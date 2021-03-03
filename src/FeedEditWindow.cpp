@@ -121,11 +121,15 @@ FeedEditWindow::_InitInterface()
 	.End();
 }
 
-
+#include <iostream>
 void
 FeedEditWindow::_SaveFeed()
 {
-	BString subLocation("/boot/home/config/settings/Pogger/Subscriptions/");
+	BPath subPath;
+	find_directory(B_USER_SETTINGS_DIRECTORY, &subPath);
+	subPath.Append("Pogger");
+	subPath.Append("Subscriptions");
+
 	BString title(fFeedNameText->Text());
 	const char* urlString = fFeedUrlText->Text();
 	BString filename;
@@ -133,10 +137,10 @@ FeedEditWindow::_SaveFeed()
 		filename = BString(urlString);
 	else
 		filename = BString(title);
-	subLocation.Append(filename);
+	subPath.Append(filename);
 
 	if (fFeed->GetCachePath().IsEmpty())
-		fFeed->SetCachePath(subLocation);
+		fFeed->SetCachePath(BString(subPath.Path()));
 
 	if (!title.IsEmpty())
 		fFeed->SetTitle(title.String());

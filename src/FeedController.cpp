@@ -90,7 +90,12 @@ FeedController::MessageReceived(BMessage* msg)
 BList
 FeedController::SubscribedFeeds()
 {
-	BDirectory subDir("/boot/home/config/settings/Pogger/Subscriptions");
+	BPath subPath;
+	find_directory(B_USER_SETTINGS_DIRECTORY, &subPath);
+	subPath.Append("Pogger");
+	subPath.Append("Subscriptions");
+
+	BDirectory subDir(subPath.Path());
 	BEntry feedEntry;
 	BList feeds;
 

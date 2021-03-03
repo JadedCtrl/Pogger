@@ -45,8 +45,6 @@ private:
 
 int main(int argc, char** argv);
 
-extern const char* configPath;
-
 
 #endif // APP_H
 
