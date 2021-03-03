@@ -7,6 +7,7 @@
 #define UTIL_H
 
 #include <DateTime.h>
+#include <Entry.h>
 
 #include "ProtocolListener.h"
 

@@ -9,6 +9,8 @@
 
 #include <UrlProtocolListener.h>
 
+class BDataIO;
+
 
 #ifndef LIBNETAPI_DEPRECATED
 using namespace BPrivate::Network;

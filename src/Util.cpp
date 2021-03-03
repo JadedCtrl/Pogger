@@ -139,9 +139,14 @@ fetch(BUrl url, BDataIO* reply, BString* hash, int timeout)
 	ProtocolListener listener(true);
 	boost::uuids::detail::sha1 sha1;
 
+	#ifdef LIBNETAPI_DEPRECATED
 	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &listener);
-
 	listener.SetDownloadIO(reply);
+	#else
+	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, reply, &listener);
+	listener.SetDownloadIO(NULL);
+	#endif
+
 	listener.SetSha1(&sha1);
 
 	time_t startTime = time(0);
