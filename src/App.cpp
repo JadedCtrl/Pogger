@@ -16,6 +16,7 @@
 #include "Entry.h"
 #include "Feed.h"
 #include "FeedController.h"
+#include "FeedEditWindow.h"
 #include "FeedsView.h"
 #include "MainWindow.h"
 #include "Mimetypes.h"
@@ -209,6 +210,10 @@ App::_OpenEntryFileAsUrl(entry_ref ref)
 void
 App::_OpenSourceFile(BMessage* refMessage)
 {
+	entry_ref entryRef;
+	refMessage->FindRef("refs", &entryRef);
+	FeedEditWindow* window = new FeedEditWindow(BEntry(&entryRef));
+	window->Show();
 }
 
 
