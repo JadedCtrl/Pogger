@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+#include <Alert.h>
 #include <Box.h>
 #include <Button.h>
 #include <Message.h>
@@ -51,7 +52,32 @@ EntriesView::MessageReceived(BMessage* msg)
 			status_t result = ((App*)be_app)->fPreferences->SetEntryDir(
 				fEntryFolderText->Text());
 			if (result != B_OK)
-				userFileError(result, fEntryFolderText->Text());
+				_FileError(result);
+
+			fEntryFolderText->SetText(((App*)be_app)->fPreferences->EntryDir());
+			break;
+		}
+		case kEntryFolderBrowse:
+		{
+			entry_ref appsRef;
+			fEntryFolderPanel = new BFilePanel(B_OPEN_PANEL, NULL, NULL,
+				B_DIRECTORY_NODE, false, new BMessage(kEntryFolderPath));
+			fEntryFolderPanel->Show();
+			fEntryFolderPanel->SetTarget(this);
+			break;
+		}
+		case kEntryFolderPath:
+		{
+			entry_ref ref;
+			if (msg->HasRef("refs") && msg->FindRef("refs", &ref) == B_OK) {
+				status_t result = ((App*)be_app)->fPreferences->SetEntryDir(
+					BPath(&ref).Path());
+				if (result != B_OK)
+					_FileError(result);
+			}
+
+			fEntryFolderText->SetText(((App*)be_app)->fPreferences->EntryDir());
+			delete fEntryFolderPanel;
 			break;
 		}
 		case kOpenHtmlRadio:
@@ -70,6 +96,16 @@ EntriesView::MessageReceived(BMessage* msg)
 				fOpenWithMenuField->MenuItem()->Label());
 			break;
 		}
+		case kOpenWithBrowse:
+		{
+			entry_ref appsRef;
+			BEntry("/boot/system/apps/").GetRef(&appsRef);
+
+			fOpenWithPanel = new BFilePanel(B_OPEN_PANEL, NULL, &appsRef,
+				B_FILE_NODE, false, new BMessage(kOpenWithPath));
+			fOpenWithPanel->Show();
+			fOpenWithPanel->SetTarget(this);
+		}
 		case kOpenWithPath:
 		{
 			entry_ref ref;
@@ -80,16 +116,6 @@ EntriesView::MessageReceived(BMessage* msg)
 
 			delete fOpenWithPanel;
 			break;
-		}
-		case kOpenWithBrowse:
-		{
-			entry_ref appsRef;
-			BEntry("/boot/system/apps/").GetRef(&appsRef);
-
-			fOpenWithPanel = new BFilePanel(B_OPEN_PANEL, NULL, &appsRef,
-				B_FILE_NODE, false, new BMessage(kOpenWithPath));
-			fOpenWithPanel->Show();
-			fOpenWithPanel->SetTarget(this);
 		}
 		default:
 		{
@@ -210,6 +236,32 @@ EntriesView::_PopulateOpenWithMenu()
 		if (string != preferred)
 			fOpenWithMenu->AddItem(item);
 	}
+}
+
+
+void
+EntriesView::_FileError(status_t result)
+{
+	BPath cfgPath;
+	find_directory(B_USER_SETTINGS_DIRECTORY, &cfgPath);
+
+	if (result == B_NOT_A_DIRECTORY) {
+		BAlert* alert = new BAlert("Entries Directory", "The path you "
+		"selected isn't a folder― please choose another path.", "OK",
+		NULL, NULL, B_WIDTH_AS_USUAL, B_WARNING_ALERT);
+		alert->Go();
+		return;
+	}
+
+	userFileError(result, "Entries Directory",
+		"Couldn't open this folder because no path was specified.\n"
+	"Please select a new folder.",
+		"Couldn't open this folder because permission was denied.\n"
+	"This usually means that you don't have read permissions.\nPlease make "
+	"sure that your user has read-access to this folder.\nCheck your OS "
+	"documentation for more information.",
+		"There is not enough memory available on your system to access the "
+	"given path.\nPlease try closing a few applications and restarting Pogger.");
 }
 
 

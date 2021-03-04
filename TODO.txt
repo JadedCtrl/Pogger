@@ -12,9 +12,6 @@ Important improvements:
 	  so.
 	* _Huge_ problem, but I haven't had luck figuring it out yet…
 * Move from BLists to BObjectLists where possible
-* General input sanitization
-* File error-handling
-	* e.g., Utils.cpp's userFileError
 * Fix background of Feeds List error status icon (it's black, not transparent)
 * Check if arg is a file or not (treat appropriately)
 * Make UI friendly to whatever font-size you throw at it

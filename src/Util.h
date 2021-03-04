@@ -31,15 +31,19 @@ const char* tempFileName(const char* dir, const char* name, const char* suffix);
 
 int32 fetch(BUrl url, BDataIO* reply, BString* hash, int timeout);
 
-void userFileError(status_t status, const char* path);
+// The strings passed to this function are adapted from those in
+// Calendar (utils/Preferences.cpp).
+void userFileError(status_t status, const char* title, const char* bad_value,
+	const char* perm_denied, const char* no_memory);
 
 // Takes a (probably invalid) bit of HTML and adds necessary elements in a
 // temporary copy. Returns an entry_ref to said temporary copy.
 entry_ref tempHtmlFile(entry_ref* ref, const char* title);
 
-// Ripped from Calendar (utils/ResourceLoader.cpp)
+// Also ripped from Calendar (utils/ResourceLoader.cpp)
 BBitmap* loadVectorIcon(const char* name, int32 iconSize = 32,
 	int32 cropSize = 22);
+
 
 #endif // UTIL_H
 

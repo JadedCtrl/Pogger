@@ -49,6 +49,8 @@ public:
 	int32	fTabSelection;
 
 private:
+	void _FileError(status_t result);
+
 	int8 fUpdateInterval;
 
 	BString fEntryDir;

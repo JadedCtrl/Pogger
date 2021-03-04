@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 
+#include <Alert.h>
 #include <Application.h>
 #include <Bitmap.h>
 #include <Directory.h>
@@ -165,8 +166,35 @@ fetch(BUrl url, BDataIO* reply, BString* hash, int timeout)
 
 
 void
-userFileError(status_t status, const char* path)
+userFileError(status_t status, const char* title, const char* bad_value,
+	const char* perm_denied, const char* no_memory)
 {
+	BString label;
+
+	switch (status) {
+		case B_BAD_VALUE:
+		{
+			label = bad_value;
+			break;
+		}
+		case B_READ_ONLY_DEVICE:
+		case B_PERMISSION_DENIED:
+		{
+			label = perm_denied;
+			break;
+		}
+		case B_NO_MEMORY:
+		{
+			label = no_memory;
+			break;
+		}
+		default:
+			return;
+	}
+
+	BAlert* alert = new BAlert(title, label.String(), "OK", NULL, NULL,
+		B_WIDTH_AS_USUAL, B_WARNING_ALERT);
+	alert->Go();
 }
 
 

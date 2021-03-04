@@ -5,6 +5,7 @@
 
 #include "FeedEditWindow.h"
 
+#include <Alert.h>
 #include <Button.h>
 #include <Message.h>
 #include <LayoutBuilder.h>
@@ -121,7 +122,7 @@ FeedEditWindow::_InitInterface()
 	.End();
 }
 
-#include <iostream>
+
 void
 FeedEditWindow::_SaveFeed()
 {
@@ -132,6 +133,24 @@ FeedEditWindow::_SaveFeed()
 
 	BString title(fFeedNameText->Text());
 	const char* urlString = fFeedUrlText->Text();
+	BUrl url = BUrl(urlString);
+
+	if (BString(urlString).IsEmpty() == true) {
+		BAlert* emptyAlert = new BAlert("Invalid Feed",
+		"Please enter a URL.", "OK", NULL, NULL,
+		B_WIDTH_AS_USUAL, B_OFFSET_SPACING, B_WARNING_ALERT);
+		emptyAlert->Go();
+		return;
+	}
+
+	if (url.IsValid() == false) {
+		BAlert* invAlert = new BAlert("Invalid Feed",
+		"The given URL is invalid. Please make sure you typed it in correctly.",
+		"OK", NULL, NULL, B_WIDTH_AS_USUAL, B_OFFSET_SPACING, B_WARNING_ALERT);
+		invAlert->Go();
+		return;
+	}
+
 	BString filename;
 	if (title.IsEmpty())
 		filename = BString(urlString);

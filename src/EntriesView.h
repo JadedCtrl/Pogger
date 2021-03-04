@@ -23,6 +23,7 @@ enum
 {
 	kEntryFolderText	= 'txef',
 	kEntryFolderBrowse	= 'tbef',
+	kEntryFolderPath	= 'txep',
 	kOpenHtmlRadio		= 'rdow',
 	kOpenUrlRadio		= 'roow',
 	kOpenWithSelect		= 'mnow',
@@ -42,11 +43,14 @@ private:
 	void _InitInterface();
 	void _PopulateOpenWithMenu();
 
+	void _FileError(status_t result);
+
 
 	BBox*			fSavingBox;
 	BStringView*	fEntryFolderLabel;
 	BTextControl*	fEntryFolderText;
 	BButton*		fEntryFolderBrowseButton;
+	BFilePanel*		fEntryFolderPanel;
 
 	BBox*			fOpeningBox;
 	BStringView*	fOpenAsLabel;

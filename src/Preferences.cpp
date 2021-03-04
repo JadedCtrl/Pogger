@@ -5,9 +5,9 @@
 
 #include "Preferences.h"
 
-#include <iostream>
-
 #include <String.h>
+
+#include "Util.h"
 
 
 Preferences::Preferences() {
@@ -27,8 +27,11 @@ Preferences::Load()
 	cfgPath.Append("Pogger");
 	BString filename = BString(cfgPath.Path()).Append("/Settings");
 
-	BFile file(filename.String(), B_READ_ONLY);
+	BFile file = BFile(filename.String(), B_READ_ONLY);
 	status_t result = file.InitCheck();
+
+	if (result == B_PERMISSION_DENIED || result == B_NO_MEMORY)
+		_FileError(result);
 
 	BMessage storage;
 	storage.Unflatten(&file);
@@ -68,8 +71,12 @@ Preferences::Save()
 	BMessage storage;
 	BString filename = BString(cfgPath.Path()).Append("/Settings");
 
-	BFile file(filename.String(), B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE);
+	BFile file = BFile(filename.String(), B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE);
 	status_t result = file.InitCheck();
+	if (result != B_OK) {
+		_FileError(result);
+		return;
+	}
 
 	storage.AddString("entryDir", fEntryDir.String());
 	storage.AddString("openWith", fOpenWith.String());
@@ -128,7 +135,10 @@ Preferences::EntryDir()
 status_t
 Preferences::SetEntryDir(const char* path)
 {
-	status_t testStatus = BEntry(path).InitCheck();
+	status_t testStatus = BDirectory(path).InitCheck();
+	if (BDirectory(path).IsDirectory() == false)
+		return B_NOT_A_DIRECTORY;
+
 	if (testStatus == B_OK)
 		fEntryDir = BString(path);
 	return testStatus;
@@ -168,6 +178,31 @@ Preferences::SetEntryOpenAsHtml(bool asHtml)
 	else
 		fOpenAs = kOpenAsUrl;
 	return asHtml;
+}
+
+
+void
+Preferences::_FileError(status_t result)
+{
+	BPath cfgPath;
+	find_directory(B_USER_SETTINGS_DIRECTORY, &cfgPath);
+
+	BString permLabel("Couldn't open the preferences file because permission "
+	"was denied.\nThis usually means that you don't have read permissions to "
+	"your settings directory.\nPlease make sure that your user has "
+	"read-access to your settings directory― likely %path%.\nCheck your OS "
+	"documentation for more information.");
+	permLabel.ReplaceAll("%path%", cfgPath.Path());
+
+	userFileError(result, "Preferences file",
+		"Couldn't open the preferences file because the path is not "
+	"specified.\nThis usually means that the programmer made a mistake.\n"
+	"Please submit a bug report to the Pogger repository on GitHub.\n"
+	"Your personal settings will not be loaded.",
+		permLabel.String(),
+		"There is not enough memory available on your system to load the "
+	"preferences file.\nPlease try closing a few applications and restarting "
+	"Pogger.");
 }
 
 
