@@ -103,12 +103,17 @@ Notifier::_SendUpdatedNotification()
 	feedNum << fUpdatedFeeds->CountItems();
 
 	notifyText.ReplaceAll("%n%", entryNum);
-	notifyText.ReplaceAll("%m%", feedNum);
+	notifyText.ReplaceAll("%m%", feedNum - 1);
 	notifyText.ReplaceAll("%source%",
 		((BString*)fUpdatedFeeds->ItemAt(0))->String());
 
 	notifyNew.SetTitle(notifyLabel);
 	notifyNew.SetContent(notifyText);
+
+	entry_ref feedsRef;
+	BEntry(((App*)be_app)->fPreferences->EntryDir()).GetRef(&feedsRef);
+	notifyNew.SetOnClickFile(&feedsRef);
+
 	notifyNew.Send();
 }
 
@@ -131,7 +136,7 @@ Notifier::_SendFailedNotification()
 	BString feedNum = "";
 	feedNum << fFailedFeeds->CountItems();
 
-	notifyText.ReplaceAll("%m%", feedNum);
+	notifyText.ReplaceAll("%m%", feedNum - 1);
 	notifyText.ReplaceAll("%source%",
 		((BString*)fFailedFeeds->ItemAt(0))->String());
 
