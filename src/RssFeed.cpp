@@ -31,7 +31,7 @@ void
 RssFeed::Parse()
 {
 	tinyxml2::XMLDocument xml;
-	entries = BList();
+	entries = BObjectList<Entry>();
 
 	Feed::Parse();
 
@@ -83,7 +83,7 @@ RssFeed::ParseEntries(tinyxml2::XMLElement* xchan)
 	xitem = xchan->FirstChildElement("item");
 
 	int entryCount = xmlCountSiblings(xitem, "item");
-	entries = BList(entryCount);
+	entries = BObjectList<Entry>(entryCount);
 
 	std::cout << "\t-" << entryCount << " entries-\n";
 

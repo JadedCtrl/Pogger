@@ -8,13 +8,14 @@
 
 #include <tinyxml2.h>
 
+#include <ObjectList.h>
+
 #include "Entry.h"
 
 
 class BDateTime;
 class BEntry;
 class BString;
-class BList;
 class BUrl;
 
 
@@ -31,8 +32,8 @@ public:
 
 	virtual void Parse();
 
-	BList	GetEntries();
-	BList	GetNewEntries();
+	BObjectList<Entry>	GetEntries();
+	BObjectList<Entry>	GetNewEntries();
 
 	bool	Fetch();
 
@@ -72,7 +73,7 @@ protected:
 	BString hash;
 	BString lastHash;
 
-	BList	entries;
+	BObjectList<Entry> entries;
 	bool	fetched;
 	bool	updated;
 };

@@ -13,7 +13,6 @@ Important improvements:
 	* _Huge_ problem, but I haven't had luck figuring it out yet…
 * Move from BLists to BObjectLists where possible
 * Fix background of Feeds List error status icon (it's black, not transparent)
-* Check if arg is a file or not (treat appropriately)
 * Make UI friendly to whatever font-size you throw at it
 	* Give a max size to the progress label in FeedsView
 * Make fancy Markdown README

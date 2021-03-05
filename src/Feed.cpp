@@ -92,8 +92,6 @@ Feed::Feed()
 
 Feed::~Feed()
 {
-	for (int i = entries.CountItems(); i >= 0; i--)
-		delete ((Entry*)entries.RemoveItem(i));
 }
 
 
@@ -205,19 +203,19 @@ Feed::AddEntry (Entry* newEntry)
 }
 
 
-BList
+BObjectList<Entry>
 Feed::GetEntries()
 {
 	return entries;
 }
 
 
-BList
+BObjectList<Entry>
 Feed::GetNewEntries()
 {
-	BList newEntries;
+	BObjectList<Entry> newEntries;
 	for (int i = 0; i < entries.CountItems(); i++) {
-		Entry* entry = ((Entry*)entries.ItemAt(i));
+		Entry* entry = entries.ItemAt(i);
 		if (entry->GetDate() > lastDate)
 			newEntries.AddItem(entry);
 	}	

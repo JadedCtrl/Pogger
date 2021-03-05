@@ -237,7 +237,7 @@ FeedController::_ParseLoop(void* data)
 	while (true) {
 		int32 code = receive_data(&sender, (void*)feedBuffer, sizeof(Feed));
 
-		BList entries;
+		BObjectList<Entry> entries;
 		int32 entriesCount;
 		BString feedTitle;
 		BUrl feedUrl = feedBuffer->GetXmlUrl();
