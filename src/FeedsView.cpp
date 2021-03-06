@@ -11,6 +11,7 @@
 #include <ListView.h>
 #include <ScrollView.h>
 #include <SeparatorView.h>
+#include <StringList.h>
 #include <StringView.h>
 
 #include "App.h"
@@ -183,19 +184,17 @@ FeedsView::_RemoveSelectedFeed()
 void
 FeedsView::_PopulateFeedList()
 {
-	BList feeds = FeedController::SubscribedFeeds();
+	BStringList feeds = FeedController::SubscribedFeeds();
 	int32 selected = fFeedsListView->CurrentSelection();
 
 	for (int i = fFeedsListView->CountItems(); i >= 0; i--)
 		delete ((FeedListItem*)fFeedsListView->RemoveItem(i));
 
-	for (int i = 0; i < feeds.CountItems(); i++) {
-		FeedListItem* item = new FeedListItem((Feed*)feeds.ItemAt(i));
+	for (int i = 0; i < feeds.CountStrings(); i++) {
+		Feed feed = Feed(feeds.StringAt(i).String());
+		FeedListItem* item = new FeedListItem(&feed);
 		fFeedsListView->AddItem(item);
 	}
-
-	for (int i = feeds.CountItems(); i >= 0; i--)
-		delete ((Feed*)feeds.RemoveItem(i));
 
 	if (fFeedsListView->CountItems() < selected)
 		selected = fFeedsListView->CountItems();

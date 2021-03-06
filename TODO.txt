@@ -8,9 +8,6 @@ Important improvements:
 	* ~50kb per feed on download (+2MB w 40 feeds)
 		* This leak is in Util.ccp, fetch(). I'm stumped here.
 	* ~20kb per feed on parsing (+1MB w 40 feeds)
-	* Very slight on enqueue
-* Use path-strings or entry_refs when communicating about feeds inter-threads,
-  and in the queue.
 * Fix background of Feeds List error status icon (it's black, not transparent)
 * Make UI friendly to whatever font-size you throw at it
 	* Give a max size to the progress label in FeedsView
@@ -21,9 +18,6 @@ Important improvements:
 Nice Improvements:
 * Proper scripting support
 * Show in desktray
-* Store feeds in kEnqueueFeeds/etc messages as paths? hmm
-	* This way, if the user edits the feed after it is enqueued but before
-	processing, the changes will be applied.
 * Move the provisional BList download queue to a BJob + JobQueue system
 	* This might add some more flexibility
 * Multiple downloads at once

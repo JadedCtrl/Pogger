@@ -24,6 +24,7 @@ public:
 	Feed(BUrl);
 	Feed(BUrl, BString);
 	Feed(BEntry);
+	Feed(const char* pathStr);
 	Feed(BUrl xml, BEntry entry);
 	Feed(Feed*);
 	Feed();

@@ -11,6 +11,7 @@
 
 class BMessage;
 class BMessageRunner;
+class BStringList;
 class Feed;
 
 
@@ -36,12 +37,10 @@ public:
 
 	void MessageReceived(BMessage* msg);
 
-	static BList SubscribedFeeds();
+	static BStringList SubscribedFeeds();
 
 private:
 	void _SendProgress();
-
-	void _EnqueueFeed(Feed* feed);
 
 	void _ProcessQueueItem();
 	void _ReceiveStatus();
@@ -55,7 +54,7 @@ private:
 	thread_id	fDownloadThread;
 	thread_id	fParseThread;
 
-	BObjectList<Feed>* fDownloadQueue;
+	BStringList*	fDownloadQueue;
 	BMessageRunner*	fMessageRunner;
 };
 

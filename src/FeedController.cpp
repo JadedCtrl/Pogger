@@ -11,6 +11,7 @@
 #include <Message.h>
 #include <MessageRunner.h>
 #include <Notification.h>
+#include <StringList.h>
 
 #include "App.h"
 #include "AtomFeed.h"
@@ -24,7 +25,7 @@ FeedController::FeedController()
 	fMainThread(find_thread(NULL)),
 	fDownloadThread(0),
 	fParseThread(0),
-	fDownloadQueue(new BObjectList<Feed>(5, true)),
+	fDownloadQueue(new BStringList()),
 	fMessageRunner(new BMessageRunner(be_app, BMessage(kControllerCheck), 50000, -1))
 
 {
@@ -53,22 +54,21 @@ FeedController::MessageReceived(BMessage* msg)
 		{
 			int i = 0;
 			const void* data;
-			ssize_t size = sizeof(Feed);
+			ssize_t size = sizeof(BString);
 
-			while (msg->HasData("feeds", B_RAW_TYPE, i)) {
-				msg->FindData("feeds", B_RAW_TYPE, i, &data, &size);
-				_EnqueueFeed((Feed*)data);
-				i++;
-			}
+			BStringList paths;
+			msg->FindStrings("feedPaths", &paths);
+			fDownloadQueue->Add(paths);
+
+			fMessageRunner->SetCount(-1);
 			_SendProgress();
 			break;
 		}
 		case kUpdateSubscribed:
 		{
-			BList subFeeds = SubscribedFeeds();
-			for (int i = 0; i < subFeeds.CountItems(); i++) {
-				_EnqueueFeed((Feed*)subFeeds.ItemAt(i));
-			}
+			BStringList subFeeds = SubscribedFeeds();
+			fDownloadQueue->Add(subFeeds);
+
 			_SendProgress();
 			break;
 		}
@@ -87,7 +87,7 @@ FeedController::MessageReceived(BMessage* msg)
 }
 
 
-BList
+BStringList
 FeedController::SubscribedFeeds()
 {
 	BPath subPath;
@@ -97,10 +97,12 @@ FeedController::SubscribedFeeds()
 
 	BDirectory subDir(subPath.Path());
 	BEntry feedEntry;
-	BList feeds;
+	BPath feedPath;
+	BStringList feeds;
 
-	while (subDir.GetNextEntry(&feedEntry) == B_OK)
-		feeds.AddItem(new Feed(feedEntry));
+	while (subDir.GetNextEntry(&feedEntry) == B_OK
+		&& feedEntry.GetPath(&feedPath) == B_OK)
+		feeds.Add(feedPath.Path());
 	return feeds;
 }
 
@@ -108,7 +110,7 @@ FeedController::SubscribedFeeds()
 void
 FeedController::_SendProgress()
 {
-	int32 dqCount = fDownloadQueue->CountItems();
+	int32 dqCount = fDownloadQueue->CountStrings();
 
 	if (fEnqueuedTotal < dqCount)
 		fEnqueuedTotal = dqCount;
@@ -124,20 +126,18 @@ FeedController::_SendProgress()
 
 
 void
-FeedController::_EnqueueFeed(Feed* feed)
-{
-	fMessageRunner->SetCount(-1);
-	fDownloadQueue->AddItem(feed);
-}
-
-
-void
 FeedController::_ProcessQueueItem()
 {
 	if (has_data(fDownloadThread) && !fDownloadQueue->IsEmpty()) {
-		Feed* buffer = fDownloadQueue->ItemAt(0);
+		BString feed = fDownloadQueue->Remove(0);
+		Feed* buffer;
+
+		if (BUrl(feed.String()).IsValid() == true)
+			buffer = new Feed(BUrl(feed.String()));
+		else
+			buffer = new Feed(feed.String());
+
 		send_data(fDownloadThread, 0, (void*)buffer, sizeof(Feed));
-		fDownloadQueue->RemoveItemAt(0);
 
 		BMessage downloadInit = BMessage(kDownloadStart);
 		downloadInit.AddString("feed_name", buffer->GetTitle());

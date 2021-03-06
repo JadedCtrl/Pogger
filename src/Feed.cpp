@@ -57,6 +57,12 @@ Feed::Feed(BEntry entry)
 }
 
 
+Feed::Feed(const char* pathStr)
+	: Feed(BEntry(pathStr))
+{
+}
+
+
 // For new feed
 Feed::Feed(BUrl xml, BEntry entry)
 	: Feed()

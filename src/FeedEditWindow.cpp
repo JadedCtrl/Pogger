@@ -14,7 +14,6 @@
 #include <TextControl.h>
 
 #include "App.h"
-#include "Feed.h"
 #include "FeedController.h"
 #include "FeedListItem.h"
 #include "FeedsView.h"
@@ -29,7 +28,7 @@ FeedEditWindow::FeedEditWindow()
 	MoveOnScreen();
 	fDeleteButton->SetEnabled(false);
 
-	fFeed = new Feed();
+	fFeed = Feed();
 }
 
 
@@ -38,10 +37,10 @@ FeedEditWindow::FeedEditWindow(BEntry feedEntry)
 	FeedEditWindow()
 {
 	SetTitle("Edit Feed");
-	fFeed = new Feed(feedEntry);
+	fFeed = Feed(feedEntry);
 
-	fFeedNameText->SetText(fFeed->GetTitle().String());
-	fFeedUrlText->SetText(fFeed->GetXmlUrl().UrlString().String());
+	fFeedNameText->SetText(fFeed.GetTitle().String());
+	fFeedUrlText->SetText(fFeed.GetXmlUrl().UrlString().String());
 
 	fDeleteButton->SetEnabled(true);
 }
@@ -158,17 +157,17 @@ FeedEditWindow::_SaveFeed()
 		filename = BString(title);
 	subPath.Append(filename);
 
-	if (fFeed->GetCachePath().IsEmpty())
-		fFeed->SetCachePath(BString(subPath.Path()));
+	if (fFeed.GetCachePath().IsEmpty())
+		fFeed.SetCachePath(BString(subPath.Path()));
 
 	if (!title.IsEmpty())
-		fFeed->SetTitle(title.String());
-	fFeed->SetXmlUrl(BUrl(urlString));
-	fFeed->Filetize();
+		fFeed.SetTitle(title.String());
+	fFeed.SetXmlUrl(BUrl(urlString));
+	fFeed.Filetize();
 
 	BMessage edited(kFeedsEdited);
 	BMessage enqueueUpdated(kEnqueueFeed);
-	enqueueUpdated.AddData("feeds", B_RAW_TYPE, (void*)fFeed, sizeof(Feed));
+	enqueueUpdated.AddString("feedPaths", fFeed.GetCachePath());
 
 	((App*)be_app)->MessageReceived(&enqueueUpdated);
 	((App*)be_app)->PostMessage(&edited);
@@ -179,7 +178,7 @@ FeedEditWindow::_SaveFeed()
 void
 FeedEditWindow::_DeleteFeed()
 {
-	fFeed->Unfiletize();
+	fFeed.Unfiletize();
 	BMessage edited(kFeedsEdited);
 	((App*)be_app)->PostMessage(&edited);
 	Quit();

@@ -119,11 +119,10 @@ App::ArgvReceived(int32 argc, char** argv)
 			refMsg.AddRef("refs", &ref);
 		}
 		else if (BUrl(argv[i]).IsValid()) {
-			Feed* newFeed = new Feed(BUrl(argv[i]));
+			BString url = BString(argv[i]);
 
 			BMessage enqueue = BMessage(kEnqueueFeed);
-			enqueue.AddData("feeds", B_RAW_TYPE, (void*)newFeed, sizeof(Feed));
-
+			enqueue.AddData("feedPaths", B_STRING_TYPE, &url, sizeof(BString));
 			MessageReceived(&enqueue);
 		}
 	}

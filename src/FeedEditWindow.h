@@ -7,6 +7,8 @@
 
 #include <Window.h>
 
+#include "Feed.h"
+
 class BButton;
 class BStringView;
 class BTextControl;
@@ -37,7 +39,7 @@ private:
 	void _DeleteFeed();
 
 	BString fFeedPath;
-	Feed* fFeed;
+	Feed fFeed;
 
 	BStringView*	fFeedNameLabel;
 	BTextControl*	fFeedNameText;
