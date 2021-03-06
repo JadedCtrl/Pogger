@@ -161,7 +161,10 @@ fetch(BUrl url, BDataIO* reply, BString* hash, int timeout)
 	kill_thread(thread);
 
 	*(hash) = listener.GetHash();
-	return request->Status();
+	int32 status = request->Status();
+
+	delete request;
+	return status;
 }
 
 

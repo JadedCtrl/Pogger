@@ -6,9 +6,9 @@
 #define FEEDCONTROLLER_H
 
 #include <SupportDefs.h>
+#include <ObjectList.h>
 #include <OS.h>
 
-class BList;
 class BMessage;
 class BMessageRunner;
 class Feed;
@@ -55,7 +55,7 @@ private:
 	thread_id	fDownloadThread;
 	thread_id	fParseThread;
 
-	BList*			fDownloadQueue;
+	BObjectList<Feed>* fDownloadQueue;
 	BMessageRunner*	fMessageRunner;
 };
 

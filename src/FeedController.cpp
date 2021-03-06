@@ -24,7 +24,7 @@ FeedController::FeedController()
 	fMainThread(find_thread(NULL)),
 	fDownloadThread(0),
 	fParseThread(0),
-	fDownloadQueue(new BList()),
+	fDownloadQueue(new BObjectList<Feed>(5, true)),
 	fMessageRunner(new BMessageRunner(be_app, BMessage(kControllerCheck), 50000, -1))
 
 {
@@ -135,8 +135,9 @@ void
 FeedController::_ProcessQueueItem()
 {
 	if (has_data(fDownloadThread) && !fDownloadQueue->IsEmpty()) {
-		Feed* buffer = (Feed*)(fDownloadQueue->RemoveItem(0));
+		Feed* buffer = fDownloadQueue->ItemAt(0);
 		send_data(fDownloadThread, 0, (void*)buffer, sizeof(Feed));
+		fDownloadQueue->RemoveItemAt(0);
 
 		BMessage downloadInit = BMessage(kDownloadStart);
 		downloadInit.AddString("feed_name", buffer->GetTitle());
@@ -197,6 +198,7 @@ FeedController::_ReceiveStatus()
 				_SendProgress();
 				break;
 		}
+		free(feedBuffer);
 	}
 }
 
@@ -206,11 +208,10 @@ FeedController::_DownloadLoop(void* data)
 {
 	thread_id main = *((thread_id*)data);
 	thread_id sender;
-	Feed* feedBuffer = (Feed*)malloc(sizeof(Feed));
-
 
 	while (true) {
-		int32 code = receive_data(&sender, (void*)feedBuffer, sizeof(Feed));
+		Feed* feedBuffer = (Feed*)malloc(sizeof(Feed));
+		receive_data(&sender, (void*)feedBuffer, sizeof(Feed));
 
 		std::cout << "Downloading feed from "
 			<< feedBuffer->GetXmlUrl().UrlString() << "…\n";
@@ -221,8 +222,8 @@ FeedController::_DownloadLoop(void* data)
 		else {
 			send_data(main, kDownloadFail, (void*)feedBuffer, sizeof(Feed));
 		}
+		free(feedBuffer);
 	}
-	delete(feedBuffer);
 	return 0;
 }
 
@@ -232,40 +233,38 @@ FeedController::_ParseLoop(void* data)
 {
 	thread_id main = *((thread_id*)data);
 	thread_id sender;
-	Feed* feedBuffer = (Feed*)malloc(sizeof(Feed));
 
 	while (true) {
-		int32 code = receive_data(&sender, (void*)feedBuffer, sizeof(Feed));
+		Feed* feedBuffer = (Feed*)malloc(sizeof(Feed));
+		receive_data(&sender, (void*)feedBuffer, sizeof(Feed));
 
 		BObjectList<Entry> entries;
-		int32 entriesCount;
+		int32 entriesCount = 0;
 		BString feedTitle;
 		BUrl feedUrl = feedBuffer->GetXmlUrl();
 		BDirectory outDir = BDirectory(((App*)be_app)->fPreferences->EntryDir());
 
 		if (feedBuffer->IsAtom()) {
-			AtomFeed* feed = (AtomFeed*)malloc(sizeof(AtomFeed));
-			feed = new AtomFeed(feedBuffer);
-			feed->Parse();
-			entries = feed->GetNewEntries();
+			AtomFeed feed(feedBuffer);
+			feed.Parse();
+			entries = feed.GetNewEntries();
 			entriesCount = entries.CountItems();
-			feedTitle = feed->GetTitle();
+			feedTitle = feed.GetTitle();
 
 			for (int i = 0; i < entriesCount; i++)
-				((Entry*)entries.ItemAt(i))->Filetize(outDir);
-			delete feed;
+				entries.ItemAt(i)->Filetize(outDir);
+			entries.MakeEmpty();
 		}
 		else if (feedBuffer->IsRss()) {
-			RssFeed* feed = (RssFeed*)malloc(sizeof(RssFeed));
-			feed = new RssFeed(feedBuffer);
-			feed->Parse();
-			entries = feed->GetNewEntries();
+			RssFeed feed(feedBuffer);
+			feed.Parse();
+			entries = feed.GetNewEntries();
 			entriesCount = entries.CountItems();
-			feedTitle = feed->GetTitle();
+			feedTitle = feed.GetTitle();
 
 			for (int i = 0; i < entriesCount; i++)
-				((Entry*)entries.ItemAt(i))->Filetize(outDir);
-			delete feed;
+				entries.ItemAt(i)->Filetize(outDir);
+			entries.MakeEmpty();
 		}
 
 
@@ -275,9 +274,10 @@ FeedController::_ParseLoop(void* data)
 		else {
 			send_data(main, entriesCount, (void*)feedBuffer, sizeof(Feed));
 		}
+
+		free(feedBuffer);
 	}
 
-	delete (feedBuffer);
 	return 0;
 }
 

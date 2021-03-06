@@ -32,7 +32,7 @@ AtomFeed::AtomFeed(Feed* feed)
 void
 AtomFeed::Parse ()
 {
-	entries = BObjectList<Entry>();
+	entries = BObjectList<Entry>(5, true);
 	tinyxml2::XMLDocument xml;
 	xml.LoadFile(GetCachePath().String());
 
@@ -50,10 +50,7 @@ AtomFeed::Parse ()
 void
 AtomFeed::RootParse(tinyxml2::XMLElement* xfeed)
 {
-	tinyxml2::XMLElement* xauthor = xfeed->FirstChildElement("author");
 	tinyxml2::XMLElement* xentry = xfeed->FirstChildElement("entry");
-	tinyxml2::XMLElement* xlink = xfeed->FirstChildElement("link");
-	tinyxml2::XMLElement* xauthlink = xauthor->FirstChildElement("link");
 	
 	bool set = false;
 
@@ -116,7 +113,7 @@ AtomFeed::ParseEntries(tinyxml2::XMLElement* xfeed)
 	xentry = xfeed->FirstChildElement("entry");
 
 	int entryCount = xmlCountSiblings(xentry, "entry");
-	entries = BObjectList<Entry>(entryCount);
+	entries = BObjectList<Entry>(entryCount, true);
 
 	std::cout << "\t-" << entryCount << "-\n";
 
