@@ -100,10 +100,10 @@ Notifier::_SendUpdatedNotification()
 
 	BString entryNum,feedNum = "";
 	entryNum << fTotalEntries;
-	feedNum << fUpdatedFeeds->CountItems();
+	feedNum << fUpdatedFeeds->CountItems() - 1;
 
 	notifyText.ReplaceAll("%n%", entryNum);
-	notifyText.ReplaceAll("%m%", feedNum - 1);
+	notifyText.ReplaceAll("%m%", feedNum);
 	notifyText.ReplaceAll("%source%",
 		((BString*)fUpdatedFeeds->ItemAt(0))->String());
 
@@ -134,9 +134,9 @@ Notifier::_SendFailedNotification()
 		notifyText = "Failed to update %source% and %m% others";
 
 	BString feedNum = "";
-	feedNum << fFailedFeeds->CountItems();
+	feedNum << fFailedFeeds->CountItems() - 1;
 
-	notifyText.ReplaceAll("%m%", feedNum - 1);
+	notifyText.ReplaceAll("%m%", feedNum);
 	notifyText.ReplaceAll("%source%",
 		((BString*)fFailedFeeds->ItemAt(0))->String());
 

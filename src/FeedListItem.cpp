@@ -40,9 +40,11 @@ FeedListItem::DrawItem(BView* owner, BRect frame, bool complete)
 		}
 		case kErrorStatus:
 		{
-			owner->MovePenTo(frame.right - imageHeight, frame.top);
-			owner->DrawBitmap(loadVectorIcon("error-status", imageHeight,
-				imageHeight));
+			owner->MovePenTo(frame.right - 20, frame.top + BaselineOffset());
+			owner->DrawString("X");
+//			owner->MovePenTo(frame.right - imageHeight, frame.top);
+//			owner->DrawBitmap(loadVectorIcon("error-status", imageHeight,
+//				imageHeight));
 			break;
 		}
 	}
