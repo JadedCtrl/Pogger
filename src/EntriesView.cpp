@@ -105,13 +105,20 @@ EntriesView::MessageReceived(BMessage* msg)
 				B_FILE_NODE, false, new BMessage(kOpenWithPath));
 			fOpenWithPanel->Show();
 			fOpenWithPanel->SetTarget(this);
+			break;
 		}
 		case kOpenWithPath:
 		{
 			entry_ref ref;
-			if (msg->HasRef("refs") && msg->FindRef("refs", &ref) == B_OK) {
-				((App*)be_app)->fPreferences->SetEntryOpenWith(
-					BPath(&ref).Path());
+			if (msg->HasRef("refs") && msg->FindRef("refs", &ref) == B_OK
+				&& ((App*)be_app)->fPreferences->SetEntryOpenWith(
+					BPath(&ref).Path()) == B_OK)
+			{
+				BMenuItem* prefItem = new BMenuItem(BPath(&ref).Path(),
+					new BMessage(kOpenWithSelect));
+				prefItem->SetMarked(true);
+				fOpenWithMenu->AddItem(prefItem);
+
 			}
 
 			delete fOpenWithPanel;
