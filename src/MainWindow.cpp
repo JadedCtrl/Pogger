@@ -26,7 +26,7 @@
 MainWindow::MainWindow()
 	:
 	BWindow(((App*)be_app)->fPreferences->fMainWindowRect, "Pogger",
-		B_TITLED_WINDOW, B_NOT_RESIZABLE | B_NOT_ZOOMABLE)
+		B_TITLED_WINDOW, NULL)
 {
 	_InitInterface();
 	MoveOnScreen();
@@ -104,13 +104,21 @@ MainWindow::_InitInterface()
 
 	// Bottom bar
 	fStatusBar = new BStatusBar("feedProgress");
-
 	fUpdateNowButton = new BButton("updateNow", "Update Now",
 		new BMessage(kUpdateSubscribed));
 	fUpdateNowButton->SetTarget((App*)be_app);
 	fUpdateNowButton->SetExplicitAlignment(
 		BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 
+	// Window size
+	font_height fontHeight;
+	fTabView->GetFontHeight(&fontHeight);
+	int16 fsize = fontHeight.ascent + fontHeight.descent;
+	float minWidth = 36 * fsize;
+	float minHeight = 25 * fsize;
+	SetSizeLimits(minWidth, 100000, minHeight, 100000);
+	if (Size().Height() < minHeight || Size().Width() < minWidth)
+		ResizeTo(minWidth, minHeight);
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.SetInsets(0, B_USE_DEFAULT_SPACING, 0, 0)
@@ -122,7 +130,7 @@ MainWindow::_InitInterface()
 			.SetInsets(B_USE_WINDOW_SPACING, B_USE_DEFAULT_SPACING,
 				B_USE_DEFAULT_SPACING, B_USE_WINDOW_SPACING)
 		.End()
-	.End();
+	 .End();
 }
 
 

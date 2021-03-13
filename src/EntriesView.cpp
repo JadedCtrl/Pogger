@@ -174,7 +174,6 @@ EntriesView::_InitInterface()
 
 	_PopulateOpenWithMenu();
 
-
 	BLayoutBuilder::Group<>(fSavingBox, B_HORIZONTAL)
 		.SetInsets(B_USE_ITEM_INSETS)
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
@@ -211,10 +210,9 @@ EntriesView::_InitInterface()
 		.End()
 	.End();
 
-	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
+	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_ITEM_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
 		.Add(fSavingBox)
-		.AddGlue()
 		.Add(fOpeningBox)
 		.AddGlue()
 	.End();

@@ -118,10 +118,9 @@ UpdatesView::_InitInterface()
 		.Add(fIntervalSlider)
 	.End();
 
-	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
+	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_ITEM_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
 		.Add(fNotificationsBox)
-		.AddGlue()
 		.Add(fSchedulingBox)
 		.AddGlue()
 	.End();

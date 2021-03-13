@@ -5,14 +5,11 @@ Important Features:
 
 Important improvements:
 * Memory leaks
-	* ~.05MB per feed on download (+2MB w 40 feeds)
-		* This leak is in Util.ccp, fetch(). I'm stumped here.
-	* ~.02MB per feed on parsing (+1MB w 40 feeds)
+	* ~.05MB per feed on download, in Util.ccp, fetch(). I'm stumped here.
+	* ~.02MB per feed on parsing
 * Fix background of Feeds List error status icon (it's black, not transparent)
-* Make UI friendly to whatever font-size you throw at it
-	* Give a max size to the progress label in FeedsView
 * Make fancy Markdown README
-* Make an icon, somehow (idk I'm not an artist)
+* Make an icon(idk I'm not an artist)
 
 
 Nice Improvements:
