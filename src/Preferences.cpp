@@ -25,6 +25,10 @@ Preferences::Load()
 	BPath cfgPath;
 	find_directory(B_USER_SETTINGS_DIRECTORY, &cfgPath);
 	cfgPath.Append("Pogger");
+	if (BDirectory(cfgPath.Path()).InitCheck() == B_ENTRY_NOT_FOUND) {
+		BDirectory(cfgPath.Path()).CreateDirectory(cfgPath.Path(), NULL);
+	}
+
 	BString filename = BString(cfgPath.Path()).Append("/Settings");
 
 	BFile file = BFile(filename.String(), B_READ_ONLY);

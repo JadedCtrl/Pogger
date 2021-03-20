@@ -94,8 +94,11 @@ FeedController::SubscribedFeeds()
 	find_directory(B_USER_SETTINGS_DIRECTORY, &subPath);
 	subPath.Append("Pogger");
 	subPath.Append("Subscriptions");
-
 	BDirectory subDir(subPath.Path());
+	if (subDir.InitCheck() == B_ENTRY_NOT_FOUND) {
+		subDir.CreateDirectory(subPath.Path(), &subDir);
+	}
+
 	BEntry feedEntry;
 	BPath feedPath;
 	BStringList feeds;

@@ -31,8 +31,13 @@ bool
 Entry::Filetize(BDirectory outDir)
 {
 	BFile file(title.String(), B_READ_WRITE);
+	BEntry outDirEntry;
 	time_t tt_date = date.Time_t();
 
+	outDir.GetEntry(&outDirEntry);
+	if (outDir.InitCheck() == B_ENTRY_NOT_FOUND) {
+		outDir.CreateDirectory(BPath(&outDirEntry).Path(), &outDir);
+	}
 	outDir.CreateFile(title.String(), &file);
 
 	BString betype = BString("text/x-feed-entry");
