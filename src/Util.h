@@ -9,9 +9,8 @@
 #include <DateTime.h>
 #include <Entry.h>
 
-#include "ProtocolListener.h"
-
 class BBitmap;
+class BFile;
 class BUrl;
 
 
@@ -29,7 +28,8 @@ bool isRemotePath(BString);
 BString urlToFilename(BUrl url);
 const char* tempFileName(const char* dir, const char* name, const char* suffix);
 
-int32 fetch(BUrl url, BDataIO* reply, BString* hash, int timeout);
+BString hashFile(BFile* file);
+int32 fetch(BUrl url, BFile* reply, BString* hash, int timeout);
 
 // The strings passed to this function are adapted from those in
 // Calendar (utils/Preferences.cpp).

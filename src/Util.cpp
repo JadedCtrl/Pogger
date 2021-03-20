@@ -21,9 +21,7 @@
 #include <UrlProtocolRoster.h>
 #include <UrlRequest.h>
 
-#include <boost/uuid/detail/sha1.hpp>
-
-#include "ProtocolListener.h"
+using namespace BPrivate::Network;
 
 
 BDateTime
@@ -134,21 +132,30 @@ tempFileName(const char* dir, const char* name, const char* suffix)
 }
 
 
-int32
-fetch(BUrl url, BDataIO* reply, BString* hash, int timeout)
+BString
+hashFile(BFile* file)
 {
-	ProtocolListener listener(true);
-	boost::uuids::detail::sha1 sha1;
+	const int size = 1000;
+	char data[size] = {'\0'};
+	BString hashString;
+	ssize_t read = 0;
+	int index = 0;
 
-	#ifdef LIBNETAPI_DEPRECATED
-	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &listener);
-	listener.SetDownloadIO(reply);
-	#else
-	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, reply, &listener);
-	listener.SetDownloadIO(NULL);
-	#endif
+	do {
+		read = file->ReadAt((off_t)index * size, (void*)data, size);
+		hashString << abs((int)data[0] % 10);
+		index++;
+	}
+	while (read == size && index < 30);
 
-	listener.SetSha1(&sha1);
+	return hashString;
+}
+
+
+int32
+fetch(BUrl url, BFile* reply, BString* hash, int timeout)
+{
+	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, reply);
 
 	time_t startTime = time(0);
 	thread_id thread = request->Run();
@@ -160,7 +167,7 @@ fetch(BUrl url, BDataIO* reply, BString* hash, int timeout)
 
 	kill_thread(thread);
 
-	*(hash) = listener.GetHash();
+	*(hash) = hashFile(reply);
 	int32 status = request->Status();
 
 	delete request;

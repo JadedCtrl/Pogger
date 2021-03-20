@@ -42,7 +42,6 @@ SRCS = \
 	src/Mimetypes.cpp, \
 	src/Notifier.cpp, \
 	src/Preferences.cpp, \
-	src/ProtocolListener.cpp, \
 	src/RssFeed.cpp, \
 	src/UpdatesView.cpp, \
 	src/Util.cpp

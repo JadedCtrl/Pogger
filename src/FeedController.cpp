@@ -247,7 +247,7 @@ FeedController::_ParseLoop(void* data)
 		BUrl feedUrl = feedBuffer->GetXmlUrl();
 		BDirectory outDir = BDirectory(((App*)be_app)->fPreferences->EntryDir());
 
-		if (feedBuffer->IsAtom()) {
+		if (feedBuffer->IsAtom() && feedBuffer->IsUpdated()) {
 			AtomFeed feed(feedBuffer);
 			feed.Parse();
 			entries = feed.GetNewEntries();
@@ -258,7 +258,7 @@ FeedController::_ParseLoop(void* data)
 				entries.ItemAt(i)->Filetize(outDir);
 			entries.MakeEmpty();
 		}
-		else if (feedBuffer->IsRss()) {
+		else if (feedBuffer->IsRss() && feedBuffer->IsUpdated()) {
 			RssFeed feed(feedBuffer);
 			feed.Parse();
 			entries = feed.GetNewEntries();
