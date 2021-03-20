@@ -39,8 +39,8 @@ FeedEditWindow::FeedEditWindow(BEntry feedEntry)
 	SetTitle("Edit Feed");
 	fFeed = Feed(feedEntry);
 
-	fFeedNameText->SetText(fFeed.GetTitle().String());
-	fFeedUrlText->SetText(fFeed.GetXmlUrl().UrlString().String());
+	fFeedNameText->SetText(fFeed.Title().String());
+	fFeedUrlText->SetText(fFeed.XmlUrl().UrlString().String());
 
 	fDeleteButton->SetEnabled(true);
 }
@@ -48,7 +48,7 @@ FeedEditWindow::FeedEditWindow(BEntry feedEntry)
 
 FeedEditWindow::FeedEditWindow(FeedListItem* feedItem)
 	:
-	FeedEditWindow(BEntry(feedItem->GetFeedPath()))
+	FeedEditWindow(BEntry(feedItem->FeedPath()))
 {
 }
 
@@ -161,7 +161,7 @@ FeedEditWindow::_SaveFeed()
 		filename = BString(title);
 	subPath.Append(filename);
 
-	if (fFeed.GetCachePath().IsEmpty())
+	if (fFeed.CachePath().IsEmpty())
 		fFeed.SetCachePath(BString(subPath.Path()));
 
 	if (!title.IsEmpty())
@@ -171,7 +171,7 @@ FeedEditWindow::_SaveFeed()
 
 	BMessage edited(kFeedsEdited);
 	BMessage enqueueUpdated(kEnqueueFeed);
-	enqueueUpdated.AddString("feedPaths", fFeed.GetCachePath());
+	enqueueUpdated.AddString("feedPaths", fFeed.CachePath());
 
 	((App*)be_app)->MessageReceived(&enqueueUpdated);
 	((App*)be_app)->PostMessage(&edited);

@@ -14,16 +14,16 @@
 
 RssFeed::RssFeed()
 {
-	title = BString("Untitled Feed");
-	xmlUrl = BString("");
+	fTitle = BString("Untitled Feed");
+	fXmlUrl = BString("");
 }
 
 
 RssFeed::RssFeed(Feed* feed)
 	: RssFeed::RssFeed()
 {
-	SetXmlUrl(feed->GetXmlUrl());
-	SetCachePath(feed->GetCachePath());
+	SetXmlUrl(feed->XmlUrl());
+	SetCachePath(feed->CachePath());
 }
 
 
@@ -31,11 +31,11 @@ void
 RssFeed::Parse()
 {
 	tinyxml2::XMLDocument xml;
-	entries = BObjectList<Entry>(5, true);
+	fEntries = BObjectList<Entry>(5, true);
 
 	Feed::Parse();
 
-	xml.LoadFile(GetCachePath().String());
+	xml.LoadFile(CachePath().String());
 	tinyxml2::XMLElement* xchan = xml.FirstChildElement("rss")->FirstChildElement("channel");
 
 	RootParse(xchan);
@@ -48,10 +48,10 @@ RssFeed::Parse()
 void
 RssFeed::RootParse(tinyxml2::XMLElement* xchan)
 {
-	SetTitle(xchan->FirstChildElement("title"));
-	SetDate(xchan->FirstChildElement("lastBuildDate"));
+	_SetTitle(xchan->FirstChildElement("title"));
+	_SetDate(xchan->FirstChildElement("lastBuildDate"));
 
-	std::cout << "Channel '" << title.String() << "' at '" << xmlUrl.UrlString()
+	std::cout << "Channel '" << fTitle.String() << "' at '" << fXmlUrl.UrlString()
 		<< ":\n";
 }
 
@@ -62,16 +62,16 @@ RssFeed::EntryParse(tinyxml2::XMLElement* xitem)
 	Entry* newEntry = new Entry();
 
 	newEntry->SetTitle(xitem->FirstChildElement("title"));
-	newEntry->SetDesc(xitem->FirstChildElement("description"));
+	newEntry->SetDescription(xitem->FirstChildElement("description"));
 	newEntry->SetDate(xitem->FirstChildElement("pubDate"));
 	newEntry->SetPostUrl(xitem->FirstChildElement("link"));
 	newEntry->SetContent(xitem->FirstChildElement("content:encoded"));
-	newEntry->SetFeedTitle(title);
+	newEntry->SetFeedTitle(fTitle);
 
-	if (date == NULL || date < newEntry->GetDate())
-		date = newEntry->date;
+	if (fDate == NULL || fDate < newEntry->Date())
+		fDate = newEntry->Date();
 
-	AddEntry(newEntry);
+	_AddEntry(newEntry);
 }
 
 
@@ -82,8 +82,8 @@ RssFeed::ParseEntries(tinyxml2::XMLElement* xchan)
 
 	xitem = xchan->FirstChildElement("item");
 
-	int entryCount = xmlCountSiblings(xitem, "item");
-	entries = BObjectList<Entry>(entryCount, true);
+	int entryCount = _XmlCountSiblings(xitem, "item");
+	fEntries = BObjectList<Entry>(entryCount, true);
 
 	std::cout << "\t-" << entryCount << " entries-\n";
 

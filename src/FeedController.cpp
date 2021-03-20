@@ -143,8 +143,8 @@ FeedController::_ProcessQueueItem()
 		send_data(fDownloadThread, 0, (void*)buffer, sizeof(Feed));
 
 		BMessage downloadInit = BMessage(kDownloadStart);
-		downloadInit.AddString("feed_name", buffer->GetTitle());
-		downloadInit.AddString("feed_url", buffer->GetXmlUrl().UrlString());
+		downloadInit.AddString("feed_name", buffer->Title());
+		downloadInit.AddString("feed_url", buffer->XmlUrl().UrlString());
 		((App*)be_app)->MessageReceived(&downloadInit);
 	}
 }
@@ -164,9 +164,9 @@ FeedController::_ReceiveStatus()
 			case kDownloadComplete: 
 			{
 				BMessage complete = BMessage(kDownloadComplete);
-				complete.AddString("feed_name", feedBuffer->GetTitle());
+				complete.AddString("feed_name", feedBuffer->Title());
 				complete.AddString("feed_url",
-					feedBuffer->GetXmlUrl().UrlString());
+					feedBuffer->XmlUrl().UrlString());
 				((App*)be_app)->MessageReceived(&complete);
 
 				send_data(fParseThread, 0, (void*)feedBuffer, sizeof(Feed));
@@ -175,9 +175,9 @@ FeedController::_ReceiveStatus()
 			case kDownloadFail:
 			{
 				BMessage failure = BMessage(kDownloadFail);
-				failure.AddString("feed_name", feedBuffer->GetTitle());
+				failure.AddString("feed_name", feedBuffer->Title());
 				failure.AddString("feed_url",
-					feedBuffer->GetXmlUrl().UrlString());
+					feedBuffer->XmlUrl().UrlString());
 				((App*)be_app)->MessageReceived(&failure);
 				_SendProgress();
 				break;
@@ -185,8 +185,8 @@ FeedController::_ReceiveStatus()
 			case kParseFail:
 			{
 				BMessage failure = BMessage(kParseFail);
-				failure.AddString("feed_name", feedBuffer->GetTitle());
-				failure.AddString("feed_url", feedBuffer->GetXmlUrl().UrlString());
+				failure.AddString("feed_name", feedBuffer->Title());
+				failure.AddString("feed_url", feedBuffer->XmlUrl().UrlString());
 				((App*)be_app)->MessageReceived(&failure);
 				_SendProgress();
 				break;
@@ -194,8 +194,8 @@ FeedController::_ReceiveStatus()
 			// If parse was successful, the code is the amount of new entries
 			default:
 				BMessage complete = BMessage(kParseComplete);
-				complete.AddString("feed_name", feedBuffer->GetTitle());
-				complete.AddString("feed_url", feedBuffer->GetXmlUrl().UrlString());
+				complete.AddString("feed_name", feedBuffer->Title());
+				complete.AddString("feed_url", feedBuffer->XmlUrl().UrlString());
 				complete.AddInt32("entry_count", code);
 				((App*)be_app)->MessageReceived(&complete);
 				_SendProgress();
@@ -217,7 +217,7 @@ FeedController::_DownloadLoop(void* data)
 		receive_data(&sender, (void*)feedBuffer, sizeof(Feed));
 
 		std::cout << "Downloading feed from "
-			<< feedBuffer->GetXmlUrl().UrlString() << "…\n";
+			<< feedBuffer->XmlUrl().UrlString() << "…\n";
 
 		if (feedBuffer->Fetch()) {
 			send_data(main, kDownloadComplete, (void*)feedBuffer, sizeof(Feed));
@@ -244,15 +244,15 @@ FeedController::_ParseLoop(void* data)
 		BObjectList<Entry> entries;
 		int32 entriesCount = 0;
 		BString feedTitle;
-		BUrl feedUrl = feedBuffer->GetXmlUrl();
+		BUrl feedUrl = feedBuffer->XmlUrl();
 		BDirectory outDir = BDirectory(((App*)be_app)->fPreferences->EntryDir());
 
 		if (feedBuffer->IsAtom() && feedBuffer->IsUpdated()) {
 			AtomFeed feed(feedBuffer);
 			feed.Parse();
-			entries = feed.GetNewEntries();
+			entries = feed.NewEntries();
 			entriesCount = entries.CountItems();
-			feedTitle = feed.GetTitle();
+			feedTitle = feed.Title();
 
 			for (int i = 0; i < entriesCount; i++)
 				entries.ItemAt(i)->Filetize(outDir);
@@ -261,9 +261,9 @@ FeedController::_ParseLoop(void* data)
 		else if (feedBuffer->IsRss() && feedBuffer->IsUpdated()) {
 			RssFeed feed(feedBuffer);
 			feed.Parse();
-			entries = feed.GetNewEntries();
+			entries = feed.NewEntries();
 			entriesCount = entries.CountItems();
-			feedTitle = feed.GetTitle();
+			feedTitle = feed.Title();
 
 			for (int i = 0; i < entriesCount; i++)
 				entries.ItemAt(i)->Filetize(outDir);

@@ -175,7 +175,7 @@ FeedsView::_RemoveSelectedFeed()
 {
 	int32 selIndex = fFeedsListView->CurrentSelection();
 	FeedListItem* selected = (FeedListItem*)fFeedsListView->ItemAt(selIndex);
-	Feed delFeed = Feed(BEntry(selected->GetFeedPath()));
+	Feed delFeed = Feed(BEntry(selected->FeedPath()));
 
 	delFeed.Unfiletize();
 }
@@ -219,7 +219,7 @@ FeedsView::_UpdateProgress(BMessage* msg, int8 status)
 
 	for (int i = 0; i < fFeedsListView->CountItems(); i++) {
 		FeedListItem* item  = (FeedListItem*)fFeedsListView->ItemAt(i);
-		if (item->GetFeedUrl().UrlString() == feedUrl) {
+		if (item->FeedUrl().UrlString() == feedUrl) {
 			item->SetStatus(status);
 			fFeedsListView->InvalidateItem(i);
 		}

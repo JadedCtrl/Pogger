@@ -14,12 +14,13 @@
 
 
 Entry::Entry()
+	:
+	fTitle(BString()),
+	fDescription(BString()),
+	fFeedTitle(BString()),
+	fPostUrl(BString()),
+	fContent(BString())
 {
-	title = BString("");
-	description = BString("");
-	feedTitle = BString("");
-	postUrl  = BString("");
-	content  = BString("");
 }
 
 
@@ -30,35 +31,42 @@ Entry::~Entry()
 bool
 Entry::Filetize(BDirectory outDir)
 {
-	BFile file(title.String(), B_READ_WRITE);
+	BFile file(fTitle.String(), B_READ_WRITE);
 	BEntry outDirEntry;
-	time_t tt_date = date.Time_t();
+	time_t tt_date = fDate.Time_t();
 
 	outDir.GetEntry(&outDirEntry);
 	if (outDir.InitCheck() == B_ENTRY_NOT_FOUND) {
 		outDir.CreateDirectory(BPath(&outDirEntry).Path(), &outDir);
 	}
-	outDir.CreateFile(title.String(), &file);
+	outDir.CreateFile(fTitle.String(), &file);
 
 	BString betype = BString("text/x-feed-entry");
 	file.WriteAttr("BEOS:TYPE", B_MIME_STRING_TYPE, 0, betype.String(),
 		betype.CountChars() + 1);
 
 	file.WriteAttr("Feed:name", B_STRING_TYPE, 0,
-		title.String(), title.CountChars());
+		fTitle.String(), fTitle.CountChars());
 	file.WriteAttr("Feed:description", B_STRING_TYPE, 0,
-		description.String(), description.CountChars());
+		fDescription.String(), fDescription.CountChars());
 	file.WriteAttr("Feed:source", B_STRING_TYPE, 0,
-		feedTitle.String(), feedTitle.CountChars());
-	file.WriteAttr("META:url", B_STRING_TYPE, 0, postUrl.String(),
-		postUrl.CountChars());
+		fFeedTitle.String(), fFeedTitle.CountChars());
+	file.WriteAttr("META:url", B_STRING_TYPE, 0, fPostUrl.String(),
+		fPostUrl.CountChars());
 
-	if (date != NULL) {
+	if (fDate != NULL) {
 		file.WriteAttr("Feed:when", B_TIME_TYPE, 0, &tt_date, sizeof(time_t));
 	}
 
-	file.Write(content.String(), content.Length());
+	file.Write(fContent.String(), fContent.Length());
 	return false;
+}
+
+
+BString
+Entry::Title()
+{
+	return fTitle;
 }
 
 
@@ -66,7 +74,7 @@ bool
 Entry::SetTitle(const char* titleStr)
 {
 	if (titleStr != NULL)
-		title = BString(titleStr);
+		fTitle = BString(titleStr);
 	else return false;
 	return true;
 }
@@ -81,22 +89,36 @@ Entry::SetTitle(tinyxml2::XMLElement* elem)
 }
 
 
+BString
+Entry::Description()
+{
+	return fDescription;
+}
+
+
 bool
-Entry::SetDesc(const char* descStr)
+Entry::SetDescription(const char* descStr)
 {
 	if (descStr != NULL)
-		description = BString(descStr);
+		fDescription = BString(descStr);
 	else return false;
 	return true;
 }
 
 
 bool
-Entry::SetDesc(tinyxml2::XMLElement* elem)
+Entry::SetDescription(tinyxml2::XMLElement* elem)
 {
 	if (elem != NULL)
-		return SetDesc(elem->GetText());
+		return SetDescription(elem->GetText());
 	return false;
+}
+
+
+BString
+Entry::FeedTitle()
+{
+	return fFeedTitle;
 }
 
 
@@ -104,9 +126,16 @@ bool
 Entry::SetFeedTitle(BString titleStr)
 {
 	if (titleStr != NULL)
-		feedTitle = titleStr;
+		fFeedTitle = titleStr;
 	else return false;
 	return true;
+}
+
+
+BString
+Entry::Content()
+{
+	return fContent;
 }
 
 
@@ -114,7 +143,7 @@ bool
 Entry::SetContent(const char* contentStr)
 {
 	if (contentStr != NULL)
-		content = BString(contentStr);
+		fContent = BString(contentStr);
 	else return false;
 	return true;
 }
@@ -129,11 +158,18 @@ Entry::SetContent(tinyxml2::XMLElement* elem)
 }
 
 
+BString
+Entry::PostUrl()
+{
+	return fPostUrl;
+}
+
+
 bool
 Entry::SetPostUrl(const char* urlStr)
 {
 	if (urlStr != NULL)
-		postUrl = BString(urlStr);
+		fPostUrl = BString(urlStr);
 	else return false;
 	return true;
 }
@@ -148,6 +184,13 @@ Entry::SetPostUrl(tinyxml2::XMLElement* elem)
 }
 
 
+BDateTime
+Entry::Date()
+{
+	return fDate;
+}
+
+
 bool
 Entry::SetDate(const char* dateStr)
 {
@@ -156,7 +199,7 @@ Entry::SetDate(const char* dateStr)
 	BDateTime newDate = feedDateToBDate(dateStr);
 	if (newDate == NULL)
 		return false;
-	date = newDate;
+	fDate = newDate;
 	return true;
 }
 
@@ -167,13 +210,6 @@ Entry::SetDate(tinyxml2::XMLElement* elem)
 	if (elem != NULL)
 		return SetDate(elem->GetText());
 	return false;
-}
-
-
-BDateTime
-Entry::GetDate()
-{
-	return date;
 }
 
 

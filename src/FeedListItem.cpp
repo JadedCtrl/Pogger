@@ -13,10 +13,10 @@
 
 FeedListItem::FeedListItem(Feed* feed)
 	:
-	BStringItem(feed->GetTitle().String(), 0, false),
+	BStringItem(feed->Title().String(), 0, false),
 	fStatus(kClearStatus),
-	fFeedUrl(feed->GetXmlUrl()),
-	fFeedPath(feed->GetCachePath())
+	fFeedUrl(feed->XmlUrl()),
+	fFeedPath(feed->CachePath())
 {
 }
 
@@ -52,14 +52,14 @@ FeedListItem::DrawItem(BView* owner, BRect frame, bool complete)
 
 
 BString
-FeedListItem::GetFeedPath()
+FeedListItem::FeedPath()
 {
 	return fFeedPath;
 }
 
 
 BUrl
-FeedListItem::GetFeedUrl()
+FeedListItem::FeedUrl()
 {
 	return fFeedUrl;
 }

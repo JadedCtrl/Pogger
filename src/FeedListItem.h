@@ -28,8 +28,8 @@ public:
 
 	void DrawItem(BView* owner, BRect frame, bool complete);
 
-	BUrl GetFeedUrl();
-	BString GetFeedPath();
+	BUrl FeedUrl();
+	BString FeedPath();
 
 	void SetStatus(int8 status);
 

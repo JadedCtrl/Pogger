@@ -33,8 +33,8 @@ public:
 
 	virtual void Parse();
 
-	BObjectList<Entry>	GetEntries();
-	BObjectList<Entry>	GetNewEntries();
+	BObjectList<Entry>	Entries();
+	BObjectList<Entry>	NewEntries();
 
 	bool	Fetch();
 
@@ -45,38 +45,37 @@ public:
 	bool	IsAtom();
 	bool	IsUpdated();
 
-	BString	GetTitle();
+	BString	Title();
 	bool	SetDate(BDateTime);
 
-	BUrl	GetXmlUrl();
-	BDateTime GetDate();
+	BUrl	XmlUrl();
+	BDateTime Date();
 
 	bool	SetTitle(const char*);
 	bool	SetXmlUrl(BUrl newUrl);
 	bool	SetCachePath(BString path);
 
-	BString	GetCachePath();
+	BString	CachePath();
 
 protected:
-	bool	SetTitle(tinyxml2::XMLElement*);
-	bool	SetDate(const char*);
-	bool	SetDate(tinyxml2::XMLElement*);
+	bool	_SetTitle(tinyxml2::XMLElement*);
+	bool	_SetDate(const char*);
+	bool	_SetDate(tinyxml2::XMLElement*);
+	bool	_SetDate(BDateTime newDate);
 
-	bool	AddEntry(Entry*);
+	bool	_AddEntry(Entry*);
 
-	int		xmlCountSiblings(tinyxml2::XMLElement*, const char*);
+	int		_XmlCountSiblings(tinyxml2::XMLElement*, const char*);
 
-	BString	title;
-	BDateTime date;
-	BDateTime lastDate;
-	BUrl	xmlUrl;
-	BString	cachePath;
-	BString hash;
-	BString lastHash;
+	BString	fTitle;
+	BDateTime fDate;
+	BDateTime fLastDate;
+	BUrl	fXmlUrl;
+	BString	fCachePath;
+	BString fHash;
+	BString fLastHash;
 
-	BObjectList<Entry> entries;
-	bool	fetched;
-	bool	updated;
+	BObjectList<Entry> fEntries;
 };
 
 

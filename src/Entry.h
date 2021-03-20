@@ -22,25 +22,37 @@ public:
 
 	bool Filetize(BDirectory outDir);
 
+	BString Title();
 	bool SetTitle(const char*);
 	bool SetTitle(tinyxml2::XMLElement*);
-	bool SetDesc(const char*);
-	bool SetDesc(tinyxml2::XMLElement*);
+
+	BString Description();
+	bool SetDescription(const char*);
+	bool SetDescription(tinyxml2::XMLElement*);
+
+	BString FeedTitle();
 	bool SetFeedTitle(BString);
+
+	BString	Content();
 	bool SetContent(const char*);
 	bool SetContent(tinyxml2::XMLElement*);
-	bool SetPostUrl(const char*);
-	bool SetPostUrl(tinyxml2::XMLElement*);
-	bool SetDate(const char*);
-	bool SetDate(tinyxml2::XMLElement*);
-	BDateTime GetDate();
 
-	BString  title;
-	BString  description;
-	BString  feedTitle;
-	BDateTime date;
-	BString  postUrl;
-	BString  content;
+	BString	PostUrl();
+	bool	SetPostUrl(const char*);
+	bool	SetPostUrl(tinyxml2::XMLElement*);
+
+	BDateTime	Date();
+	bool	SetDate(const char*);
+	bool	SetDate(tinyxml2::XMLElement*);
+
+
+private:
+	BString  fTitle;
+	BString  fDescription;
+	BString  fFeedTitle;
+	BDateTime fDate;
+	BString  fPostUrl;
+	BString  fContent;
 };
 
 

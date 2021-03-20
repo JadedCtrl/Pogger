@@ -31,7 +31,7 @@ Feed::Feed(BUrl xml)
 	find_directory(B_USER_CACHE_DIRECTORY, &cache);
 	cache.Append("Pogger");
 
-	cache.Append(urlToFilename(xmlUrl));
+	cache.Append(urlToFilename(fXmlUrl));
 	SetCachePath(cache.Path());
 }
 
@@ -83,16 +83,16 @@ Feed::Feed(BUrl xml, BEntry entry)
 Feed::Feed(Feed* feed)
 	: Feed()
 {
-	SetTitle(feed->GetTitle());
-	SetXmlUrl(feed->GetXmlUrl());
+	SetTitle(feed->Title());
+	SetXmlUrl(feed->XmlUrl());
 }
 	
 
 Feed::Feed()
 	:
-	title(BString("Untitled Feed"))
+	fTitle(BString("Untitled Feed"))
 {
-	lastDate = BDateTime::CurrentDateTime(B_LOCAL_TIME);
+	fLastDate = BDateTime::CurrentDateTime(B_LOCAL_TIME);
 }
 
 
@@ -104,13 +104,13 @@ Feed::~Feed()
 void
 Feed::Parse()
 {
-	BFile feedFile = BFile(cachePath, B_READ_ONLY);
+	BFile feedFile = BFile(fCachePath, B_READ_ONLY);
 	time_t tt_lastDate = 0;
 
 	feedFile.ReadAttr("Feed:when", B_TIME_TYPE, 0, &tt_lastDate, sizeof(time_t));
 
 	if (tt_lastDate > 0)
-		lastDate.SetTime_t(tt_lastDate);
+		fLastDate.SetTime_t(tt_lastDate);
 }
 
 
@@ -118,12 +118,12 @@ Feed::Parse()
 bool
 Feed::Fetch()
 {
-	BFile cacheFile = BFile(cachePath, B_READ_WRITE | B_CREATE_FILE);
+	BFile cacheFile = BFile(fCachePath, B_READ_WRITE | B_CREATE_FILE);
 
-	cacheFile.ReadAttrString("Feed:hash", &lastHash);
+	cacheFile.ReadAttrString("Feed:hash", &fLastHash);
 
-	int32 result = fetch(xmlUrl, &cacheFile, &hash, 30);
-	cacheFile.WriteAttrString("Feed:hash", &hash);
+	int32 result = fetch(fXmlUrl, &cacheFile, &fHash, 30);
+	cacheFile.WriteAttrString("Feed:hash", &fHash);
 
 	if (result == 0)
 		return true;
@@ -134,10 +134,10 @@ Feed::Fetch()
 void
 Feed::Filetize()
 {
-	BFile feedFile(cachePath, B_WRITE_ONLY | B_CREATE_FILE);
-	time_t tt_date = date.Time_t();
-	BString url = xmlUrl.UrlString();
-	BString name = GetTitle();
+	BFile feedFile(fCachePath, B_WRITE_ONLY | B_CREATE_FILE);
+	time_t tt_date = fDate.Time_t();
+	BString url = fXmlUrl.UrlString();
+	BString name = Title();
 	BString type("application/x-feed-source");
 
 	feedFile.WriteAttrString("Feed:name", &name);
@@ -152,7 +152,7 @@ Feed::Filetize()
 void
 Feed::Unfiletize()
 {
-	BEntry entry(GetCachePath().String());
+	BEntry entry(CachePath().String());
 	entry.Remove();
 }
 
@@ -161,7 +161,7 @@ bool
 Feed::IsRss()
 {
 	tinyxml2::XMLDocument xml;
-	xml.LoadFile(cachePath.String());
+	xml.LoadFile(fCachePath.String());
 
 	if (xml.FirstChildElement("rss"))
 		return true;
@@ -173,7 +173,7 @@ bool
 Feed::IsAtom()
 {
 	tinyxml2::XMLDocument xml;
-	xml.LoadFile(cachePath.String());
+	xml.LoadFile(fCachePath.String());
 
 	if (xml.FirstChildElement("feed"))
 		return true;
@@ -184,13 +184,13 @@ Feed::IsAtom()
 bool
 Feed::IsUpdated()
 {
-	return lastHash != hash;
+	return fLastHash != fHash;
 }
 
 
 // Count the amount of siblings to an element of given type name
 int
-Feed::xmlCountSiblings (tinyxml2::XMLElement* xsibling, const char* sibling_name)
+Feed::_XmlCountSiblings (tinyxml2::XMLElement* xsibling, const char* sibling_name)
 {
 	int count = 0;
 	while (xsibling) {
@@ -202,27 +202,27 @@ Feed::xmlCountSiblings (tinyxml2::XMLElement* xsibling, const char* sibling_name
 
 
 bool
-Feed::AddEntry (Entry* newEntry)
+Feed::_AddEntry (Entry* newEntry)
 {
-	entries.AddItem(newEntry);
+	fEntries.AddItem(newEntry);
 	return true;
 }
 
 
 BObjectList<Entry>
-Feed::GetEntries()
+Feed::Entries()
 {
-	return entries;
+	return fEntries;
 }
 
 
 BObjectList<Entry>
-Feed::GetNewEntries()
+Feed::NewEntries()
 {
 	BObjectList<Entry> newEntries;
-	for (int i = 0; i < entries.CountItems(); i++) {
-		Entry* entry = entries.ItemAt(i);
-		if (entry->GetDate() > lastDate)
+	for (int i = 0; i < fEntries.CountItems(); i++) {
+		Entry* entry = fEntries.ItemAt(i);
+		if (entry->Date() > fLastDate)
 			newEntries.AddItem(entry);
 	}	
 
@@ -234,14 +234,14 @@ bool
 Feed::SetTitle(const char* titleStr)
 {
 	if (titleStr != NULL)
-		title = BString(titleStr);
+		fTitle = BString(titleStr);
 	else return false;
 	return true;
 }
 
 
 bool
-Feed::SetTitle(tinyxml2::XMLElement* elem)
+Feed::_SetTitle(tinyxml2::XMLElement* elem)
 {
 	if (elem != NULL)
 		return SetTitle(elem->GetText());
@@ -250,76 +250,76 @@ Feed::SetTitle(tinyxml2::XMLElement* elem)
 
 
 BString
-Feed::GetTitle()
+Feed::Title()
 {
-	return title;
+	return fTitle;
 }
 
 
 bool
 Feed::SetXmlUrl(BUrl newUrl)
 {
-	xmlUrl = newUrl;
+	fXmlUrl = newUrl;
 	return true;
 }
 
 
 BUrl
-Feed::GetXmlUrl()
+Feed::XmlUrl()
 {
-	return xmlUrl;
+	return fXmlUrl;
 }
 
 
 bool
 Feed::SetCachePath(BString path)
 {
-	cachePath = path;
+	fCachePath = path;
 	return true;
 }
 
 
 BString
-Feed::GetCachePath()
+Feed::CachePath()
 {
-	return cachePath;
+	return fCachePath;
 }
 
 
 // Set the latest date given by feed (from entry or from root)
 bool
-Feed::SetDate(BDateTime newDate)
+Feed::_SetDate(BDateTime newDate)
 {
 	if (newDate == NULL)
 		return false;
-	date = newDate;
+	fDate = newDate;
 	return true;
 }
 
 
 bool
-Feed::SetDate(const char* dateCStr)
+Feed::_SetDate(const char* dateCStr)
 {
 	if (dateCStr == NULL)
 		return false;
-	SetDate(feedDateToBDate(dateCStr));
+	_SetDate(feedDateToBDate(dateCStr));
 	return true;
 }
 
 
 bool
-Feed::SetDate(tinyxml2::XMLElement* elem)
+Feed::_SetDate(tinyxml2::XMLElement* elem)
 {
 	if (elem != NULL)
-		return SetDate(elem->GetText());
+		return _SetDate(elem->GetText());
 	else return false;
 }
 
 
 BDateTime
-Feed::GetDate()
+Feed::Date()
 {
-	return date;
+	return fDate;
 }
 
 

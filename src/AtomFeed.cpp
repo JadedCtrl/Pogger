@@ -16,25 +16,25 @@
 
 AtomFeed::AtomFeed()
 {
-	title = BString("Untitled Feed");
-	cachePath = BString("");
+	fTitle = BString("Untitled Feed");
+	fCachePath = BString("");
 }
 
 
 AtomFeed::AtomFeed(Feed* feed)
 	: AtomFeed::AtomFeed()
 {
-	SetXmlUrl(feed->GetXmlUrl());
-	SetCachePath(feed->GetCachePath());
+	SetXmlUrl(feed->XmlUrl());
+	SetCachePath(feed->CachePath());
 }
 
 
 void
-AtomFeed::Parse ()
+AtomFeed::Parse()
 {
-	entries = BObjectList<Entry>(5, true);
+	fEntries = BObjectList<Entry>(5, true);
 	tinyxml2::XMLDocument xml;
-	xml.LoadFile(GetCachePath().String());
+	xml.LoadFile(CachePath().String());
 
 	Feed::Parse();
 
@@ -54,17 +54,17 @@ AtomFeed::RootParse(tinyxml2::XMLElement* xfeed)
 	
 	bool set = false;
 
-	SetTitle(xfeed->FirstChildElement("title"));
+	_SetTitle(xfeed->FirstChildElement("title"));
 
-	set = SetDate(xfeed->FirstChildElement("updated"));
+	set = _SetDate(xfeed->FirstChildElement("updated"));
 	if (!set)
-		set = SetDate(xfeed->FirstChildElement("published"));
+		set = _SetDate(xfeed->FirstChildElement("published"));
 	if (!set && xentry)
-		set = SetDate(xentry->FirstChildElement("updated"));
+		set = _SetDate(xentry->FirstChildElement("updated"));
 	if (!set && xentry)
-		set = SetDate(xentry->FirstChildElement("published"));
+		set = _SetDate(xentry->FirstChildElement("published"));
 
-	std::cout << "Channel '" << title << "' at '" << xmlUrl.UrlString()
+	std::cout << "Channel '" << fTitle << "' at '" << fXmlUrl.UrlString()
 		<< "':\n";
 }
 
@@ -80,28 +80,29 @@ AtomFeed::EntryParse(tinyxml2::XMLElement* xentry)
 
 	newEntry->SetTitle(xentry->FirstChildElement("title"));
 	newEntry->SetPostUrl(xentry->FirstChildElement("link")->Attribute("href"));
-	newEntry->SetFeedTitle(title);
+	newEntry->SetFeedTitle(fTitle);
 
 	bool set = false;
-	set = newEntry->SetDesc(xentry->FirstChildElement("summary"));
+	set = newEntry->SetDescription(xentry->FirstChildElement("summary"));
 	if (!set)
-		set = newEntry->SetDesc(xentry->FirstChildElement("description")); 
+		set = newEntry->SetDescription(xentry->FirstChildElement("description")); 
 	if (!set && xmedia)
-		set = newEntry->SetDesc(xmedia->FirstChildElement("media:description")); 
+		set = newEntry->SetDescription(
+			xmedia->FirstChildElement("media:description")); 
 
 	set = newEntry->SetDate(xentry->FirstChildElement("updated"));
 	if (!set)
 		set = newEntry->SetDate(xentry->FirstChildElement("published"));
 
-	if (date == NULL || date < newEntry->GetDate())
-		SetDate(newEntry->GetDate());
+	if (fDate == NULL || fDate < newEntry->Date())
+		_SetDate(newEntry->Date());
 
 	if (xcontent) {
 		xcontent->Accept(&xprinter);
 		newEntry->SetContent(xprinter.CStr());
 	}
 
-	AddEntry(newEntry);
+	_AddEntry(newEntry);
 }
 
 
@@ -112,8 +113,8 @@ AtomFeed::ParseEntries(tinyxml2::XMLElement* xfeed)
 
 	xentry = xfeed->FirstChildElement("entry");
 
-	int entryCount = xmlCountSiblings(xentry, "entry");
-	entries = BObjectList<Entry>(entryCount, true);
+	int entryCount = _XmlCountSiblings(xentry, "entry");
+	fEntries = BObjectList<Entry>(entryCount, true);
 
 	std::cout << "\t-" << entryCount << "-\n";
 
