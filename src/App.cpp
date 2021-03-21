@@ -43,8 +43,8 @@ App::App() : BApplication("application/x-vnd.Pogger")
 
 	if (interval == -1)
 		count = 0;
-//	else
-//		MessageReceived(&updateMessage);
+	else
+		MessageReceived(&updateMessage);
 
 	fUpdateRunner = new BMessageRunner(this, updateMessage, interval, count);
 }
