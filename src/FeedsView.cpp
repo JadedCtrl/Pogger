@@ -5,6 +5,7 @@
 
 #include "FeedsView.h"
 
+#include <Catalog.h>
 #include <Message.h>
 #include <GroupView.h>
 #include <LayoutBuilder.h>
@@ -20,6 +21,10 @@
 #include "FeedEditWindow.h"
 #include "FeedListItem.h"
 #include "Notifier.h"
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "FeedsView"
 
 
 FeedsView::FeedsView(const char* name)
@@ -121,7 +126,8 @@ FeedsView::_InitInterface()
 	// Add, Remove, Edit
 	fAddButton = new BButton("addFeed", "+", new BMessage(kFeedsAddButton));
 	fRemoveButton = new BButton("removeFeed", "-", new BMessage(kFeedsRemoveButton));
-	fEditButton = new BButton("editFeed", "Edit…", new BMessage(kFeedsEditButton));
+	fEditButton = new BButton("editFeed", B_TRANSLATE("Edit…"),
+		new BMessage(kFeedsEditButton));
 
 	font_height fontHeight;
 	GetFontHeight(&fontHeight);
@@ -224,12 +230,12 @@ FeedsView::_UpdateProgress(BMessage* msg, int8 status)
 	BString feedName, feedUrl;
 	if (msg->FindString("feed_url", &feedUrl) != B_OK)
 		return;
-	if (msg->FindString("feed_name", &feedName) != B_OK)
+	if (msg->FindString("feed_name", &feedName) != B_OK || feedName.IsEmpty())
 		feedName = feedUrl;
 
 	if (status == kDownloadingStatus) {
-		BString label("Fetching ");
-		label << feedName << "…";
+		BString label(B_TRANSLATE("Fetching %source%…"));
+		label.ReplaceAll("%source%", feedName);
 		fProgressLabel->SetText(label);
 	}
 

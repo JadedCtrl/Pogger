@@ -7,9 +7,15 @@
 
 #include <iostream>
 
+#include <Catalog.h>
+
 #include "App.h"
 #include "Entry.h"
 #include "Util.h"
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "RssFeed"
 
 
 RssFeed::RssFeed()
@@ -52,8 +58,11 @@ RssFeed::RootParse(tinyxml2::XMLElement* xchan)
 	_SetTitle(xchan->FirstChildElement("title"));
 	_SetDate(xchan->FirstChildElement("lastBuildDate"));
 
-	std::cout << "Channel '" << fTitle.String() << "' at '" << fXmlUrl.UrlString()
-		<< ":\n";
+	BString logString(B_TRANSLATE("Channel '%source%' at %url%:\n"));
+	logString.ReplaceAll("%source%", fTitle.String());
+	logString.ReplaceAll("%url%", fXmlUrl.UrlString());
+
+	std::cout << logString.String();
 }
 
 
@@ -86,7 +95,12 @@ RssFeed::ParseEntries(tinyxml2::XMLElement* xchan)
 	int entryCount = _XmlCountSiblings(xitem, "item");
 	fEntries = BObjectList<Entry>(entryCount, true);
 
-	std::cout << "\t-" << entryCount << " entries-\n";
+	BString logString(B_TRANSLATE("\t-%count% entries-\n"));
+	BString entryStr;
+	entryStr << entryCount;
+	logString.ReplaceAll("%count%", entryStr);
+
+	std::cout << logString.String();
 
 	while (xitem) {
 		EntryParse(xitem);

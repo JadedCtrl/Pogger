@@ -5,9 +5,14 @@
 
 #include "Preferences.h"
 
+#include <Catalog.h>
 #include <String.h>
 
 #include "Util.h"
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Preferences"
 
 
 Preferences::Preferences() {
@@ -189,22 +194,22 @@ Preferences::_FileError(status_t result)
 	BPath cfgPath;
 	find_directory(B_USER_SETTINGS_DIRECTORY, &cfgPath);
 
-	BString permLabel("Couldn't open the preferences file because permission "
-	"was denied.\nThis usually means that you don't have read permissions to "
-	"your settings directory.\nPlease make sure that your user has "
-	"read-access to your settings directory― likely %path%.\nCheck your OS "
-	"documentation for more information.");
+	BString permLabel(B_TRANSLATE("Couldn't open the preferences file because "
+	"permission was denied.\nThis usually means that you don't have read "
+	"permissions to your settings directory.\nPlease make sure that your user "
+	"has read-access to your settings directory― likely %path%.\nCheck your OS "
+	"documentation for more information."));
 	permLabel.ReplaceAll("%path%", cfgPath.Path());
 
-	userFileError(result, "Preferences file",
-		"Couldn't open the preferences file because the path is not "
-	"specified.\nThis usually means that the programmer made a mistake.\n"
+	userFileError(result, B_TRANSLATE("Preferences file"),
+		B_TRANSLATE("Couldn't open the preferences file because the path is "
+	"not specified.\nThis usually means that the programmer made a mistake.\n"
 	"Please submit a bug report to the Pogger repository on GitHub.\n"
-	"Your personal settings will not be loaded.",
+	"Your personal settings will not be loaded."),
 		permLabel.String(),
-		"There is not enough memory available on your system to load the "
-	"preferences file.\nPlease try closing a few applications and restarting "
-	"Pogger.");
+		B_TRANSLATE("There is not enough memory available on your system to "
+	"load the preferences file.\nPlease try closing a few applications and "
+	"restarting Pogger."));
 }
 
 

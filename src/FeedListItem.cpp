@@ -5,10 +5,15 @@
 
 #include "FeedListItem.h"
 
+#include <Catalog.h>
 #include <View.h>
 
 #include "Feed.h"
 #include "Util.h"
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "FeedListItem"
 
 
 FeedListItem::FeedListItem(Feed* feed)
@@ -19,7 +24,7 @@ FeedListItem::FeedListItem(Feed* feed)
 	fFeedPath(feed->CachePath())
 {
 	if (feed->Title().IsEmpty() == true)
-		SetText("Untitled Feed");
+		SetText(B_TRANSLATE("Untitled Feed"));
 }
 
 

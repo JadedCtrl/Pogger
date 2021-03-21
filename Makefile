@@ -29,21 +29,21 @@ APP_MIME_SIG = application/x-vnd.Pogger
 #	same name (source.c or source.cpp) are included from different directories.
 #	Also note that spaces in folder names do not work well with this Makefile.
 SRCS = \
-	src/App.cpp, \
-	src/AtomFeed.cpp, \
-	src/Entry.cpp, \
-	src/EntriesView.cpp, \
-	src/Feed.cpp, \
+	src/App.cpp \
+	src/AtomFeed.cpp \
+	src/Entry.cpp \
+	src/EntriesView.cpp \
+	src/Feed.cpp \
 	src/FeedController.cpp \
 	src/FeedEditWindow.cpp \
 	src/FeedListItem.cpp \
-	src/FeedsView.cpp, \
-	src/MainWindow.cpp, \
-	src/Mimetypes.cpp, \
-	src/Notifier.cpp, \
-	src/Preferences.cpp, \
-	src/RssFeed.cpp, \
-	src/UpdatesView.cpp, \
+	src/FeedsView.cpp \
+	src/MainWindow.cpp \
+	src/Mimetypes.cpp \
+	src/Notifier.cpp \
+	src/Preferences.cpp \
+	src/RssFeed.cpp \
+	src/UpdatesView.cpp \
 	src/Util.cpp
 
 #	Specify the resource definition files to use. Full or relative paths can be
@@ -80,7 +80,7 @@ RSRCS = \
 #	- 	if your library does not follow the standard library naming scheme,
 #		you need to specify the path to the library and it's name.
 #		(e.g. for mylib.a, specify "mylib.a" or "path/mylib.a")
-LIBS =  be tracker bnetapi network netservices shared tinyxml2 $(STDCPPLIBS)
+LIBS =  be bnetapi localestub network netservices shared tinyxml2 tracker $(STDCPPLIBS)
 
 #	Specify additional paths to directories following the standard libXXX.so
 #	or libXXX.a naming scheme. You can specify full paths or paths relative
@@ -111,7 +111,7 @@ OPTIMIZE := FULL
 # 	will recreate only the "locales/en.catkeys" file. Use it as a template
 # 	for creating catkeys for other languages. All localization files must be
 # 	placed in the "locales" subdirectory.
-LOCALES = en
+LOCALES = en eo
 
 #	Specify all the preprocessor symbols to be defined. The symbols will not
 #	have their values set automatically; you must supply the value (if any) to

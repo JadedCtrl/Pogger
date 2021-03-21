@@ -1,7 +1,3 @@
-Important Features:
-* Localization
-
-Improvements:
 * Memory leaks
 	* ~.05MB per feed on download, in Util.ccp, fetch(). I'm stumped here.
 	* ~.02MB per feed on parsing

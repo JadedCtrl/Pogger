@@ -5,9 +5,8 @@
 
 #include "MainWindow.h"
 
-#include <iostream>
-
 #include <Button.h>
+#include <Catalog.h>
 #include <GroupView.h>
 #include <LayoutBuilder.h>
 #include <SeparatorView.h>
@@ -23,10 +22,14 @@
 #include "UpdatesView.h"
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "MainWindow"
+
+
 MainWindow::MainWindow()
 	:
-	BWindow(((App*)be_app)->fPreferences->fMainWindowRect, "Pogger",
-		B_TITLED_WINDOW, NULL)
+	BWindow(((App*)be_app)->fPreferences->fMainWindowRect,
+		B_TRANSLATE_SYSTEM_NAME("Pogger"), B_TITLED_WINDOW, 0)
 {
 	_InitInterface();
 	MoveOnScreen();
@@ -99,9 +102,9 @@ MainWindow::_InitInterface()
 	// Tabs
 	fBaseView = new BGroupView("baseView");
 	fTabView = new BTabView("tabView", B_WIDTH_FROM_WIDEST);
-	fFeedsView = new FeedsView("Feeds");
-	fEntriesView = new EntriesView("Entries");
-	fUpdatesView = new UpdatesView("Updates");
+	fFeedsView = new FeedsView(B_TRANSLATE("Feeds"));
+	fEntriesView = new EntriesView(B_TRANSLATE("Entries"));
+	fUpdatesView = new UpdatesView(B_TRANSLATE("Updates"));
 
 	fTabView->AddTab(fFeedsView);
 	fTabView->AddTab(fEntriesView);
@@ -161,10 +164,10 @@ void
 MainWindow::_SetUpdateButton(bool cancel)
 {
 	if (cancel == true) {
-		fUpdateButton->SetLabel("Cancel");
+		fUpdateButton->SetLabel(B_TRANSLATE("Cancel"));
 		fUpdateButton->SetMessage(new BMessage(kClearQueue));
 	} else {
-		fUpdateButton->SetLabel("Update Now");
+		fUpdateButton->SetLabel(B_TRANSLATE("Update Now"));
 		fUpdateButton->SetMessage(new BMessage(kUpdateSubscribed));
 	}
 }

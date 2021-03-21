@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+#include <Catalog.h>
 #include <Directory.h>
 #include <Message.h>
 #include <MessageRunner.h>
@@ -17,6 +18,10 @@
 #include "AtomFeed.h"
 #include "Entry.h"
 #include "RssFeed.h"
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "FeedController"
 
 
 FeedController::FeedController()
@@ -222,7 +227,7 @@ FeedController::_DownloadLoop(void* data)
 		Feed* feedBuffer = (Feed*)malloc(sizeof(Feed));
 		receive_data(&sender, (void*)feedBuffer, sizeof(Feed));
 
-		std::cout << "Downloading feed from "
+		std::cout << B_TRANSLATE("Downloading feed from ")
 			<< feedBuffer->XmlUrl().UrlString() << "…\n";
 
 		if (feedBuffer->Fetch()) {

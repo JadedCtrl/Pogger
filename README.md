@@ -29,6 +29,7 @@ In "Updates" you can toggle notifications and set the frequency of updates.
 ## Building
 
 `$ make`
+`$ make bindcatalogs`
 
 Uses netservices, and has TinyXML2 as a dependency.
 

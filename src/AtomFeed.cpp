@@ -7,11 +7,17 @@
 
 #include <iostream>
 
+#include <Catalog.h>
+
 #include <tinyxml2.h>
 
 #include "App.h"
 #include "Entry.h"
 #include "Util.h"
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AtomFeed"
 
 
 AtomFeed::AtomFeed()
@@ -65,8 +71,11 @@ AtomFeed::RootParse(tinyxml2::XMLElement* xfeed)
 	if (!set && xentry)
 		set = _SetDate(xentry->FirstChildElement("published"));
 
-	std::cout << "Channel '" << fTitle << "' at '" << fXmlUrl.UrlString()
-		<< "':\n";
+	BString logString(B_TRANSLATE("Channel '%source%' at %url%:\n"));
+	logString.ReplaceAll("%source%", fTitle.String());
+	logString.ReplaceAll("%url%", fXmlUrl.UrlString());
+
+	std::cout << logString.String();
 }
 
 
@@ -117,7 +126,12 @@ AtomFeed::ParseEntries(tinyxml2::XMLElement* xfeed)
 	int entryCount = _XmlCountSiblings(xentry, "entry");
 	fEntries = BObjectList<Entry>(entryCount, true);
 
-	std::cout << "\t-" << entryCount << "-\n";
+	BString logString(B_TRANSLATE("\t-%count% entries-\n"));
+	BString entryStr;
+	entryStr << entryCount;
+	logString.ReplaceAll("%count%", entryStr);
+
+	std::cout << logString.String();
 
 	while (xentry) {
 		EntryParse(xentry);

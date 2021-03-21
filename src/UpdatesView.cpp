@@ -6,13 +6,19 @@
 #include "UpdatesView.h"
 
 #include <Box.h>
+#include <Catalog.h>
 #include <CheckBox.h>
+#include <LayoutBuilder.h>
 #include <Message.h>
 #include <MessageRunner.h>
-#include <LayoutBuilder.h>
 #include <Slider.h>
+#include <StringFormat.h>
 
 #include "App.h"
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "UpdatesView"
 
 
 UpdatesView::UpdatesView(const char* name)
@@ -73,24 +79,27 @@ UpdatesView::_InitInterface()
 {
 	// Notifications
 	fNotificationsBox = new BBox("notifications");
-	fNotificationsBox->SetLabel("Notifications");
+	fNotificationsBox->SetLabel(B_TRANSLATE("Notifications"));
 
-	fNotifyNewCheck = new BCheckBox("newNotify", "Notify about new entries",
+	fNotifyNewCheck = new BCheckBox("newNotify",
+		B_TRANSLATE("Notify about new entries"),
 		new BMessage(kNotifyNewCheckbox));
 	fNotifyFailCheck = new BCheckBox("errorNotify",
-		"Notify about update failures", new BMessage(kNotifyFailCheckbox));
+		B_TRANSLATE("Notify about update failures"),
+		new BMessage(kNotifyFailCheckbox));
 
 	// Update scheduling
 	fSchedulingBox = new BBox("scheduling");
-	fSchedulingBox->SetLabel("Scheduling");
+	fSchedulingBox->SetLabel(B_TRANSLATE("Scheduling"));
 
 	fIntervalSlider =
-		new BSlider("interval", "Never automatically update",
+		new BSlider("interval", B_TRANSLATE("Never automatically update"),
 			new BMessage(kIntervalChanged), 0, 25, B_HORIZONTAL);
 
 	fIntervalSlider->SetHashMarkCount(26);
 	fIntervalSlider->SetHashMarks(B_HASH_MARKS_BOTTOM);
-	fIntervalSlider->SetLimitLabels("Never", "24 hours");
+	fIntervalSlider->SetLimitLabels(B_TRANSLATE("Never"),
+		B_TRANSLATE("24 hours"));
 	fIntervalSlider->SetModificationMessage(new BMessage(kIntervalChanged));
 
 
@@ -160,19 +169,28 @@ UpdatesView::_UpdateIntervalLabel()
 	{
 		case -1:
 		{
-			newLabel = "Never automatically update";
+			newLabel = B_TRANSLATE("Never automatically update");
 			break;
 		}
 		case 0:
 		{
-			newLabel = "Update every 30 minutes";
+			newLabel = B_TRANSLATE("Update every 30 minutes");
+			break;
+		}
+		case 24:
+		{
+			newLabel = B_TRANSLATE("Update daily");
 			break;
 		}
 		default:
-			newLabel = "Update every %hour% hours";
+		{
+			static BStringFormat format(B_TRANSLATE("{0, plural,"
+				"=1{Update every hour}"
+				"other{Update every # hours}}"));
+			format.Format(newLabel, hours);
+		}
 	}
 
-	newLabel.ReplaceAll("%hour%", strHour);
 	fIntervalSlider->SetLabel(newLabel.String());
 }
 

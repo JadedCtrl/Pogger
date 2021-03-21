@@ -5,8 +5,6 @@
 
 #include "App.h"
 
-#include <iostream>
-
 #include <MessageRunner.h>
 #include <Roster.h>
 #include <StorageKit.h>

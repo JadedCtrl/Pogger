@@ -5,11 +5,10 @@
 
 #include "EntriesView.h"
 
-#include <iostream>
-
 #include <Alert.h>
 #include <Box.h>
 #include <Button.h>
+#include <Catalog.h>
 #include <Message.h>
 #include <LayoutBuilder.h>
 #include <PopUpMenu.h>
@@ -20,6 +19,10 @@
 
 #include "App.h"
 #include "Util.h"
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "EntriesView"
 
 
 EntriesView::EntriesView(const char* name)
@@ -138,29 +141,31 @@ EntriesView::_InitInterface()
 {
 	// Saving
 	fSavingBox = new BBox("saving");
-	fSavingBox->SetLabel("Saving");
+	fSavingBox->SetLabel(B_TRANSLATE("Saving"));
 
-	fEntryFolderLabel = new BStringView("entryFolderLabel", "Entry folder:");
+	fEntryFolderLabel = new BStringView("entryFolderLabel",
+		B_TRANSLATE("Entry folder:"));
 	fEntryFolderText = new BTextControl("entryFolder", "", "",
 		new BMessage(kEntryFolderText));
-	fEntryFolderBrowseButton = new BButton("entryFolderBrowse", "Browse…",
-		new BMessage(kEntryFolderBrowse));
+	fEntryFolderBrowseButton = new BButton("entryFolderBrowse",
+		B_TRANSLATE("Browse…"), new BMessage(kEntryFolderBrowse));
 
 	// Opening
 	fOpeningBox = new BBox("opening");
-	fOpeningBox->SetLabel("Opening");
+	fOpeningBox->SetLabel(B_TRANSLATE("Opening"));
 
-	fOpenAsLabel = new BStringView("openAsLabel", "Open as:");
-	fOpenAsHtmlRadio = new BRadioButton("asHtml", "HTML",
+	fOpenAsLabel = new BStringView("openAsLabel", B_TRANSLATE("Open as:"));
+	fOpenAsHtmlRadio = new BRadioButton("asHtml", B_TRANSLATE("HTML"),
 		new BMessage(kOpenHtmlRadio));
-	fOpenAsUrlRadio = new BRadioButton("asUrl", "URL",
+	fOpenAsUrlRadio = new BRadioButton("asUrl", B_TRANSLATE("URL"),
 		new BMessage(kOpenUrlRadio));
 
-	fOpenWithLabel = new BStringView("openWithLabel", "Open with:");
+	fOpenWithLabel = new BStringView("openWithLabel",
+		B_TRANSLATE("Open with:"));
 	fOpenWithMenu = new BPopUpMenu("openWith");
 	fOpenWithMenuField = new BMenuField("openWithMenu", NULL, fOpenWithMenu);
-	fOpenWithSelectButton = new BButton("openWithSelect", "Select…",
-		new BMessage(kOpenWithBrowse));
+	fOpenWithSelectButton = new BButton("openWithSelect",
+		B_TRANSLATE("Select…"), new BMessage(kOpenWithBrowse));
 
 
 	// Display current settings
@@ -251,22 +256,24 @@ EntriesView::_FileError(status_t result)
 	find_directory(B_USER_SETTINGS_DIRECTORY, &cfgPath);
 
 	if (result == B_NOT_A_DIRECTORY) {
-		BAlert* alert = new BAlert("Entries Directory", "The path you "
-		"selected isn't a folder― please choose another path.", "OK",
-		NULL, NULL, B_WIDTH_AS_USUAL, B_WARNING_ALERT);
-		alert->Go();
+		BAlert* alert = new BAlert(B_TRANSLATE("Entries Directory"),
+			B_TRANSLATE("The path you selected isn't a folder― please choose "
+			"another path."), B_TRANSLATE("OK"), NULL, NULL,
+			B_WIDTH_AS_USUAL, B_WARNING_ALERT);
+			alert->Go();
 		return;
 	}
 
-	userFileError(result, "Entries Directory",
-		"Couldn't open this folder because no path was specified.\n"
-	"Please select a new folder.",
-		"Couldn't open this folder because permission was denied.\n"
+	userFileError(result, B_TRANSLATE("Entries Directory"),
+		B_TRANSLATE("Couldn't open this folder because no path was specified.\n"
+	"Please select a new folder."),
+		B_TRANSLATE("Couldn't open this folder because permission was denied.\n"
 	"This usually means that you don't have read permissions.\nPlease make "
 	"sure that your user has read-access to this folder.\nCheck your OS "
-	"documentation for more information.",
-		"There is not enough memory available on your system to access the "
-	"given path.\nPlease try closing a few applications and restarting Pogger.");
+	"documentation for more information."),
+		B_TRANSLATE("There is not enough memory available on your system to "
+	"access the given path.\nPlease try closing a few applications and "
+	"restarting Pogger."));
 }
 
 

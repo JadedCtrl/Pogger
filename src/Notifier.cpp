@@ -5,12 +5,18 @@
 
 #include "Notifier.h"
 
+#include <Catalog.h>
 #include <List.h>
 #include <Message.h>
+#include <StringFormat.h>
 #include <Notification.h>
 
 #include "App.h"
 #include "FeedController.h"
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Notifier"
 
 
 Notifier::Notifier()
@@ -92,20 +98,31 @@ Notifier::_SendUpdatedNotification()
 	}
 
 	BNotification notifyNew(B_INFORMATION_NOTIFICATION);
-	BString notifyLabel("Feed Updates");
-	BString notifyText("%n% new entries from %source%");
+	BString notifyLabel(B_TRANSLATE("Feed Updates"));
+	BString notifyText;
 
-	if (fUpdatedFeeds->CountItems() > 1) 
-		notifyText = "%n% new entries from %source% and %m% others";
+	static BStringFormat oneSourceFormat(B_TRANSLATE("{0, plural,"
+	"=1{One new entry from %source%.}"
+	"other{# new entries from %source%.}}"));
 
-	BString entryNum,feedNum = "";
+	static BStringFormat multiSourceFormat(B_TRANSLATE("{0, plural,"
+	"=1{%n% new entries from %source% and one other.}"
+	"other{%n% new entries from %source% and # others.}}"));
+
+	if (fUpdatedFeeds->CountItems() > 1)
+		multiSourceFormat.Format(notifyText, fUpdatedFeeds->CountItems() - 1);
+	else
+		oneSourceFormat.Format(notifyText, fTotalEntries);
+
+	BString entryNum = "";
 	entryNum << fTotalEntries;
-	feedNum << fUpdatedFeeds->CountItems() - 1;
+
+	BString* feedTitle = (BString*)fUpdatedFeeds->ItemAt(0);
+	if (feedTitle->IsEmpty())
+		feedTitle->SetTo(B_TRANSLATE("Untitled Feed"));
 
 	notifyText.ReplaceAll("%n%", entryNum);
-	notifyText.ReplaceAll("%m%", feedNum);
-	notifyText.ReplaceAll("%source%",
-		((BString*)fUpdatedFeeds->ItemAt(0))->String());
+	notifyText.ReplaceAll("%source%", feedTitle->String());
 
 	notifyNew.SetTitle(notifyLabel);
 	notifyNew.SetContent(notifyText);
@@ -127,18 +144,23 @@ Notifier::_SendFailedNotification()
 	}
 
 	BNotification notifyError(B_ERROR_NOTIFICATION);
-	BString notifyLabel("Update Failure");
-	BString notifyText("Failed to update %source%");
+	BString notifyLabel(B_TRANSLATE("Update Failure"));
+	BString notifyText;
+
+	static BStringFormat multiSourceFormat(B_TRANSLATE("{0, plural,"
+	"=1{Failed to update %source% and one other.}"
+	"other{Failed to update %source% and # others.}}"));
 
 	if (fFailedFeeds->CountItems() > 1) 
-		notifyText = "Failed to update %source% and %m% others";
+		multiSourceFormat.Format(notifyText, fFailedFeeds->CountItems() - 1);
+	else
+		notifyText = B_TRANSLATE("Failed to update %source%.");
 
-	BString feedNum = "";
-	feedNum << fFailedFeeds->CountItems() - 1;
+	BString* feedTitle = (BString*)fFailedFeeds->ItemAt(0);
+	if (feedTitle->IsEmpty())
+		feedTitle->SetTo(B_TRANSLATE("Untitled Feed"));
 
-	notifyText.ReplaceAll("%m%", feedNum);
-	notifyText.ReplaceAll("%source%",
-		((BString*)fFailedFeeds->ItemAt(0))->String());
+	notifyText.ReplaceAll("%source%", feedTitle->String());
 
 	notifyError.SetTitle(notifyLabel);
 	notifyError.SetContent(notifyText);

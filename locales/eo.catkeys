@@ -1,0 +1,61 @@
+1	Esperanto	application/x-vnd.Pogger	1418478689
+Updates	MainWindow		Ĝisdatigoj
+Edit…	FeedsView		Redakti…
+Invalid Feed	FeedEditWindow		Malvalida Fonto
+Never automatically update	UpdatesView		Neniam ĝisdatigas aŭtomate
+Entries Directory	EntriesView		Dosierujo de Afiŝoj
+{0, plural,=1{Failed to update %source% and one other.}other{Failed to update %source% and # others.}}	Notifier		{0, plural,=1{Eraris ĝisdatigante %source% k alian.}other{Eraris ĝisdatigante %source% kaj # aliaj.}}
+Browse…	EntriesView		Foliumi…
+Entries	MainWindow		Afiŝoj
+Feeds	MainWindow		Fontoj
+Feed name:	FeedEditWindow		Fontonomo:
+Update Now	MainWindow		Ĝisdatigi
+There is not enough memory available on your system to load the preferences file.\nPlease try closing a few applications and restarting Pogger.	Preferences		Restas nesufiĉa kvanto de memoro je via sistmo, por ŝalti la agordan dosieron.\nBonvole provu malfermi kelkajn programojn, kaj poste restartigi Pogger.
+Select…	EntriesView		Elekti…
+Scheduling	UpdatesView		Tempoplano
+{0, plural,=1{%n% new entries from %source% and one other.}other{%n% new entries from %source% and # others.}}	Notifier		{0, plural,=1{%n% novaj afiŝoj de %source% kaj alia.}other{%n% novaj afiŝoj de %source% kaj # aliaj.}}
+Open as:	EntriesView		Malfermi kiel:
+Couldn't open the preferences file because permission was denied.\nThis usually means that you don't have read permissions to your settings directory.\nPlease make sure that your user has read-access to your settings directory― likely %path%.\nCheck your OS documentation for more information.	Preferences		Neeblis malfermi la agordan dosieron, ĉar mankas permeso.\nTio probable signifas ke vi ne rajtas legi vian agordan dosierujon.\nBonvole certigi, ke via uzanto rajtas legi la agordan dosieron― probable %path%.\nReferenci vian funkcisisteman helpolibron, por lerni pli.
+Pogger	System name		Pogger
+Update every 30 minutes	UpdatesView		Ĝisdatigas duonhore
+Channel '%source%' at %url%:\n	RssFeed		Fonoto '%source%' ĉe %url%:\n
+Notify about new entries	UpdatesView		Sciigi pri novaj afiŝoj
+{0, plural,=1{Update every hour}other{Update every # hours}}	UpdatesView		{0, plural,=1{Ĝisdatigas hore}other{Ĝisdatigas po # horoj}}
+OK	EntriesView		Bone
+Couldn't open this folder because no path was specified.\nPlease select a new folder.	EntriesView		Neeblis malfermi ĉi tiun dosierujon, ĉar la loko estas nedifinita.\nBonvole elektu novan dosierujon.
+Cancel	MainWindow		Nuligi
+Saving	EntriesView		Konservado
+Couldn't open the preferences file because the path is not specified.\nThis usually means that the programmer made a mistake.\nPlease submit a bug report to the Pogger repository on GitHub.\nYour personal settings will not be loaded.	Preferences		Neeblis malfermi agordan dosieron ĉar la loko estas nedifinita.\nProbable tio signifas, ke la programisto eraris iel.\nBonvole raporti la problemon al la Pogger deponojo ĉe Github.\nViaj propraj agordoj ne ŝaltiĝos. Bedaŭron.
+\t-%count% entries-\n	RssFeed		\t-%count% afiŝoj-\n
+Update daily	UpdatesView		Ĝisdatigas tage
+HTML	EntriesView		HTML
+Feed Updates	Notifier		Fonto Ĝisdatigoj
+Notify about update failures	UpdatesView		Sciigi pri eraroj ĝisdatigaj
+Update Failure	Notifier		Eraris Ĝisdatigante
+The path you selected isn't a folder― please choose another path.	EntriesView		La loko kiun vi elektis ne estas dosierujo― bonvole, elektu alian lokon.
+Untitled Feed	Notifier		Sennoma Fonto
+24 hours	UpdatesView		24 horoj
+There is not enough memory available on your system to access the given path.\nPlease try closing a few applications and restarting Pogger.	EntriesView		Restas nesufiĉa kvanto de memoro je via sistmo, por aliri tiun lokon.\nBonvole provu malfermi kelkajn programojn, kaj poste restartigi Pogger.
+Untitled Feed	FeedListItem		Sennoma Fonto
+Never	UpdatesView		Neniam
+Feed URL:	FeedEditWindow		Fonto URL:
+New Feed	FeedEditWindow		Nova Fonto
+Channel '%source%' at %url%:\n	AtomFeed		Fonto '%source%' ĉe %url%:\n
+Downloading feed from 	FeedController		Elŝultante fonton de 
+Please enter a URL.	FeedEditWindow		Bonvole enigu URL-on.
+URL	EntriesView		URL
+OK	FeedEditWindow		Bone
+Preferences file	Preferences		Agorda dosiero
+Notifications	UpdatesView		Sciigoj
+Save	FeedEditWindow		Konservi
+Failed to update %source%.	Notifier		Eraris ĝisdatigante %source%.
+Fetching %source%…	FeedsView		Elŝultante %source%…
+{0, plural,=1{One new entry from %source%.}other{# new entries from %source%.}}	Notifier		{0, plural,=1{Nova afiŝo de %source%.}other{# novaj afiŝoj de %source%.}}
+Edit Feed	FeedEditWindow		Redakti Fonton
+Opening	EntriesView		Malfermado
+The given URL is invalid. Please make sure you typed it in correctly.	FeedEditWindow		La enigita URL nevalidas. Bonvole, certigu ke vi ĝin ĝuste tajpis.
+Delete	FeedEditWindow		Forigi
+Entry folder:	EntriesView		Afiŝa dosierujo:
+\t-%count% entries-\n	AtomFeed		\t-%count% afiŝoj-\n
+Couldn't open this folder because permission was denied.\nThis usually means that you don't have read permissions.\nPlease make sure that your user has read-access to this folder.\nCheck your OS documentation for more information.	EntriesView		Neeblis malfermi la tiun dosierujon, ĉar mankas permeso.\nTio probable signifas ke vi ne rajtas legi ĝin.\n\nBonvole certigi, ke via uzanto rajtas legi ĝin.\nReferenci vian funkcisisteman helpolibron, por lerni pli.
+Open with:	EntriesView		Malfermi per:
