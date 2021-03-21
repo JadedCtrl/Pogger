@@ -50,10 +50,8 @@ SRCS = \
 #	used.
 RDEFS =  \
 	 src/Pogger.rdef  \
-	 art/FeedIcon.rdef  \
-	 art/EntryIcon.rdef  \
-	 art/DownloadStatus.rdef  \
-	 art/ErrorStatus.rdef  \
+	 img/icons/FeedIcon.rdef  \
+	 img/icons/EntryIcon.rdef
 
 
 #	Specify the resource files to use. Full or relative paths can be used.
