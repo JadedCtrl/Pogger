@@ -132,6 +132,13 @@ FeedEditWindow::_SaveFeed()
 	BDirectory subDir(subPath.Path());
 	if (subDir.InitCheck() == B_ENTRY_NOT_FOUND) {
 		subDir.CreateDirectory(subPath.Path(), &subDir);
+
+		BPath defaultSubPath(subPath);
+		defaultSubPath.Append("Haiku Project");
+		Feed defaultSub(BUrl("https://www.haiku-os.org/blog/index.xml"),
+			BEntry(defaultSubPath.Path()));
+		defaultSub.SetTitle("Haiku Project");
+		defaultSub.Filetize();
 	}
 
 	BString title(fFeedNameText->Text());

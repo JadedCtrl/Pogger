@@ -97,6 +97,12 @@ FeedController::SubscribedFeeds()
 	BDirectory subDir(subPath.Path());
 	if (subDir.InitCheck() == B_ENTRY_NOT_FOUND) {
 		subDir.CreateDirectory(subPath.Path(), &subDir);
+
+		subPath.Append("Haiku Project");
+		Feed defaultSub(BUrl("https://www.haiku-os.org/blog/index.xml"),
+			BEntry(subPath.Path()));
+		defaultSub.SetTitle("Haiku Project");
+		defaultSub.Filetize();
 	}
 
 	BEntry feedEntry;

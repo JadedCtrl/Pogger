@@ -18,7 +18,6 @@ Preferences::Preferences(Preferences* pref) {
 }
 
 
-// !! handle file status
 void
 Preferences::Load()
 {
@@ -57,7 +56,6 @@ Preferences::Load()
 }
 
 
-// !! handle file status
 void
 Preferences::Save()
 {
