@@ -1,5 +1,4 @@
 Important Features:
-* Default column layouts for ~/feeds and ~/config/settings/Pogger/Subscriptions
 * Localization
 
 
@@ -8,7 +7,6 @@ Important improvements:
 	* ~.05MB per feed on download, in Util.ccp, fetch(). I'm stumped here.
 	* ~.02MB per feed on parsing
 * Fix background of Feeds List error status icon (it's black, not transparent)
-* Make fancy Markdown README
 * Make an icon(idk I'm not an artist)
 
 
