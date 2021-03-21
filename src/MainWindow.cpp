@@ -85,6 +85,14 @@ MainWindow::MessageReceived(BMessage *msg)
 }
 
 
+bool
+MainWindow::QuitRequested()
+{
+	Minimize(true);
+	return false;
+}
+
+
 void
 MainWindow::_InitInterface()
 {

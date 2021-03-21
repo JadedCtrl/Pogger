@@ -84,6 +84,12 @@ App::MessageReceived(BMessage* msg)
 			fMainWindow->PostMessage(msg);
 			break;
 		}
+		case B_SILENT_RELAUNCH:
+		{
+			if (fMainWindow->IsMinimized() == true)
+				fMainWindow->Minimize(false);
+			break;
+		}
 		default:
 		{
 			BApplication::MessageReceived(msg);

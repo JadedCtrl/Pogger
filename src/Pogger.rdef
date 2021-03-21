@@ -5,7 +5,7 @@
 
 resource app_signature "application/x-vnd.Pogger";
 
-resource app_flags B_SINGLE_LAUNCH;
+resource app_flags B_SINGLE_LAUNCH | B_BACKGROUND_APP;
 
 resource app_version {
 	major  = 0,
