@@ -17,6 +17,7 @@
 #include "FeedController.h"
 #include "FeedListItem.h"
 #include "FeedsView.h"
+#include "Util.h"
 
 
 FeedEditWindow::FeedEditWindow()
@@ -163,7 +164,7 @@ FeedEditWindow::_SaveFeed()
 
 	BString filename;
 	if (title.IsEmpty())
-		filename = BString(urlString);
+		filename = BString(urlToFilename(BUrl(urlString)));
 	else
 		filename = BString(title);
 	subPath.Append(filename);

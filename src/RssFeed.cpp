@@ -14,7 +14,7 @@
 
 RssFeed::RssFeed()
 {
-	fTitle = BString("Untitled Feed");
+	fTitle = BString("");
 	fXmlUrl = BString("");
 }
 
@@ -22,6 +22,7 @@ RssFeed::RssFeed()
 RssFeed::RssFeed(Feed* feed)
 	: RssFeed::RssFeed()
 {
+	SetTitle(feed->Title());
 	SetXmlUrl(feed->XmlUrl());
 	SetCachePath(feed->CachePath());
 }

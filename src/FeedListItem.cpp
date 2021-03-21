@@ -18,6 +18,8 @@ FeedListItem::FeedListItem(Feed* feed)
 	fFeedUrl(feed->XmlUrl()),
 	fFeedPath(feed->CachePath())
 {
+	if (feed->Title().IsEmpty() == true)
+		SetText("Untitled Feed");
 }
 
 

@@ -50,7 +50,8 @@ FeedsView::MessageReceived(BMessage* msg)
 		}
 		case kFeedsEditButton:
 		{
-			_EditSelectedFeed();
+			if (msg->GetInt32("index", -1) >= 0)
+				_EditSelectedFeed();
 			break;
 		}
 		case kFeedsSelected:
@@ -92,8 +93,10 @@ FeedsView::MessageReceived(BMessage* msg)
 			if (msg->FindInt32("total", &total) == B_OK
 				&& msg->FindInt32("current", &current) == B_OK)
 			{
-				if (total == current)
+				if (total == current) {
 					fProgressLabel->SetText("");
+					_PopulateFeedList();
+				}
 			}
 			break;
 		}

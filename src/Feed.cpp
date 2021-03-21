@@ -90,7 +90,7 @@ Feed::Feed(Feed* feed)
 
 Feed::Feed()
 	:
-	fTitle(BString("Untitled Feed"))
+	fTitle(BString(""))
 {
 	fLastDate = BDateTime::CurrentDateTime(B_LOCAL_TIME);
 }
@@ -243,7 +243,7 @@ Feed::SetTitle(const char* titleStr)
 bool
 Feed::_SetTitle(tinyxml2::XMLElement* elem)
 {
-	if (elem != NULL)
+	if (elem != NULL && fTitle.IsEmpty() == true)
 		return SetTitle(elem->GetText());
 	else return false;
 }

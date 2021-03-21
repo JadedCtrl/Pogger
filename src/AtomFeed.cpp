@@ -16,7 +16,7 @@
 
 AtomFeed::AtomFeed()
 {
-	fTitle = BString("Untitled Feed");
+	fTitle = BString("");
 	fCachePath = BString("");
 }
 
@@ -24,6 +24,7 @@ AtomFeed::AtomFeed()
 AtomFeed::AtomFeed(Feed* feed)
 	: AtomFeed::AtomFeed()
 {
+	SetTitle(feed->Title());
 	SetXmlUrl(feed->XmlUrl());
 	SetCachePath(feed->CachePath());
 }
