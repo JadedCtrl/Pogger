@@ -104,11 +104,11 @@ MainWindow::_InitInterface()
 
 	// Bottom bar
 	fStatusBar = new BStatusBar("feedProgress");
-	fUpdateNowButton = new BButton("updateNow", "Update Now",
-		new BMessage(kUpdateSubscribed));
-	fUpdateNowButton->SetTarget((App*)be_app);
-	fUpdateNowButton->SetExplicitAlignment(
+	fUpdateButton = new BButton("updateNow", "", NULL);
+	fUpdateButton->SetTarget((App*)be_app);
+	fUpdateButton->SetExplicitAlignment(
 		BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
+	_SetUpdateButton(false);
 
 	// Window size
 	font_height fontHeight;
@@ -126,7 +126,7 @@ MainWindow::_InitInterface()
 		.Add(new BSeparatorView(B_HORIZONTAL))
 		.AddGroup(B_HORIZONTAL)
 			.Add(fStatusBar)
-			.Add(fUpdateNowButton)
+			.Add(fUpdateButton)
 			.SetInsets(B_USE_WINDOW_SPACING, B_USE_DEFAULT_SPACING,
 				B_USE_DEFAULT_SPACING, B_USE_WINDOW_SPACING)
 		.End()
@@ -141,6 +141,24 @@ MainWindow::_UpdateProgress(int32 total, int32 current)
 		fStatusBar->Reset();
 	fStatusBar->SetMaxValue(total);
 	fStatusBar->SetTo(current);
+
+	if (total == current)
+		_SetUpdateButton(false);
+	else
+		_SetUpdateButton(true);
+}
+
+
+void
+MainWindow::_SetUpdateButton(bool cancel)
+{
+	if (cancel == true) {
+		fUpdateButton->SetLabel("Cancel");
+		fUpdateButton->SetMessage(new BMessage(kClearQueue));
+	} else {
+		fUpdateButton->SetLabel("Update Now");
+		fUpdateButton->SetMessage(new BMessage(kUpdateSubscribed));
+	}
 }
 
 

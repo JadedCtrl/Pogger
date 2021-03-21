@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H 
 #define MAINWINDOW_H
 
-
 #include <Window.h>
 
 class BButton;
@@ -25,6 +24,8 @@ private:
 
 	void _UpdateProgress(int32 total, int32 current);
 
+	void _SetUpdateButton(bool cancel);
+
 	BGroupView*		fBaseView;
 	BTabView*		fTabView;
 	EntriesView*	fEntriesView;
@@ -32,7 +33,7 @@ private:
 	UpdatesView*	fUpdatesView;
 
 	BStatusBar*		fStatusBar;
-	BButton*		fUpdateNowButton;
+	BButton*		fUpdateButton;
 };
 
 

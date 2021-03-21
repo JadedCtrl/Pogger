@@ -83,6 +83,19 @@ FeedsView::MessageReceived(BMessage* msg)
 		case kParseComplete:
 		{
 			_UpdateProgress(msg, kClearStatus);
+			break;
+		}
+		case kProgress:
+		{
+			int32 total,current = 0;
+
+			if (msg->FindInt32("total", &total) == B_OK
+				&& msg->FindInt32("current", &current) == B_OK)
+			{
+				if (total == current)
+					fProgressLabel->SetText("");
+			}
+			break;
 		}
 	}
 }
