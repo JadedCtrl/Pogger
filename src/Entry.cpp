@@ -10,6 +10,7 @@
 
 #include <StorageKit.h>
 
+#include "App.h"
 #include "Util.h"
 
 
@@ -29,15 +30,15 @@ Entry::~Entry()
 
 
 bool
-Entry::Filetize(BDirectory outDir)
+Entry::Filetize()
 {
 	BFile file(fTitle.String(), B_READ_WRITE);
-	BEntry outDirEntry;
+	BString outPath = ((App*)be_app)->fPreferences->EntryDir();
+	BDirectory outDir(outPath.String());
 	time_t tt_date = fDate.Time_t();
 
-	outDir.GetEntry(&outDirEntry);
 	if (outDir.InitCheck() == B_ENTRY_NOT_FOUND) {
-		outDir.CreateDirectory(BPath(&outDirEntry).Path(), &outDir);
+		BDirectory().CreateDirectory(outPath.String(), &outDir);
 	}
 	outDir.CreateFile(fTitle.String(), &file);
 

@@ -20,7 +20,7 @@ public:
 	Entry();
 	~Entry();
 
-	bool Filetize(BDirectory outDir);
+	bool Filetize();
 
 	BString Title();
 	bool SetTitle(const char*);
