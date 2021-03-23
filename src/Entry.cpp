@@ -46,14 +46,12 @@ Entry::Filetize()
 	file.WriteAttr("BEOS:TYPE", B_MIME_STRING_TYPE, 0, betype.String(),
 		betype.CountChars() + 1);
 
-	file.WriteAttr("Feed:name", B_STRING_TYPE, 0,
-		fTitle.String(), fTitle.CountChars());
-	file.WriteAttr("Feed:description", B_STRING_TYPE, 0,
-		fDescription.String(), fDescription.CountChars());
-	file.WriteAttr("Feed:source", B_STRING_TYPE, 0,
-		fFeedTitle.String(), fFeedTitle.CountChars());
-	file.WriteAttr("META:url", B_STRING_TYPE, 0, fPostUrl.String(),
-		fPostUrl.CountChars());
+	BString readStatus("Unread");
+	file.WriteAttrString("Feed:name", &fTitle);
+	file.WriteAttrString("Feed:description", &fDescription);
+	file.WriteAttrString("Feed:source", &fFeedTitle);
+	file.WriteAttrString("META:url", &fPostUrl);
+	file.WriteAttrString("Feed:status", &readStatus);
 
 	if (fDate != NULL) {
 		file.WriteAttr("Feed:when", B_TIME_TYPE, 0, &tt_date, sizeof(time_t));

@@ -165,6 +165,10 @@ App::_OpenEntryFile(BMessage* refMessage)
 {
 	entry_ref entryRef;
 	refMessage->FindRef("refs", &entryRef);
+	BFile entryFile(&entryRef, B_WRITE_ONLY);
+
+	BString readStatus("Read");
+	entryFile.WriteAttrString("Feed:status", &readStatus);
 
 	if (fPreferences->EntryOpenAsHtml())
 		_OpenEntryFileAsHtml(entryRef);

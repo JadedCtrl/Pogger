@@ -45,10 +45,10 @@ Feed::Feed(BEntry entry)
 	entry.GetPath(&path);
 	SetCachePath(BString(path.Path()));
 
-	BString name;
-	BString url;
+	BString name, url;
 	file.ReadAttrString("META:url", &url);
 	file.ReadAttrString("Feed:name", &name);
+	file.ReadAttrString("Feed:hash", &fLastHash);
 
 	if (!url.IsEmpty())
 		SetXmlUrl(BUrl(url));
@@ -119,8 +119,6 @@ bool
 Feed::Fetch()
 {
 	BFile cacheFile = BFile(fCachePath, B_READ_WRITE | B_CREATE_FILE);
-
-	cacheFile.ReadAttrString("Feed:hash", &fLastHash);
 
 	int32 result = fetch(fXmlUrl, &cacheFile, &fHash, 30);
 	cacheFile.WriteAttrString("Feed:hash", &fHash);

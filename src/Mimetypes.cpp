@@ -75,6 +75,7 @@ feedEntryMimeType()
 	addAttribute(info, "Feed:description", "Description");
 	addAttribute(info, "META:url", "URL");
 	addAttribute(info, "Feed:source", "Source");
+	addAttribute(info, "Feed:status", "Status");
 	addAttribute(info, "Feed:when", "When", B_TIME_TYPE, 150);
 
 	return mime.SetAttrInfo(&info);
