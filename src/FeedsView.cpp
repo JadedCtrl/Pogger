@@ -55,7 +55,7 @@ FeedsView::MessageReceived(BMessage* msg)
 		}
 		case kFeedsEditButton:
 		{
-			if (msg->GetInt32("index", -1) >= 0)
+			if (fFeedsListView->CurrentSelection() >= 0)
 				_EditSelectedFeed();
 			break;
 		}
