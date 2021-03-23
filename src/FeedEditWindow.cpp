@@ -33,8 +33,6 @@ FeedEditWindow::FeedEditWindow()
 {
 	_InitInterface();
 	MoveOnScreen();
-	fDeleteButton->SetEnabled(false);
-
 	fFeed = Feed();
 }
 
@@ -48,8 +46,6 @@ FeedEditWindow::FeedEditWindow(BEntry feedEntry)
 
 	fFeedNameText->SetText(fFeed.Title().String());
 	fFeedUrlText->SetText(fFeed.XmlUrl().UrlString().String());
-
-	fDeleteButton->SetEnabled(true);
 }
 
 
@@ -71,14 +67,14 @@ FeedEditWindow::MessageReceived(BMessage* msg)
 {
 	switch (msg->what)
 	{
-		case kSaveButton:
+		case kOkButton:
 		{
 			_SaveFeed();
 			break;
 		}
-		case kDeleteButton:
+		case kCancelButton:
 		{
-			_DeleteFeed();
+			Quit();
 			break;
 		}
 	}
@@ -94,11 +90,11 @@ FeedEditWindow::_InitInterface()
 	fFeedUrlLabel = new BStringView("feedUrlLabel", B_TRANSLATE("Feed URL:"));
 	fFeedUrlText = new BTextControl("feedUrl", "", "", NULL);
 
-	// Save/Delete
-	fSaveButton = new BButton("save", B_TRANSLATE("Save"),
-		new BMessage(kSaveButton));
-	fDeleteButton = new BButton("delete", B_TRANSLATE("Delete"),
-		new BMessage(kDeleteButton));
+	// OK/Cancel
+	fOkButton = new BButton("ok", B_TRANSLATE("OK"),
+		new BMessage(kOkButton));
+	fCancelButton = new BButton("cancel", B_TRANSLATE("Cancel"),
+		new BMessage(kCancelButton));
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.SetInsets(0, B_USE_DEFAULT_SPACING, 0, 0)
@@ -119,9 +115,9 @@ FeedEditWindow::_InitInterface()
 
 		.Add(new BSeparatorView(B_HORIZONTAL))
 		.AddGroup(B_HORIZONTAL)
+			.Add(fCancelButton)
 			.AddGlue()
-			.Add(fDeleteButton)
-			.Add(fSaveButton)
+			.Add(fOkButton)
 			.SetInsets(B_USE_WINDOW_SPACING, B_USE_DEFAULT_SPACING,
 				B_USE_DEFAULT_SPACING, B_USE_WINDOW_SPACING)
 		.End()
@@ -189,16 +185,6 @@ FeedEditWindow::_SaveFeed()
 	enqueueUpdated.AddString("feedPaths", fFeed.CachePath());
 
 	((App*)be_app)->MessageReceived(&enqueueUpdated);
-	((App*)be_app)->PostMessage(&edited);
-	Quit();
-}
-
-
-void
-FeedEditWindow::_DeleteFeed()
-{
-	fFeed.Unfiletize();
-	BMessage edited(kFeedsEdited);
 	((App*)be_app)->PostMessage(&edited);
 	Quit();
 }

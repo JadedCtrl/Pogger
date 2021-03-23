@@ -126,6 +126,8 @@ FeedsView::_InitInterface()
 	// Add, Remove, Edit
 	fAddButton = new BButton("addFeed", "+", new BMessage(kFeedsAddButton));
 	fRemoveButton = new BButton("removeFeed", "-", new BMessage(kFeedsRemoveButton));
+	fAddButton->SetToolTip(B_TRANSLATE("Add new feed"));
+	fRemoveButton->SetToolTip(B_TRANSLATE("Remove selected feed"));
 	fEditButton = new BButton("editFeed", B_TRANSLATE("Edit…"),
 		new BMessage(kFeedsEditButton));
 

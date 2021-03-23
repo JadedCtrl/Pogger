@@ -18,8 +18,8 @@ class FeedListItem;
 
 enum
 {
-	kSaveButton		= 'esav',
-	kDeleteButton	= 'edel'
+	kOkButton		= 'edok',
+	kCancelButton	= 'ecan'
 };
 
 
@@ -36,7 +36,6 @@ private:
 	void _InitInterface();
 
 	void _SaveFeed();
-	void _DeleteFeed();
 
 	BString fFeedPath;
 	Feed fFeed;
@@ -46,8 +45,8 @@ private:
 	BStringView*	fFeedUrlLabel;
 	BTextControl*	fFeedUrlText;
 
-	BButton* fSaveButton;
-	BButton* fDeleteButton;
+	BButton* fOkButton;
+	BButton* fCancelButton;
 };
 
 
