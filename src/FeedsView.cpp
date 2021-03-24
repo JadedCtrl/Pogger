@@ -5,6 +5,7 @@
 
 #include "FeedsView.h"
 
+#include <Alert.h>
 #include <Catalog.h>
 #include <Message.h>
 #include <GroupView.h>
@@ -197,6 +198,16 @@ FeedsView::_EditSelectedFeed()
 void
 FeedsView::_RemoveSelectedFeed()
 {
+	BAlert* alert = new BAlert(B_TRANSLATE("Confirm removal"),
+		B_TRANSLATE("Are you sure you want to remove the selected feed?"),
+		NULL, B_TRANSLATE("OK"), B_TRANSLATE("Cancel"),
+		B_WIDTH_AS_USUAL, B_WARNING_ALERT);
+
+	alert->SetShortcut(1, B_ESCAPE);
+	int32 button = alert->Go();
+	if (button != 0)
+		return;
+
 	int32 selIndex = fFeedsListView->CurrentSelection();
 	FeedListItem* selected = (FeedListItem*)fFeedsListView->ItemAt(selIndex);
 	Feed delFeed = Feed(BEntry(selected->FeedPath()));
