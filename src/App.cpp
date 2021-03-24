@@ -152,9 +152,10 @@ App::RefsReceived(BMessage* message)
 		info.SetTo(&file);
 		info.GetType(type);
 
-		if (BString(type) == BString("text/x-feed-entry"))
+		if (BString(type) == "application/x-feed-entry"
+			|| BString(type) == "text/x-feed-entry")
 			_OpenEntryFile(&msg);
-		else if (BString(type) == BString("application/x-feed-source"))
+		else if (BString(type) == "application/x-feed-source")
 			_OpenSourceFile(&msg);
 	}
 }

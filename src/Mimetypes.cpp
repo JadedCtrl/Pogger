@@ -39,7 +39,7 @@ feedMimeType()
 	mime.GetAttrInfo(&info);
 
 	mime.SetShortDescription("Feed");
-	mime.SetLongDescription("Atom/RSS Feed");
+	mime.SetLongDescription("Atom/RSS feed");
 
 	addAttribute(info, "Feed:name", "Name");
 	addAttribute(info, "Feed:description", "Description");
@@ -55,7 +55,7 @@ bool
 feedEntryMimeType()
 {
 	BMessage info;
-	BMimeType mime("text/x-feed-entry");
+	BMimeType mime("application/x-feed-entry");
 	if (mime.IsInstalled())
 		return true;
 
@@ -68,8 +68,8 @@ feedEntryMimeType()
 
 	mime.GetAttrInfo(&info);
 
-	mime.SetShortDescription("Feed Entry");
-	mime.SetLongDescription("Atom/RSS Feed Entry");
+	mime.SetShortDescription("Feed entry");
+	mime.SetLongDescription("Atom/RSS feed entry");
 
 	addAttribute(info, "Feed:name", "Name");
 	addAttribute(info, "Feed:description", "Description");
