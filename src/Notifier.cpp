@@ -98,7 +98,7 @@ Notifier::_SendUpdatedNotification()
 	}
 
 	BNotification notifyNew(B_INFORMATION_NOTIFICATION);
-	BString notifyLabel(B_TRANSLATE("Feed Updates"));
+	BString notifyLabel(B_TRANSLATE("Feed updates"));
 	BString notifyText;
 
 	static BStringFormat oneSourceFormat(B_TRANSLATE("{0, plural,"
@@ -119,7 +119,7 @@ Notifier::_SendUpdatedNotification()
 
 	BString* feedTitle = (BString*)fUpdatedFeeds->ItemAt(0);
 	if (feedTitle->IsEmpty())
-		feedTitle->SetTo(B_TRANSLATE("Untitled Feed"));
+		feedTitle->SetTo(B_TRANSLATE("Untitled feed"));
 
 	notifyText.ReplaceAll("%n%", entryNum);
 	notifyText.ReplaceAll("%source%", feedTitle->String());
@@ -144,7 +144,7 @@ Notifier::_SendFailedNotification()
 	}
 
 	BNotification notifyError(B_ERROR_NOTIFICATION);
-	BString notifyLabel(B_TRANSLATE("Update Failure"));
+	BString notifyLabel(B_TRANSLATE("Update failure"));
 	BString notifyText;
 
 	static BStringFormat multiSourceFormat(B_TRANSLATE("{0, plural,"
@@ -158,7 +158,7 @@ Notifier::_SendFailedNotification()
 
 	BString* feedTitle = (BString*)fFailedFeeds->ItemAt(0);
 	if (feedTitle->IsEmpty())
-		feedTitle->SetTo(B_TRANSLATE("Untitled Feed"));
+		feedTitle->SetTo(B_TRANSLATE("Untitled feed"));
 
 	notifyText.ReplaceAll("%source%", feedTitle->String());
 

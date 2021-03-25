@@ -167,7 +167,7 @@ MainWindow::_SetUpdateButton(bool cancel)
 		fUpdateButton->SetLabel(B_TRANSLATE("Cancel"));
 		fUpdateButton->SetMessage(new BMessage(kClearQueue));
 	} else {
-		fUpdateButton->SetLabel(B_TRANSLATE("Update Now"));
+		fUpdateButton->SetLabel(B_TRANSLATE("Update now"));
 		fUpdateButton->SetMessage(new BMessage(kUpdateSubscribed));
 	}
 }

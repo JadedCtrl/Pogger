@@ -256,7 +256,7 @@ EntriesView::_FileError(status_t result)
 	find_directory(B_USER_SETTINGS_DIRECTORY, &cfgPath);
 
 	if (result == B_NOT_A_DIRECTORY) {
-		BAlert* alert = new BAlert(B_TRANSLATE("Entries Directory"),
+		BAlert* alert = new BAlert(B_TRANSLATE("Entries directory"),
 			B_TRANSLATE("The path you selected isn't a folder― please choose "
 			"another path."), B_TRANSLATE("OK"), NULL, NULL,
 			B_WIDTH_AS_USUAL, B_WARNING_ALERT);
@@ -264,7 +264,7 @@ EntriesView::_FileError(status_t result)
 		return;
 	}
 
-	userFileError(result, B_TRANSLATE("Entries Directory"),
+	userFileError(result, B_TRANSLATE("Entries directory"),
 		B_TRANSLATE("Couldn't open this folder because no path was specified.\n"
 	"Please select a new folder."),
 		B_TRANSLATE("Couldn't open this folder because permission was denied.\n"

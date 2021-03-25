@@ -41,7 +41,7 @@ FeedEditWindow::FeedEditWindow(BEntry feedEntry)
 	:
 	FeedEditWindow()
 {
-	SetTitle(B_TRANSLATE("Edit Feed"));
+	SetTitle(B_TRANSLATE("Edit feed"));
 	fFeed = Feed(feedEntry);
 
 	fFeedNameText->SetText(fFeed.Title().String());
@@ -149,7 +149,7 @@ FeedEditWindow::_SaveFeed()
 	BUrl url = BUrl(urlString);
 
 	if (BString(urlString).IsEmpty() == true) {
-		BAlert* emptyAlert = new BAlert(B_TRANSLATE("Invalid Feed"),
+		BAlert* emptyAlert = new BAlert(B_TRANSLATE("Invalid feed"),
 			B_TRANSLATE("Please enter a URL."), B_TRANSLATE("OK"), NULL, NULL,
 			B_WIDTH_AS_USUAL, B_OFFSET_SPACING, B_WARNING_ALERT);
 		emptyAlert->Go();
@@ -157,7 +157,7 @@ FeedEditWindow::_SaveFeed()
 	}
 
 	if (url.IsValid() == false) {
-		BAlert* invAlert = new BAlert(B_TRANSLATE("Invalid Feed"),
+		BAlert* invAlert = new BAlert(B_TRANSLATE("Invalid feed"),
 			B_TRANSLATE("The given URL is invalid. Please make sure you typed "
 			"it in correctly."), B_TRANSLATE("OK"), NULL, NULL,
 			B_WIDTH_AS_USUAL, B_OFFSET_SPACING, B_WARNING_ALERT);
