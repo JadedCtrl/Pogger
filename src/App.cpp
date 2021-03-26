@@ -11,6 +11,7 @@
 #include <String.h>
 
 #include "AtomFeed.h"
+#include "DeskbarView.h"
 #include "Entry.h"
 #include "Feed.h"
 #include "FeedController.h"
@@ -45,6 +46,7 @@ App::App() : BApplication("application/x-vnd.Pogger")
 		MessageReceived(&updateMessage);
 
 	fUpdateRunner = new BMessageRunner(this, updateMessage, interval, count);
+	installDeskbar();
 }
 
 
@@ -106,6 +108,7 @@ App::QuitRequested()
 
 	fPreferences->Save();
 	delete fPreferences;
+	removeDeskbar();
 	return true;
 }
 

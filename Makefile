@@ -31,6 +31,7 @@ APP_MIME_SIG = application/x-vnd.Pogger
 SRCS = \
 	src/App.cpp \
 	src/AtomFeed.cpp \
+	src/DeskbarView.cpp \
 	src/Entry.cpp \
 	src/EntriesView.cpp \
 	src/Feed.cpp \

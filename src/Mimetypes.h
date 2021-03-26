@@ -15,6 +15,7 @@ class BMessage;
 bool installMimeTypes();
 bool feedMimeType();
 bool feedEntryMimeType();
+void addIndices();
 
 static void addAttribute(BMessage&, const char*, const char*,
 	int32 type = B_STRING_TYPE, int32 width = 200);

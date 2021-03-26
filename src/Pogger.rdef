@@ -17,6 +17,6 @@ resource app_version {
 };
 
 resource file_types message {
-	"types" = "text/x-feed-entry",
+	"types" = "application/x-feed-entry",
 	"types" = "application/x-feed-source"
 };

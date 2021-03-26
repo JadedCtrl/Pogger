@@ -13,10 +13,15 @@
 #include <Message.h>
 #include <MimeType.h>
 #include <Resources.h>
+#include <fs_index.h>
+#include <fs_info.h>
+#include <VolumeRoster.h>
+
 
 
 bool installMimeTypes()
 {
+	addIndices();
 	return (feedMimeType() && feedEntryMimeType());
 }
 
@@ -79,6 +84,26 @@ feedEntryMimeType()
 	addAttribute(info, "Feed:when", "When", B_TIME_TYPE, 150);
 
 	return mime.SetAttrInfo(&info);
+}
+
+
+void
+addIndices()
+{
+	int32 cookie = 0;
+	dev_t device;
+
+	while ((device = next_dev(&cookie)) >= B_OK) {
+		fs_info info;
+		if (fs_stat_dev(device, &info) < 0
+			|| (info.flags & B_FS_HAS_QUERY) == 0)
+			continue;
+
+		fs_create_index(device, "Feed:name",		B_STRING_TYPE, 0);
+		fs_create_index(device, "Feed:source",	B_STRING_TYPE, 0);
+		fs_create_index(device, "Feed:status",		B_STRING_TYPE, 0);
+		fs_create_index(device, "Feed:when",		B_TIME_TYPE, 0);
+	}
 }
 
 

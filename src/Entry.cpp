@@ -42,11 +42,11 @@ Entry::Filetize()
 	}
 	outDir.CreateFile(fTitle.String(), &file);
 
-	BString betype = BString("text/x-feed-entry");
+	BString betype = BString("application/x-feed-entry");
 	file.WriteAttr("BEOS:TYPE", B_MIME_STRING_TYPE, 0, betype.String(),
 		betype.CountChars() + 1);
 
-	BString readStatus("Unread");
+	BString readStatus("New");
 	file.WriteAttrString("Feed:name", &fTitle);
 	file.WriteAttrString("Feed:description", &fDescription);
 	file.WriteAttrString("Feed:source", &fFeedTitle);
