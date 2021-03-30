@@ -260,15 +260,18 @@ our_image(image_info& image)
 	return B_ERROR;
 }
 
-
 int32
 installDeskbar()
 {
 	int32 deskbarId = -1;
 
-	removeDeskbar();
-	BDeskbar deskbar;
+	// Just in case deskbar hasn't launched yet
+	if (BDeskbar().IsRunning() == false)
+		sleep(3);
 
+	removeDeskbar();
+
+	BDeskbar deskbar;
 	deskbar.AddItem(
 		new DeskbarView(BRect(0,0, deskbar.MaxItemHeight() - 1,
 			deskbar.MaxItemHeight() - 1)),
