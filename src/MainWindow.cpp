@@ -40,6 +40,7 @@ MainWindow::~MainWindow()
 {
 	((App*)be_app)->fPreferences->fMainWindowRect = ConvertToScreen(Bounds());
 	((App*)be_app)->fPreferences->fTabSelection = fTabView->Selection();
+	be_app->PostMessage(B_QUIT_REQUESTED);
 }
 
 
@@ -85,14 +86,6 @@ MainWindow::MessageReceived(BMessage *msg)
 			break;
 		}
 	}
-}
-
-
-bool
-MainWindow::QuitRequested()
-{
-	Minimize(true);
-	return false;
 }
 
 

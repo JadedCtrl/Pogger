@@ -1,24 +1,18 @@
 /*
- * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * Copyright 2021, Jaidyn Levesque <jadedctrl@teknik.io>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
-#ifndef APP_H
-#define APP_H
+#ifndef SHADOWPOG_H
+#define SHADOWPOG_H
 
-#include <SupportDefs.h>
 #include <Application.h>
 
-#include "Preferences.h"
-
-class BMessage;
-class BMessageRunner;
 class FeedController;
-class MainWindow;
 class Notifier;
+class Preferences;
 
 
-class App : public BApplication
-{
+class App : public BApplication {
 public:
 	App();
 
@@ -28,17 +22,20 @@ public:
 	void ArgvReceived(int32 argc, char** argv);
 	void RefsReceived(BMessage* message);
 
-	MainWindow* fMainWindow;
 	Preferences* fPreferences;
+	BMessageRunner* fUpdateRunner;
 
 private:
 	void _OpenEntryFile(BMessage* refMessage);
+	void _OpenEntryFileAsHtml(entry_ref ref);
+	void _OpenEntryFileAsUrl(entry_ref ref);
 	void _OpenSourceFile(BMessage* refMessage);
+
+	void _ReloadPreferences();
+
+	FeedController* fFeedController;
+	Notifier* fNotifier;
 };
 
 
-int main(int argc, char** argv);
-
-
-#endif // APP_H
-
+#endif // SHADOWPOG_H

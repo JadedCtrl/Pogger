@@ -3,17 +3,17 @@
  * All rights reserved. Distributed under the terms of the MIT License. 
  */
 
-resource app_signature "application/x-vnd.Pogger";
+resource app_signature "application/x-vnd.PoggerDaemon";
 
-resource app_flags B_SINGLE_LAUNCH;
+resource app_flags B_SINGLE_LAUNCH | B_BACKGROUND_APP;
 
 resource app_version {
 	major  = 0,
 	middle = 0,
 	minor  = 1,
 
-	short_info = "Feed reader",
-	long_info  = "An RSS/Atom feed service"
+	short_info = "Pogger daemon",
+	long_info  = "Background daemon for Pogger"
 };
 
 resource file_types message {

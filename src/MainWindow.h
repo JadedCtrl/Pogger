@@ -18,7 +18,6 @@ public:
 	~MainWindow();
 
 	void MessageReceived(BMessage*);
-	bool QuitRequested();
 
 private:
 	void _InitInterface();

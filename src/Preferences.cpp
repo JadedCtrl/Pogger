@@ -98,6 +98,9 @@ Preferences::Save()
 	storage.AddInt32("tabSelection", fTabSelection);
 
 	storage.Flatten(&file);
+
+	BMessenger toDaemon("application/x-vnd.PoggerDaemon");
+	toDaemon.SendMessage(kPreferencesUpdated);
 }
 
 

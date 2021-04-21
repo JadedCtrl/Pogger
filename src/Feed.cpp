@@ -6,10 +6,10 @@
 #include "Feed.h"
 
 #include <File.h>
+#include <FindDirectory.h>
 
 #include <tinyxml2.h>
 
-#include "App.h"
 #include "Entry.h"
 #include "Util.h"
 

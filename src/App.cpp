@@ -5,13 +5,12 @@
 
 #include "App.h"
 
-#include <MessageRunner.h>
+#include <Messenger.h>
 #include <Roster.h>
 #include <StorageKit.h>
 #include <String.h>
 
 #include "AtomFeed.h"
-#include "DeskbarView.h"
 #include "Entry.h"
 #include "Feed.h"
 #include "FeedController.h"
@@ -33,20 +32,9 @@ App::App() : BApplication("application/x-vnd.Pogger")
 	fMainWindow = new MainWindow();
 	fMainWindow->Show();
 
-	fNotifier = new Notifier();
-	fFeedController = new FeedController();
-
-	BMessage updateMessage(kUpdateSubscribed);
-	int64 interval = fPreferences->UpdateInterval();
-	int32 count = -1;
-
-	if (interval == -1)
-		count = 0;
-	else
-		MessageReceived(&updateMessage);
-
-	fUpdateRunner = new BMessageRunner(this, updateMessage, interval, count);
-	installDeskbar();
+	BRoster roster;
+	if (roster.IsRunning("application/x-vnd.PoggerDaemon") == false)
+		roster.Launch("application/x-vnd.PoggerDaemon");
 }
 
 
@@ -56,39 +44,22 @@ App::MessageReceived(BMessage* msg)
 	switch (msg->what)
 	{
 		case kDownloadComplete:
-			fMainWindow->PostMessage(msg);
-		case kEnqueueFeed:
-		case kUpdateSubscribed:
-		case kControllerCheck:
-		{
-			fFeedController->MessageReceived(msg);
-			break;
-		}
 		case kFeedsEdited:
 		case kDownloadStart:
-		{
-			fMainWindow->PostMessage(msg);
-			break;
-		}
-		case kClearQueue:
-		{
-			fFeedController->MessageReceived(msg);
-			break;
-		}
 		case kProgress:
 		case kParseComplete:
 		case kParseFail:
 		case kDownloadFail:
 		{
-			fNotifier->MessageReceived(msg);
 			fMainWindow->PostMessage(msg);
 			break;
 		}
-		case B_SILENT_RELAUNCH:
+		case kClearQueue:
+		case kEnqueueFeed:
+		case kUpdateSubscribed:
 		{
-			if (fMainWindow->IsMinimized() == true)
-				fMainWindow->Minimize(false);
-			break;
+			BMessenger toDaemon("application/x-vnd.PoggerDaemon");
+			toDaemon.SendMessage(msg);
 		}
 		default:
 		{
@@ -102,13 +73,11 @@ App::MessageReceived(BMessage* msg)
 bool
 App::QuitRequested()
 {
-	delete fUpdateRunner, fFeedController, fNotifier;
 	if (fMainWindow->Lock())
 		fMainWindow->Quit();
 
 	fPreferences->Save();
 	delete fPreferences;
-	removeDeskbar();
 	return true;
 }
 
@@ -167,54 +136,8 @@ App::RefsReceived(BMessage* message)
 void
 App::_OpenEntryFile(BMessage* refMessage)
 {
-	entry_ref entryRef;
-	refMessage->FindRef("refs", &entryRef);
-	BFile entryFile(&entryRef, B_WRITE_ONLY);
-
-	BString readStatus("Read");
-	entryFile.WriteAttrString("Feed:status", &readStatus);
-
-	if (fPreferences->EntryOpenAsHtml())
-		_OpenEntryFileAsHtml(entryRef);
-	else
-		_OpenEntryFileAsUrl(entryRef);
-}
-
-
-void
-App::_OpenEntryFileAsHtml(entry_ref ref)
-{
-	const char* openWith = fPreferences->EntryOpenWith();
-	entry_ref openWithRef;
-	BString entryTitle("untitled");
-	BFile(&ref, B_READ_ONLY).ReadAttrString("Feed:name", &entryTitle);
-
-	entry_ref tempRef = tempHtmlFile(&ref, entryTitle.String());
-	BMessage newRefMessage(B_REFS_RECEIVED);
-	newRefMessage.AddRef("refs", &tempRef);
-
-	if (BMimeType(openWith).IsValid())
-		BRoster().Launch(openWith, &newRefMessage);
-	else if (BEntry(openWith).GetRef(&openWithRef) == B_OK)
-		BRoster().Launch(&openWithRef, &newRefMessage);
-}
-
-
-void
-App::_OpenEntryFileAsUrl(entry_ref ref)
-{
-	const char* openWith = fPreferences->EntryOpenWith();
-	entry_ref openWithRef;
-	BString entryUrl;
-	if (BFile(&ref, B_READ_ONLY).ReadAttrString("META:url", &entryUrl) != B_OK)
-		return;
-
-	const char* urlArg = entryUrl.String();
-
-	if (BMimeType(openWith).IsValid())
-		BRoster().Launch(openWith, 1, &urlArg);
-	else if (BEntry(openWith).GetRef(&openWithRef) == B_OK)
-		BRoster().Launch(&openWithRef, 1, &urlArg);
+	BRoster roster;
+	roster.Launch("application/x-vnd.Pogger", refMessage);
 }
 
 

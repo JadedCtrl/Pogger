@@ -21,6 +21,7 @@
 #include "FeedController.h"
 #include "FeedEditWindow.h"
 #include "FeedListItem.h"
+#include "LocalSource.h"
 #include "Notifier.h"
 
 
@@ -219,7 +220,7 @@ FeedsView::_RemoveSelectedFeed()
 void
 FeedsView::_PopulateFeedList()
 {
-	BStringList feeds = FeedController::SubscribedFeeds();
+	BStringList feeds = LocalSource::Feeds();
 	int32 selected = fFeedsListView->CurrentSelection();
 
 	for (int i = fFeedsListView->CountItems(); i >= 0; i--)

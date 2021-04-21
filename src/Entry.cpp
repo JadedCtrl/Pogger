@@ -10,7 +10,8 @@
 
 #include <StorageKit.h>
 
-#include "App.h"
+#include "Daemon.h"
+#include "Preferences.h"
 #include "Util.h"
 
 

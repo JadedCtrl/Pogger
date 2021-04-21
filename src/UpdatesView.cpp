@@ -142,17 +142,8 @@ UpdatesView::_UpdateIntervalPreference()
 	int32 limit;
 	fIntervalSlider->GetLimits(NULL, &limit);
 	int8 index = fIntervalSlider->Position() / (1/(float)limit);
-	int8 oldIndex = ((App*)be_app)->fPreferences->UpdateIntervalIndex();
 
 	((App*)be_app)->fPreferences->SetUpdateIntervalIndex(index);
-
-	if (oldIndex == 0)
-		((App*)be_app)->fUpdateRunner->SetCount(-1);
-	else if (index == 0)
-		((App*)be_app)->fUpdateRunner->SetCount(0);
-
-	((App*)be_app)->fUpdateRunner->SetInterval(
-		((App*)be_app)->fPreferences->UpdateInterval());
 }
 
 

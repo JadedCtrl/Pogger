@@ -9,14 +9,16 @@
 
 #include <Catalog.h>
 #include <Directory.h>
+#include <FindDirectory.h>
 #include <Message.h>
 #include <MessageRunner.h>
 #include <Notification.h>
 #include <StringList.h>
 
-#include "App.h"
+#include "Daemon.h"
 #include "AtomFeed.h"
 #include "Entry.h"
+#include "LocalSource.h"
 #include "RssFeed.h"
 
 
@@ -71,7 +73,7 @@ FeedController::MessageReceived(BMessage* msg)
 		}
 		case kUpdateSubscribed:
 		{
-			BStringList subFeeds = SubscribedFeeds();
+			BStringList subFeeds = LocalSource::Feeds();
 			fDownloadQueue->Add(subFeeds);
 
 			_SendProgress();
@@ -89,35 +91,6 @@ FeedController::MessageReceived(BMessage* msg)
 			break;
 		}
 	}
-}
-
-
-BStringList
-FeedController::SubscribedFeeds()
-{
-	BPath subPath;
-	find_directory(B_USER_SETTINGS_DIRECTORY, &subPath);
-	subPath.Append("Pogger");
-	subPath.Append("Subscriptions");
-	BDirectory subDir(subPath.Path());
-	if (subDir.InitCheck() == B_ENTRY_NOT_FOUND) {
-		subDir.CreateDirectory(subPath.Path(), &subDir);
-
-		subPath.Append("Haiku Project");
-		Feed defaultSub(BUrl("https://www.haiku-os.org/blog/index.xml"),
-			BEntry(subPath.Path()));
-		defaultSub.SetTitle("Haiku Project");
-		defaultSub.Filetize();
-	}
-
-	BEntry feedEntry;
-	BPath feedPath;
-	BStringList feeds;
-
-	while (subDir.GetNextEntry(&feedEntry) == B_OK
-		&& feedEntry.GetPath(&feedPath) == B_OK)
-		feeds.Add(feedPath.Path());
-	return feeds;
 }
 
 

@@ -14,6 +14,7 @@ static const int64 HOUR_IN_MICROSECONDS = 3600000000;
 
 enum
 {
+	kPreferencesUpdated = 'pfup',
 	kOpenAsHtml = 1,
 	kOpenAsUrl = 2
 };

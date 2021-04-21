@@ -5,7 +5,7 @@
 ## architecture of Haiku.
 
 # The name of the binary.
-NAME = Pogger
+NAME = PoggerShadow
 
 # The type of binary, must be one of:
 #	APP:	Application
@@ -15,7 +15,7 @@ NAME = Pogger
 TYPE = APP
 
 # 	If you plan to use localization, specify the application's MIME signature.
-APP_MIME_SIG = application/x-vnd.Pogger
+APP_MIME_SIG = application/x-vnd.PoggerDaemon
 
 #	The following lines tell Pe and Eddie where the SRCS, RDEFS, and RSRCS are
 #	so that Pe and Eddie can fill them in for you.
@@ -29,25 +29,23 @@ APP_MIME_SIG = application/x-vnd.Pogger
 #	same name (source.c or source.cpp) are included from different directories.
 #	Also note that spaces in folder names do not work well with this Makefile.
 SRCS = \
-	src/App.cpp \
+	src/AtomFeed.cpp \
+	src/Daemon.cpp \
+	src/DeskbarView.cpp \
 	src/Entry.cpp \
-	src/EntriesView.cpp \
 	src/Feed.cpp \
-	src/FeedEditWindow.cpp \
-	src/FeedListItem.cpp \
+	src/FeedController.cpp \
 	src/FeedSource.cpp \
-	src/FeedsView.cpp \
 	src/LocalSource.cpp \
-	src/MainWindow.cpp \
-	src/Mimetypes.cpp \
+	src/Notifier.cpp \
 	src/Preferences.cpp \
-	src/UpdatesView.cpp \
+	src/RssFeed.cpp \
 	src/Util.cpp
 
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.
 RDEFS =  \
-	 src/Pogger.rdef  \
+	 src/Daemon.rdef  \
 	 img/icons/FeedIcon.rdef  \
 	 img/icons/EntryIcon.rdef \
 	 img/icons/PoggerIcon.rdef
@@ -153,5 +151,5 @@ DRIVER_PATH =
 DEVEL_DIRECTORY := /boot/system/develop/
 include $(DEVEL_DIRECTORY)/etc/makefile-engine
 
-# Differentiate between Pogger and PoggerShadow's catkeys
-CATKEYS_DIR = locales/app
+# We need to differentiate between Pogger and PoggerShadow's catkeys
+CATKEYS_DIR = locales/daemon

@@ -50,7 +50,7 @@ status_t
 DeskbarView::Archive(BMessage* data, bool deep) const {
 	BView::Archive(data, deep);
 
-	data->AddString("add_on", "application/x-vnd.Pogger");
+	data->AddString("add_on", "application/x-vnd.PoggerDaemon");
 	data->AddString("class", "Pogger");
 	
 	return B_OK;
@@ -97,7 +97,7 @@ DeskbarView::MessageReceived(BMessage* msg)
 		}
 		case kUpdateNow:
 		{
-			BMessenger messenger("application/x-vnd.Pogger");
+			BMessenger messenger("application/x-vnd.PoggerDaemon");
 			messenger.SendMessage(kUpdateSubscribed);
 			break;
 		}
@@ -108,7 +108,7 @@ DeskbarView::MessageReceived(BMessage* msg)
 		}
 		case kQuitPogger:
 		{
-			BMessenger messenger("application/x-vnd.Pogger");
+			BMessenger messenger("application/x-vnd.PoggerDaemon");
 			messenger.SendMessage(B_QUIT_REQUESTED);
 			break;
 		}

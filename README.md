@@ -28,8 +28,9 @@ In "Updates" you can toggle notifications and set the frequency of updates.
 
 ## Building
 
-`$ make`
-`$ make bindcatalogs`
+`$ make; make -f Makefile-Daemon`
+
+`$ make bindcatalogs; make -f Makefile-Daemon bindcatalogs`
 
 Uses netservices, and has TinyXML2 as a dependency.
 
