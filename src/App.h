@@ -5,7 +5,6 @@
 #ifndef APP_H
 #define APP_H
 
-#include <SupportDefs.h>
 #include <Application.h>
 
 #include "Preferences.h"
@@ -22,6 +21,7 @@ class App : public BApplication
 public:
 	App();
 
+	void Pulse();
 	void MessageReceived(BMessage* msg);
 	bool QuitRequested();
 

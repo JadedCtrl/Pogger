@@ -30,11 +30,20 @@ App::App() : BApplication("application/x-vnd.Pogger")
 	fPreferences->Load();
 
 	fMainWindow = new MainWindow();
-	fMainWindow->Show();
 
+	SetPulseRate(100000);
 	BRoster roster;
-	if (roster.IsRunning("application/x-vnd.PoggerDaemon") == false)
-		roster.Launch("application/x-vnd.PoggerDaemon");
+	roster.Launch("application/x-vnd.PoggerDaemon");
+}
+
+
+void
+App::Pulse()
+{
+	// We want to delay showing the main window, just in case Pogger is used
+	// only to open a feed entry (see _OpenEntryFile)
+	fMainWindow->Show();
+	SetPulseRate(0);
 }
 
 
@@ -125,8 +134,9 @@ App::RefsReceived(BMessage* message)
 		info.GetType(type);
 
 		if (BString(type) == "application/x-feed-entry"
-			|| BString(type) == "text/x-feed-entry")
+			|| BString(type) == "text/x-feed-entry") {
 			_OpenEntryFile(&msg);
+		}
 		else if (BString(type) == "application/x-feed-source")
 			_OpenSourceFile(&msg);
 	}
@@ -137,7 +147,9 @@ void
 App::_OpenEntryFile(BMessage* refMessage)
 {
 	BRoster roster;
-	roster.Launch("application/x-vnd.Pogger", refMessage);
+	roster.Launch("application/x-vnd.PoggerDaemon", refMessage);
+	if (IsLaunching())
+		Quit();
 }
 
 
@@ -147,7 +159,6 @@ App::_OpenSourceFile(BMessage* refMessage)
 	entry_ref entryRef;
 	refMessage->FindRef("refs", &entryRef);
 	FeedEditWindow* window = new FeedEditWindow(BEntry(&entryRef));
-	window->Show();
 }
 
 
