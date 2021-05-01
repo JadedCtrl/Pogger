@@ -1,0 +1,24 @@
+1	Esperanto	application/x-vnd.PoggerDaemon	3501771266
+{0, plural,=1{One new entry from %source%.}other{# new entries from %source%.}}	Notifier		{0, plural,=1{Nova afiŝo de %source%.}other{# novaj afiŝoj de %source%.}}
+Channel '%source%' at %url%:\n	RssFeed		Fonto '%source%' ĉe %url%:\n
+Channel '%source%' at %url%:\n	AtomFeed		Fonto '%source%' ĉe %url%:\n
+Downloading feed from 	FeedController		Elŝultante fonton de 
+Settings…	DeskbarView		Agordoj…
+Couldn't open the preferences file because the path is not specified.\nThis usually means that the programmer made a mistake.\nPlease submit a bug report to the Pogger repository on GitHub.\nYour personal settings will not be loaded.	Preferences		Neeblis malfermi agordan dosieron ĉar la loko estas nedifinita.\nProbable tio signifas, ke la programisto eraris iel.\nBonvole raporti la problemon al la Pogger deponojo ĉe Github.\nViaj propraj agordoj ne ŝaltiĝos. Bedaŭron.
+\t-%count% entries-\n	RssFeed		\t-%count% afiŝoj-\n
+{0, plural,=1{Failed to update %source% and one other.}other{Failed to update %source% and # others.}}	Notifier		{0, plural,=1{Eraris ĝisdatigante %source% k alian.}other{Eraris ĝisdatigante %source% kaj # aliaj.}}
+Preferences file	Preferences		Agorda dosiero
+Update now	DeskbarView		Ĝisdatigi nun
+Feed updates	Notifier		Fontaj ĝisdatigoj
+Update failure	Notifier		Ĝisdatiga eraro
+Untitled feed	Notifier		Sennoma fonto
+Quit Pogger	DeskbarView		Ĉesi Pogger
+Open entry folder…	DeskbarView		Malfermi afiŝan dosierujon…
+\t-%count% entries-\n	AtomFeed		\t-%count% afiŝoj-\n
+There is not enough memory available on your system to load the preferences file.\nPlease try closing a few applications and restarting Pogger.	Preferences		Restas nesufiĉa kvanto de memoro je via sistmo, por ŝalti la agordan dosieron.\nBonvole provu malfermi kelkajn programojn, kaj poste restartigi Pogger.
+Query new entries…	DeskbarView		Serĉmendi novjan afiŝojn…
+{0, plural,=1{%n% new entries from %source% and one other.}other{%n% new entries from %source% and # others.}}	Notifier		{0, plural,=1{%n% novaj afiŝoj de %source% kaj alia.}other{%n% novaj afiŝoj de %source% kaj # aliaj.}}
+Couldn't open the preferences file because permission was denied.\nThis usually means that you don't have read permissions to your settings directory.\nPlease make sure that your user has read-access to your settings directory― likely %path%.\nCheck your OS documentation for more information.	Preferences		Neeblis malfermi la agordan dosieron, ĉar mankas permeso.\nTio probable signifas ke vi ne rajtas legi vian agordan dosierujon.\nBonvole certigi, ke via uzanto rajtas legi la agordan dosieron― probable %path%.\nReferenci vian funkcisisteman helpolibron, por lerni pli.
+Failed to update %source%.	Notifier		Eraris ĝisdatigante %source%.
+d to update %source%.
+rce%.

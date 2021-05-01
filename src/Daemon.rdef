@@ -15,8 +15,3 @@ resource app_version {
 	short_info = "Pogger daemon",
 	long_info  = "Background daemon for Pogger"
 };
-
-resource file_types message {
-	"types" = "application/x-feed-entry",
-	"types" = "application/x-feed-source"
-};
