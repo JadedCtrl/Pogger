@@ -5,7 +5,6 @@
 #ifndef ENTRIESVIEW_H 
 #define ENTRIESVIEW_H
 
-#include <SupportDefs.h>
 #include <GroupView.h>
 
 class BBox;
@@ -13,10 +12,10 @@ class BButton;
 class BFilePanel;
 class BMenuField;
 class BMessage;
-class BPopUpMenu;
 class BRadioButton;
 class BStringView;
 class BTextControl;
+class OpenWithMenu;
 
 
 enum
@@ -41,10 +40,8 @@ public:
 
 private:
 	void _InitInterface();
-	void _PopulateOpenWithMenu();
 
 	void _FileError(status_t result);
-
 
 	BBox*			fSavingBox;
 	BStringView*	fEntryFolderLabel;
@@ -57,7 +54,7 @@ private:
 	BRadioButton*	fOpenAsHtmlRadio;
 	BRadioButton*	fOpenAsUrlRadio;
 	BStringView*	fOpenWithLabel;
-	BPopUpMenu*		fOpenWithMenu;
+	OpenWithMenu*	fOpenWithMenu;
 	BMenuField*		fOpenWithMenuField;
 	BButton*		fOpenWithSelectButton;
 	BFilePanel*		fOpenWithPanel;

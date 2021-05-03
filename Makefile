@@ -40,6 +40,7 @@ SRCS = \
 	src/LocalSource.cpp \
 	src/MainWindow.cpp \
 	src/Mimetypes.cpp \
+	src/OpenWithMenu.cpp \
 	src/Preferences.cpp \
 	src/UpdatesView.cpp \
 	src/Util.cpp

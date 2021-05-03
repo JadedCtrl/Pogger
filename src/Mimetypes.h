@@ -2,6 +2,7 @@
  * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
+
 #ifndef MIME_H
 #define MIME_H
 

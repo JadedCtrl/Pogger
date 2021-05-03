@@ -18,6 +18,7 @@
 #include <TextControl.h>
 
 #include "App.h"
+#include "OpenWithMenu.h"
 #include "Util.h"
 
 
@@ -95,8 +96,9 @@ EntriesView::MessageReceived(BMessage* msg)
 		}
 		case kOpenWithSelect:
 		{
-			((App*)be_app)->fPreferences->SetEntryOpenWith(
-				fOpenWithMenuField->MenuItem()->Label());
+			BString signature;
+			if (msg->FindString("signature", &signature) == B_OK)
+				((App*)be_app)->fPreferences->SetEntryOpenWith(signature.String());
 			break;
 		}
 		case kOpenWithBrowse:
@@ -162,7 +164,8 @@ EntriesView::_InitInterface()
 
 	fOpenWithLabel = new BStringView("openWithLabel",
 		B_TRANSLATE("Open with:"));
-	fOpenWithMenu = new BPopUpMenu("openWith");
+	fOpenWithMenu = new OpenWithMenu("openWith", "text/html",
+		((App*)be_app)->fPreferences->EntryOpenWith());
 	fOpenWithMenuField = new BMenuField("openWithMenu", NULL, fOpenWithMenu);
 	fOpenWithSelectButton = new BButton("openWithSelect",
 		B_TRANSLATE("Select…"), new BMessage(kOpenWithBrowse));
@@ -176,8 +179,6 @@ EntriesView::_InitInterface()
 		fOpenAsUrlRadio->SetValue(B_CONTROL_ON);
 
 	fEntryFolderText->SetText(prefs->EntryDir());
-
-	_PopulateOpenWithMenu();
 
 	BLayoutBuilder::Group<>(fSavingBox, B_HORIZONTAL)
 		.SetInsets(B_USE_ITEM_INSETS)
@@ -221,31 +222,6 @@ EntriesView::_InitInterface()
 		.Add(fOpeningBox)
 		.AddGlue()
 	.End();
-}
-
-
-void
-EntriesView::_PopulateOpenWithMenu()
-{
-	BString preferred = ((App*)be_app)->fPreferences->EntryOpenWith();
-	BMimeType html("text/html");
-	BStringList signatures;
-	BMessage types;
-	
-	BMenuItem* prefItem = new BMenuItem(preferred, new BMessage(kOpenWithSelect));
-	prefItem->SetMarked(true);
-	fOpenWithMenu->AddItem(prefItem);
-
-	html.GetSupportingApps(&types);
-	if (types.FindStrings("applications", &signatures) != B_OK)
-		return;
-
-	for (int i = 0; i < signatures.CountStrings(); i++) {
-		BString string = signatures.StringAt(i);
-		BMenuItem* item = new BMenuItem(string, new BMessage(kOpenWithSelect));
-		if (string != preferred)
-			fOpenWithMenu->AddItem(item);
-	}
 }
 
 
