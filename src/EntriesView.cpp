@@ -53,8 +53,7 @@ EntriesView::MessageReceived(BMessage* msg)
 	{
 		case kEntryFolderText:
 		{
-			status_t result = ((App*)be_app)->fPreferences->SetEntryDir(
-				fEntryFolderText->Text());
+			status_t result = _SetEntryOpenWith(fEntryFolderText->Text());
 			if (result != B_OK)
 				_FileError(result);
 
@@ -98,7 +97,7 @@ EntriesView::MessageReceived(BMessage* msg)
 		{
 			BString signature;
 			if (msg->FindString("signature", &signature) == B_OK)
-				((App*)be_app)->fPreferences->SetEntryOpenWith(signature.String());
+				_SetEntryOpenWith(signature.String());
 			break;
 		}
 		case kOpenWithBrowse:
@@ -116,14 +115,14 @@ EntriesView::MessageReceived(BMessage* msg)
 		{
 			entry_ref ref;
 			if (msg->HasRef("refs") && msg->FindRef("refs", &ref) == B_OK
-				&& ((App*)be_app)->fPreferences->SetEntryOpenWith(
-					BPath(&ref).Path()) == B_OK)
+				&& _SetEntryOpenWith(BPath(&ref).Path()) == B_OK)
 			{
-				BMenuItem* prefItem = new BMenuItem(BPath(&ref).Path(),
-					new BMessage(kOpenWithSelect));
+				BMessage* prefMsg = new BMessage(kOpenWithSelect);
+				prefMsg->AddString("signature", BPath(&ref).Path());
+
+				BMenuItem* prefItem = new BMenuItem(BPath(&ref).Path(), prefMsg);
 				prefItem->SetMarked(true);
 				fOpenWithMenu->AddItem(prefItem);
-
 			}
 
 			delete fOpenWithPanel;
@@ -222,6 +221,35 @@ EntriesView::_InitInterface()
 		.Add(fOpeningBox)
 		.AddGlue()
 	.End();
+}
+
+
+status_t
+EntriesView::_SetEntryOpenWith(const char* entry)
+{
+	char systemSig[B_MIME_TYPE_LENGTH];
+	BMimeType entryType("application/x-feed-entry");
+
+
+	if (entryType.GetPreferredApp(systemSig) == B_OK
+		&& (BString(systemSig) != BString("application/x-vnd.Pogger")
+			&& BString(systemSig) != "application/x-vnd.PoggerDaemon"))
+	{
+		BAlert* alert = new BAlert(B_TRANSLATE("Default entry program"),
+			B_TRANSLATE("This program will only be used to open entry files "
+			"if they are first opened with Pogger.\nCurrently, Pogger isn't set "
+			"as the default to open feed entries."),
+		    B_TRANSLATE("Ignore"), B_TRANSLATE("Make default"), "",
+			B_WIDTH_AS_USUAL, B_EVEN_SPACING, B_IDEA_ALERT);
+
+		alert->SetShortcut(0, B_ESCAPE);
+		int32 button_index = alert->Go();
+
+		if (button_index == 1)
+			entryType.SetPreferredApp("application/x-vnd.Pogger");
+	}
+
+	return ((App*)be_app)->fPreferences->SetEntryOpenWith(entry);
 }
 
 

@@ -41,6 +41,7 @@ public:
 private:
 	void _InitInterface();
 
+	status_t _SetEntryOpenWith(const char* entry);
 	void _FileError(status_t result);
 
 	BBox*			fSavingBox;
