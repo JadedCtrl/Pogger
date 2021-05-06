@@ -37,8 +37,6 @@ public:
 
 	void MessageReceived(BMessage* msg);
 
-	static BStringList SubscribedFeeds();
-
 private:
 	void _SendProgress();
 
@@ -54,7 +52,7 @@ private:
 	thread_id	fDownloadThread;
 	thread_id	fParseThread;
 
-	BStringList*	fDownloadQueue;
+	BObjectList<Feed>*	fDownloadQueue;
 	BMessageRunner*	fMessageRunner;
 };
 

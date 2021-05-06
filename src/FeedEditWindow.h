@@ -26,8 +26,7 @@ enum
 class FeedEditWindow : public BWindow {
 public:
 	FeedEditWindow();
-	FeedEditWindow(BEntry feedEntry);
-	FeedEditWindow(FeedListItem* feedItem);
+	FeedEditWindow(BString feedIdentifier);
 	~FeedEditWindow();
 
 	void MessageReceived(BMessage* msg);
@@ -38,7 +37,7 @@ private:
 	void _SaveFeed();
 
 	BString fFeedPath;
-	Feed fFeed;
+	Feed* fFeed;
 
 	BStringView*	fFeedNameLabel;
 	BTextControl*	fFeedNameText;

@@ -192,24 +192,10 @@ Entry::Date()
 
 
 bool
-Entry::SetDate(const char* dateStr)
+Entry::SetDate(BDateTime date)
 {
-	if (dateStr == NULL)
-		return false;
-	BDateTime newDate = feedDateToBDate(dateStr);
-	if (newDate == NULL)
-		return false;
-	fDate = newDate;
+	fDate = date;
 	return true;
-}
-
-
-bool
-Entry::SetDate(tinyxml2::XMLElement* elem)
-{
-	if (elem != NULL)
-		return SetDate(elem->GetText());
-	return false;
 }
 
 

@@ -42,9 +42,7 @@ public:
 	bool	SetPostUrl(tinyxml2::XMLElement*);
 
 	BDateTime	Date();
-	bool	SetDate(const char*);
-	bool	SetDate(tinyxml2::XMLElement*);
-
+	bool	SetDate(BDateTime date);
 
 private:
 	BString  fTitle;

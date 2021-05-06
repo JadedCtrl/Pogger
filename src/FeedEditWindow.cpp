@@ -18,6 +18,7 @@
 #include "FeedController.h"
 #include "FeedListItem.h"
 #include "FeedsView.h"
+#include "LocalSource.h"
 #include "Util.h"
 
 
@@ -33,26 +34,18 @@ FeedEditWindow::FeedEditWindow()
 {
 	_InitInterface();
 	MoveOnScreen();
-	fFeed = Feed();
+	fFeed = new Feed();
 }
 
 
-FeedEditWindow::FeedEditWindow(BEntry feedEntry)
-	:
-	FeedEditWindow()
+FeedEditWindow::FeedEditWindow(BString identifier)
+	: FeedEditWindow()
 {
 	SetTitle(B_TRANSLATE("Edit feed"));
-	fFeed = Feed(feedEntry);
+	fFeed = LocalSource::GetFeed(identifier);
 
-	fFeedNameText->SetText(fFeed.Title().String());
-	fFeedUrlText->SetText(fFeed.XmlUrl().UrlString().String());
-}
-
-
-FeedEditWindow::FeedEditWindow(FeedListItem* feedItem)
-	:
-	FeedEditWindow(BEntry(feedItem->FeedPath()))
-{
+	fFeedNameText->SetText(fFeed->Title().String());
+	fFeedUrlText->SetText(fFeed->Url().UrlString().String());
 }
 
 
@@ -128,22 +121,6 @@ FeedEditWindow::_InitInterface()
 void
 FeedEditWindow::_SaveFeed()
 {
-	BPath subPath;
-	find_directory(B_USER_SETTINGS_DIRECTORY, &subPath);
-	subPath.Append("Pogger");
-	subPath.Append("Subscriptions");
-	BDirectory subDir(subPath.Path());
-	if (subDir.InitCheck() == B_ENTRY_NOT_FOUND) {
-		subDir.CreateDirectory(subPath.Path(), &subDir);
-
-		BPath defaultSubPath(subPath);
-		defaultSubPath.Append("Haiku Project");
-		Feed defaultSub(BUrl("https://www.haiku-os.org/blog/index.xml"),
-			BEntry(defaultSubPath.Path()));
-		defaultSub.SetTitle("Haiku Project");
-		defaultSub.Filetize();
-	}
-
 	BString title(fFeedNameText->Text());
 	const char* urlString = fFeedUrlText->Text();
 	BUrl url = BUrl(urlString);
@@ -165,26 +142,20 @@ FeedEditWindow::_SaveFeed()
 		return;
 	}
 
-	BString filename;
-	if (title.IsEmpty())
-		filename = BString(urlToFilename(BUrl(urlString)));
-	else
-		filename = BString(title);
-	subPath.Append(filename);
-
-	if (fFeed.CachePath().IsEmpty())
-		fFeed.SetCachePath(BString(subPath.Path()));
-
 	if (!title.IsEmpty())
-		fFeed.SetTitle(title.String());
-	fFeed.SetXmlUrl(BUrl(urlString));
-	fFeed.Filetize();
+		fFeed->SetTitle(title.String());
+	fFeed->SetUrl(BUrl(urlString));
+
+	if (fFeed->Identifier().IsEmpty() == true)
+		LocalSource::AddFeed(fFeed);
+	else
+		LocalSource::EditFeed(fFeed);
 
 	BMessage edited(kFeedsEdited);
-	BMessage enqueueUpdated(kEnqueueFeed);
-	enqueueUpdated.AddString("feedPaths", fFeed.CachePath());
-
-	((App*)be_app)->MessageReceived(&enqueueUpdated);
+//	BMessage enqueueUpdated(kEnqueueFeed);
+//	enqueueUpdated.AddData("feeds", B_RAW_TYPE, &fFeed, sizeof(Feed));
+//
+//	((App*)be_app)->MessageReceived(&enqueueUpdated);
 	((App*)be_app)->PostMessage(&edited);
 	Quit();
 }

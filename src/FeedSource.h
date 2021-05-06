@@ -7,14 +7,17 @@
 
 #include <StringList.h>
 
+#include "Feed.h"
+
 
 // Hierarchy: FeedSource → Feed → Entry
 // TODO: RemoveFeed(), AddFeed(), etc.
 class FeedSource {
 public:
-	BStringList Feeds();
+	static BStringList FeedIdentifiers();
 
-	const char* name = "";
+	Feed RemoveFeed(Feed feed);
+	Feed RemoveFeed(const char* identifier);
 };
 
 

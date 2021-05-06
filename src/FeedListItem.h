@@ -29,14 +29,14 @@ public:
 	void DrawItem(BView* owner, BRect frame, bool complete);
 
 	BUrl FeedUrl();
-	BString FeedPath();
+	BString FeedIdentifier();
 
 	void SetStatus(int8 status);
 
 private:
 	int8 fStatus;
 	BUrl fFeedUrl;
-	BString fFeedPath;
+	BString fFeedIdentifier;
 };
 
 

@@ -21,57 +21,42 @@ class BUrl;
 
 class Feed {
 public:
-	Feed(BUrl);
-	Feed(BUrl, BString);
-	Feed(BEntry);
-	Feed(const char* pathStr);
-	Feed(BUrl xml, BEntry entry);
-	Feed(Feed*);
 	Feed();
-
-	~Feed();
-
-	virtual void Parse();
+	Feed(const char* identifier, const char* title, const char* url);
+	Feed(Feed*);
 
 	BObjectList<Entry>	Entries();
 	BObjectList<Entry>	NewEntries();
 
-	bool	Fetch();
-
-	void	Filetize();
-	void	Unfiletize();
-
-	bool	IsRss();
-	bool	IsAtom();
-	bool	IsUpdated();
+	void	SetEntries(BObjectList<Entry> entries);
 
 	BString	Title();
+	bool	SetTitle(const char*);
+
+	BUrl	Url();
+	bool	SetUrl(BUrl newUrl);
+
+	BDateTime Date();
 	bool	SetDate(BDateTime);
 
-	BUrl	XmlUrl();
-	BDateTime Date();
+	BDateTime LastDate();
+	bool	SetLastDate(BDateTime);
 
-	bool	SetTitle(const char*);
-	bool	SetXmlUrl(BUrl newUrl);
-	bool	SetCachePath(BString path);
+	BString	Hash();
+	bool	SetHash(BString hash);
 
-	BString	CachePath();
+	BString	LastHash();
+	bool	SetLastHash(BString hash);
+
+	BString	Identifier();
+	bool	SetIdentifier(BString id);
 
 protected:
-	bool	_SetTitle(tinyxml2::XMLElement*);
-	bool	_SetDate(const char*);
-	bool	_SetDate(tinyxml2::XMLElement*);
-	bool	_SetDate(BDateTime newDate);
-
-	bool	_AddEntry(Entry*);
-
-	int		_XmlCountSiblings(tinyxml2::XMLElement*, const char*);
-
 	BString	fTitle;
-	BDateTime fDate;
-	BDateTime fLastDate;
-	BUrl	fXmlUrl;
-	BString	fCachePath;
+	BDateTime fDate;		// Lastest date (of post/update) given by feed
+	BDateTime fLastDate;	// Last time feed was parsed
+	BUrl	fUrl;
+	BString	fIdentifier;
 	BString fHash;
 	BString fLastHash;
 

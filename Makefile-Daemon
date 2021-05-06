@@ -29,17 +29,14 @@ APP_MIME_SIG = application/x-vnd.PoggerDaemon
 #	same name (source.c or source.cpp) are included from different directories.
 #	Also note that spaces in folder names do not work well with this Makefile.
 SRCS = \
-	src/AtomFeed.cpp \
 	src/Daemon.cpp \
 	src/DeskbarView.cpp \
 	src/Entry.cpp \
 	src/Feed.cpp \
 	src/FeedController.cpp \
-	src/FeedSource.cpp \
 	src/LocalSource.cpp \
 	src/Notifier.cpp \
 	src/Preferences.cpp \
-	src/RssFeed.cpp \
 	src/Util.cpp
 
 #	Specify the resource definition files to use. Full or relative paths can be

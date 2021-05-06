@@ -20,8 +20,8 @@ FeedListItem::FeedListItem(Feed* feed)
 	:
 	BStringItem(feed->Title().String(), 0, false),
 	fStatus(kClearStatus),
-	fFeedUrl(feed->XmlUrl()),
-	fFeedPath(feed->CachePath())
+	fFeedUrl(feed->Url()),
+	fFeedIdentifier(feed->Identifier())
 {
 	if (feed->Title().IsEmpty() == true)
 		SetText(B_TRANSLATE("Untitled Feed"));
@@ -59,9 +59,9 @@ FeedListItem::DrawItem(BView* owner, BRect frame, bool complete)
 
 
 BString
-FeedListItem::FeedPath()
+FeedListItem::FeedIdentifier()
 {
-	return fFeedPath;
+	return fFeedIdentifier;
 }
 
 

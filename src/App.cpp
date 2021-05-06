@@ -10,7 +10,6 @@
 #include <StorageKit.h>
 #include <String.h>
 
-#include "AtomFeed.h"
 #include "Entry.h"
 #include "Feed.h"
 #include "FeedController.h"
@@ -20,7 +19,6 @@
 #include "Mimetypes.h"
 #include "Notifier.h"
 #include "Preferences.h"
-#include "RssFeed.h"
 #include "Util.h"
 
 
@@ -158,7 +156,9 @@ App::_OpenSourceFile(BMessage* refMessage)
 {
 	entry_ref entryRef;
 	refMessage->FindRef("refs", &entryRef);
-	FeedEditWindow* window = new FeedEditWindow(BEntry(&entryRef));
+	BPath path(&entryRef);
+
+	FeedEditWindow* window = new FeedEditWindow(BString(path.Path()));
 }
 
 

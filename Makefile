@@ -35,7 +35,6 @@ SRCS = \
 	src/Feed.cpp \
 	src/FeedEditWindow.cpp \
 	src/FeedListItem.cpp \
-	src/FeedSource.cpp \
 	src/FeedsView.cpp \
 	src/LocalSource.cpp \
 	src/MainWindow.cpp \

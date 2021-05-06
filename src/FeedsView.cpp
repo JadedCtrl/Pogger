@@ -189,7 +189,7 @@ FeedsView::_EditSelectedFeed()
 {
 	int32 selIndex = fFeedsListView->CurrentSelection();
 	FeedListItem* selected = (FeedListItem*)fFeedsListView->ItemAt(selIndex);
-	FeedEditWindow* edit = new FeedEditWindow(selected);
+	FeedEditWindow* edit = new FeedEditWindow(selected->FeedIdentifier());
 
 	edit->Show();
 	edit->Activate();
@@ -211,24 +211,23 @@ FeedsView::_RemoveSelectedFeed()
 
 	int32 selIndex = fFeedsListView->CurrentSelection();
 	FeedListItem* selected = (FeedListItem*)fFeedsListView->ItemAt(selIndex);
-	Feed delFeed = Feed(BEntry(selected->FeedPath()));
 
-	delFeed.Unfiletize();
+	LocalSource::RemoveFeed(LocalSource::GetFeed(selected->FeedIdentifier()));
 }
 
 
 void
 FeedsView::_PopulateFeedList()
 {
-	BStringList feeds = LocalSource::Feeds();
+	BObjectList<Feed> feeds = LocalSource::Feeds();
 	int32 selected = fFeedsListView->CurrentSelection();
 
 	for (int i = fFeedsListView->CountItems(); i >= 0; i--)
 		delete ((FeedListItem*)fFeedsListView->RemoveItem(i));
 
-	for (int i = 0; i < feeds.CountStrings(); i++) {
-		Feed feed = Feed(feeds.StringAt(i).String());
-		FeedListItem* item = new FeedListItem(&feed);
+	for (int i = 0; i < feeds.CountItems(); i++) {
+		Feed* feed = feeds.ItemAt(i);
+		FeedListItem* item = new FeedListItem(feed);
 		fFeedsListView->AddItem(item);
 	}
 
