@@ -17,7 +17,8 @@
 
 #include "Daemon.h"
 #include "Entry.h"
-#include "LocalSource.h"
+#include "Preferences.h"
+#include "SourceManager.h"
 
 
 #undef B_TRANSLATION_CONTEXT
@@ -71,7 +72,7 @@ FeedController::MessageReceived(BMessage* msg)
 		}
 		case kUpdateSubscribed:
 		{
-			BObjectList<Feed> list = LocalSource::Feeds();
+			BObjectList<Feed> list = SourceManager::Feeds();
 			fDownloadQueue->AddList(&list);
 			_SendProgress();
 			break;
@@ -193,7 +194,7 @@ FeedController::_DownloadLoop(void* data)
 		std::cout << B_TRANSLATE("Downloading feed from ")
 			<< feedBuffer->Url().UrlString() << "…\n";
 
-		if (LocalSource::Fetch(feedBuffer)) {
+		if (SourceManager::Fetch(feedBuffer)) {
 			send_data(main, kDownloadComplete, (void*)feedBuffer, sizeof(Feed));
 		}
 		else {
@@ -220,16 +221,16 @@ FeedController::_ParseLoop(void* data)
 		BString feedTitle;
 		BUrl feedUrl = feedBuffer->Url();
 
-		LocalSource::Parse(feedBuffer);
+		SourceManager::Parse(feedBuffer);
 		entries = feedBuffer->NewEntries();
 		entriesCount = entries.CountItems();
 		feedTitle = feedBuffer->Title();
 
 		for (int i = 0; i < entriesCount; i++)
-			entries.ItemAt(i)->Filetize();
+			entries.ItemAt(i)->Filetize(((App*)be_app)->fPreferences->EntryDir());
 		entries.MakeEmpty();
 
-		LocalSource::EditFeed(feedBuffer);
+		SourceManager::EditFeed(feedBuffer);
 		send_data(main, entriesCount, (void*)feedBuffer, sizeof(Feed));
 		free(feedBuffer);
 	}

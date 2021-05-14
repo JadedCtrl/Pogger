@@ -10,7 +10,7 @@
 #include <Message.h>
 #include <GroupView.h>
 #include <LayoutBuilder.h>
-#include <ListView.h>
+#include <OutlineListView.h>
 #include <ScrollView.h>
 #include <SeparatorView.h>
 #include <StringList.h>
@@ -21,8 +21,9 @@
 #include "FeedController.h"
 #include "FeedEditWindow.h"
 #include "FeedListItem.h"
-#include "LocalSource.h"
 #include "Notifier.h"
+#include "SourceListItem.h"
+#include "SourceManager.h"
 
 
 #undef B_TRANSLATION_CONTEXT
@@ -115,7 +116,7 @@ void
 FeedsView::_InitInterface()
 {
 	// Feeds list
-	fFeedsListView = new BListView("feedsList");
+	fFeedsListView = new BOutlineListView("feedsList");
 	fFeedsScrollView = new BScrollView("feedsScroll", fFeedsListView,
 		B_WILL_DRAW, false, true);
 	fFeedsListView->SetSelectionMessage(new BMessage(kFeedsSelected));
@@ -189,7 +190,8 @@ FeedsView::_EditSelectedFeed()
 {
 	int32 selIndex = fFeedsListView->CurrentSelection();
 	FeedListItem* selected = (FeedListItem*)fFeedsListView->ItemAt(selIndex);
-	FeedEditWindow* edit = new FeedEditWindow(selected->FeedIdentifier());
+	FeedEditWindow* edit = new FeedEditWindow(selected->FeedIdentifier(),
+		selected->FeedSource());
 
 	edit->Show();
 	edit->Activate();
@@ -212,23 +214,33 @@ FeedsView::_RemoveSelectedFeed()
 	int32 selIndex = fFeedsListView->CurrentSelection();
 	FeedListItem* selected = (FeedListItem*)fFeedsListView->ItemAt(selIndex);
 
-	LocalSource::RemoveFeed(LocalSource::GetFeed(selected->FeedIdentifier()));
+	SourceManager::RemoveFeed(SourceManager::GetFeed(selected->FeedIdentifier(),
+		selected->FeedSource()));
 }
 
 
 void
 FeedsView::_PopulateFeedList()
 {
-	BObjectList<Feed> feeds = LocalSource::Feeds();
+	BObjectList<Source> sources = SourceManager::Sources();
 	int32 selected = fFeedsListView->CurrentSelection();
 
 	for (int i = fFeedsListView->CountItems(); i >= 0; i--)
 		delete ((FeedListItem*)fFeedsListView->RemoveItem(i));
 
-	for (int i = 0; i < feeds.CountItems(); i++) {
-		Feed* feed = feeds.ItemAt(i);
-		FeedListItem* item = new FeedListItem(feed);
-		fFeedsListView->AddItem(item);
+	for (int i = 0; i < sources.CountItems(); i++) {
+		Source* source = sources.ItemAt(i);
+		SourceListItem* sourceItem = new SourceListItem(source);
+		fFeedsListView->AddItem(sourceItem);
+		fFeedsListView->Expand(sourceItem);
+
+		BObjectList<Feed> feeds = source->Feeds();
+
+		for (int i = 0; i < feeds.CountItems(); i++) {
+			Feed* feed = feeds.ItemAt(i);
+			FeedListItem* feedItem = new FeedListItem(feed);
+			fFeedsListView->AddUnder(feedItem, sourceItem);
+		}
 	}
 
 	if (fFeedsListView->CountItems() < selected)
@@ -253,10 +265,12 @@ FeedsView::_UpdateProgress(BMessage* msg, int8 status)
 	}
 
 	for (int i = 0; i < fFeedsListView->CountItems(); i++) {
-		FeedListItem* item  = (FeedListItem*)fFeedsListView->ItemAt(i);
-		if (item->FeedUrl().UrlString() == feedUrl) {
-			item->SetStatus(status);
-			fFeedsListView->InvalidateItem(i);
+		if (fFeedsListView->Superitem(fFeedsListView->ItemAt(i)) != NULL) {
+			FeedListItem* item  = (FeedListItem*)fFeedsListView->ItemAt(i);
+			if (item->FeedUrl().UrlString() == feedUrl) {
+				item->SetStatus(status);
+				fFeedsListView->InvalidateItem(i);
+			}
 		}
 	}
 }

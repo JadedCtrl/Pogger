@@ -26,7 +26,7 @@ enum
 class FeedEditWindow : public BWindow {
 public:
 	FeedEditWindow();
-	FeedEditWindow(BString feedIdentifier);
+	FeedEditWindow(const char* identifier, const char* source);
 	~FeedEditWindow();
 
 	void MessageReceived(BMessage* msg);

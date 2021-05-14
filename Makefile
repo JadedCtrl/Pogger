@@ -36,11 +36,13 @@ SRCS = \
 	src/FeedEditWindow.cpp \
 	src/FeedListItem.cpp \
 	src/FeedsView.cpp \
-	src/LocalSource.cpp \
 	src/MainWindow.cpp \
 	src/Mimetypes.cpp \
 	src/OpenWithMenu.cpp \
 	src/Preferences.cpp \
+	src/SourceListItem.cpp \
+	src/SourceManager.cpp \
+	src/sources/RssAtom.cpp \
 	src/UpdatesView.cpp \
 	src/Util.cpp
 

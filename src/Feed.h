@@ -5,9 +5,6 @@
 #ifndef FEED_H
 #define FEED_H
 
-
-#include <tinyxml2.h>
-
 #include <ObjectList.h>
 
 #include "Entry.h"
@@ -22,7 +19,8 @@ class BUrl;
 class Feed {
 public:
 	Feed();
-	Feed(const char* identifier, const char* title, const char* url);
+	Feed(const char* identifier, const char* source, const char* title,
+		const char* url);
 	Feed(Feed*);
 
 	BObjectList<Entry>	Entries();
@@ -48,8 +46,11 @@ public:
 	BString	LastHash();
 	bool	SetLastHash(BString hash);
 
-	BString	Identifier();
-	bool	SetIdentifier(BString id);
+	const char*	Identifier();
+	bool		SetIdentifier(const char* id);
+
+	const char*	Source();
+	bool		SetSource(const char* source);
 
 protected:
 	BString	fTitle;
@@ -57,6 +58,7 @@ protected:
 	BDateTime fLastDate;	// Last time feed was parsed
 	BUrl	fUrl;
 	BString	fIdentifier;
+	BString	fSource;
 	BString fHash;
 	BString fLastHash;
 

@@ -8,8 +8,6 @@
 #include <File.h>
 #include <FindDirectory.h>
 
-#include <tinyxml2.h>
-
 #include "Entry.h"
 #include "Util.h"
 
@@ -21,8 +19,10 @@ Feed::Feed()
 }
 
 
-Feed::Feed(const char* identifier, const char* title, const char* url)
+Feed::Feed(const char* identifier, const char* source, const char* title,
+	const char* url)
 	: fTitle(BString(title)),
+	fSource(BString(source)),
 	fIdentifier(BString(identifier)),
 	fUrl(BUrl(url))
 {
@@ -35,7 +35,6 @@ Feed::Feed(Feed* feed)
 	SetTitle(feed->Title());
 	SetUrl(feed->Url());
 }
-
 
 
 BObjectList<Entry>
@@ -164,17 +163,32 @@ Feed::SetLastHash(BString hash)
 }
 
 
-BString
+const char*
 Feed::Identifier()
 {
-	return fIdentifier;
+	return fIdentifier.String();
 }
 
 
 bool
-Feed::SetIdentifier(BString id)
+Feed::SetIdentifier(const char* id)
 {
-	fIdentifier = id;
+	fIdentifier = BString(id);
+	return true;
+}
+
+
+const char*
+Feed::Source()
+{
+	return fSource.String();
+}
+
+
+bool
+Feed::SetSource(const char* source)
+{
+	fSource = BString(source);
 	return true;
 }
 

@@ -19,6 +19,7 @@
 #include "Mimetypes.h"
 #include "Notifier.h"
 #include "Preferences.h"
+#include "SourceManager.h"
 #include "Util.h"
 
 
@@ -158,7 +159,8 @@ App::_OpenSourceFile(BMessage* refMessage)
 	refMessage->FindRef("refs", &entryRef);
 	BPath path(&entryRef);
 
-	FeedEditWindow* window = new FeedEditWindow(BString(path.Path()));
+	FeedEditWindow* window = new FeedEditWindow(path.Path(),
+		SourceManager::GetSourceOfType("RssAtom")->fConfigPath);
 }
 
 

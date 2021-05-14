@@ -11,8 +11,6 @@
 #include <String.h>
 #include <Url.h>
 
-#include <tinyxml2.h>
-
 
 class Entry {
 public:
@@ -20,26 +18,22 @@ public:
 	Entry();
 	~Entry();
 
-	bool Filetize();
+	bool Filetize(const char* outDirPath);
 
 	BString Title();
 	bool SetTitle(const char*);
-	bool SetTitle(tinyxml2::XMLElement*);
 
 	BString Description();
 	bool SetDescription(const char*);
-	bool SetDescription(tinyxml2::XMLElement*);
 
 	BString FeedTitle();
 	bool SetFeedTitle(BString);
 
 	BString	Content();
 	bool SetContent(const char*);
-	bool SetContent(tinyxml2::XMLElement*);
 
 	BString	PostUrl();
 	bool	SetPostUrl(const char*);
-	bool	SetPostUrl(tinyxml2::XMLElement*);
 
 	BDateTime	Date();
 	bool	SetDate(BDateTime date);
@@ -48,6 +42,7 @@ private:
 	BString  fTitle;
 	BString  fDescription;
 	BString  fFeedTitle;
+	BString  fFeedAddOn;
 	BDateTime fDate;
 	BString  fPostUrl;
 	BString  fContent;

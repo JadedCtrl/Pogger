@@ -10,7 +10,7 @@
 #include <GroupView.h>
 
 class BMessage;
-class BListView;
+class BOutlineListView;
 class BScrollView;
 class BStringView;
 
@@ -45,7 +45,7 @@ private:
 	BButton* fRemoveButton;
 	BButton* fEditButton;
 	BStringView* fProgressLabel;
-	BListView* fFeedsListView;
+	BOutlineListView* fFeedsListView;
 	BScrollView* fFeedsScrollView;
 };
 

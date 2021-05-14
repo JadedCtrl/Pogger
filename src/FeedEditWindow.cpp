@@ -17,8 +17,8 @@
 #include "App.h"
 #include "FeedController.h"
 #include "FeedListItem.h"
+#include "SourceManager.h"
 #include "FeedsView.h"
-#include "LocalSource.h"
 #include "Util.h"
 
 
@@ -38,11 +38,11 @@ FeedEditWindow::FeedEditWindow()
 }
 
 
-FeedEditWindow::FeedEditWindow(BString identifier)
+FeedEditWindow::FeedEditWindow(const char* identifier, const char* source)
 	: FeedEditWindow()
 {
 	SetTitle(B_TRANSLATE("Edit feed"));
-	fFeed = LocalSource::GetFeed(identifier);
+	fFeed = SourceManager::GetFeed(identifier, source);
 
 	fFeedNameText->SetText(fFeed->Title().String());
 	fFeedUrlText->SetText(fFeed->Url().UrlString().String());
@@ -146,10 +146,10 @@ FeedEditWindow::_SaveFeed()
 		fFeed->SetTitle(title.String());
 	fFeed->SetUrl(BUrl(urlString));
 
-	if (fFeed->Identifier().IsEmpty() == true)
-		LocalSource::AddFeed(fFeed);
+	if (BString(fFeed->Identifier()).IsEmpty() == true)
+		SourceManager::AddFeed(fFeed);
 	else
-		LocalSource::EditFeed(fFeed);
+		SourceManager::EditFeed(fFeed);
 
 	BMessage edited(kFeedsEdited);
 //	BMessage enqueueUpdated(kEnqueueFeed);

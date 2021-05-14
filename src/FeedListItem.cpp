@@ -21,7 +21,8 @@ FeedListItem::FeedListItem(Feed* feed)
 	BStringItem(feed->Title().String(), 0, false),
 	fStatus(kClearStatus),
 	fFeedUrl(feed->Url()),
-	fFeedIdentifier(feed->Identifier())
+	fFeedIdentifier(feed->Identifier()),
+	fFeedSource(feed->Source())
 {
 	if (feed->Title().IsEmpty() == true)
 		SetText(B_TRANSLATE("Untitled Feed"));
@@ -58,10 +59,17 @@ FeedListItem::DrawItem(BView* owner, BRect frame, bool complete)
 }
 
 
-BString
+const char*
 FeedListItem::FeedIdentifier()
 {
-	return fFeedIdentifier;
+	return fFeedIdentifier.String();
+}
+
+
+const char*
+FeedListItem::FeedSource()
+{
+	return fFeedSource.String();
 }
 
 

@@ -10,8 +10,6 @@
 
 #include <StorageKit.h>
 
-#include "Daemon.h"
-#include "Preferences.h"
 #include "Util.h"
 
 
@@ -31,15 +29,14 @@ Entry::~Entry()
 
 
 bool
-Entry::Filetize()
+Entry::Filetize(const char* outDirPath)
 {
 	BFile file(fTitle.String(), B_READ_WRITE);
-	BString outPath = ((App*)be_app)->fPreferences->EntryDir();
-	BDirectory outDir(outPath.String());
+	BDirectory outDir(outDirPath);
 	time_t tt_date = fDate.Time_t();
 
 	if (outDir.InitCheck() == B_ENTRY_NOT_FOUND) {
-		BDirectory().CreateDirectory(outPath.String(), &outDir);
+		BDirectory().CreateDirectory(outDirPath, &outDir);
 	}
 	outDir.CreateFile(fTitle.String(), &file);
 
@@ -80,15 +77,6 @@ Entry::SetTitle(const char* titleStr)
 }
 
 
-bool
-Entry::SetTitle(tinyxml2::XMLElement* elem)
-{
-	if (elem != NULL)
-		return SetTitle(elem->GetText());
-	return false;
-}
-
-
 BString
 Entry::Description()
 {
@@ -103,15 +91,6 @@ Entry::SetDescription(const char* descStr)
 		fDescription = BString(descStr);
 	else return false;
 	return true;
-}
-
-
-bool
-Entry::SetDescription(tinyxml2::XMLElement* elem)
-{
-	if (elem != NULL)
-		return SetDescription(elem->GetText());
-	return false;
 }
 
 
@@ -149,15 +128,6 @@ Entry::SetContent(const char* contentStr)
 }
 
 
-bool
-Entry::SetContent(tinyxml2::XMLElement* elem)
-{
-	if (elem != NULL)
-		return SetContent(elem->GetText());
-	return false;
-}
-
-
 BString
 Entry::PostUrl()
 {
@@ -172,15 +142,6 @@ Entry::SetPostUrl(const char* urlStr)
 		fPostUrl = BString(urlStr);
 	else return false;
 	return true;
-}
-
-
-bool
-Entry::SetPostUrl(tinyxml2::XMLElement* elem)
-{
-	if (elem != NULL)
-		return SetPostUrl(elem->GetText());
-	return false;
 }
 
 

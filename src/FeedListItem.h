@@ -29,7 +29,8 @@ public:
 	void DrawItem(BView* owner, BRect frame, bool complete);
 
 	BUrl FeedUrl();
-	BString FeedIdentifier();
+	const char* FeedIdentifier();
+	const char* FeedSource();
 
 	void SetStatus(int8 status);
 
@@ -37,6 +38,7 @@ private:
 	int8 fStatus;
 	BUrl fFeedUrl;
 	BString fFeedIdentifier;
+	BString fFeedSource;
 };
 
 

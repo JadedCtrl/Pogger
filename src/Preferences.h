@@ -32,7 +32,7 @@ public:
 	int UpdateIntervalIndex();
 	void SetUpdateIntervalIndex(int8 index);
 
-	BString EntryDir();
+	const char* EntryDir();
 	status_t SetEntryDir(const char* path);
 
 	BString EntryOpenWith();

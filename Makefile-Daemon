@@ -34,9 +34,10 @@ SRCS = \
 	src/Entry.cpp \
 	src/Feed.cpp \
 	src/FeedController.cpp \
-	src/LocalSource.cpp \
 	src/Notifier.cpp \
 	src/Preferences.cpp \
+	src/SourceManager.cpp \
+	src/sources/RssAtom.cpp \
 	src/Util.cpp
 
 #	Specify the resource definition files to use. Full or relative paths can be

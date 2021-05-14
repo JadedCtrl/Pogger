@@ -135,10 +135,10 @@ Preferences::SetUpdateIntervalIndex(int8 index)
 }
 
 
-BString
+const char*
 Preferences::EntryDir()
 {
-	return fEntryDir;
+	return fEntryDir.String();
 }
 
 
