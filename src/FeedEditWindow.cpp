@@ -152,10 +152,11 @@ FeedEditWindow::_SaveFeed()
 		SourceManager::EditFeed(fFeed);
 
 	BMessage edited(kFeedsEdited);
-//	BMessage enqueueUpdated(kEnqueueFeed);
-//	enqueueUpdated.AddData("feeds", B_RAW_TYPE, &fFeed, sizeof(Feed));
-//
-//	((App*)be_app)->MessageReceived(&enqueueUpdated);
+	BMessage enqueueUpdated(kEnqueueFeed);
+	enqueueUpdated.AddString("feed_identifiers", fFeed->Identifier());
+	enqueueUpdated.AddString("feed_sources", fFeed->Source());
+
+	((App*)be_app)->MessageReceived(&enqueueUpdated);
 	((App*)be_app)->PostMessage(&edited);
 	Quit();
 }

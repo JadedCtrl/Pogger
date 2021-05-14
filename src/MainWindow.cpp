@@ -17,6 +17,7 @@
 #include "App.h"
 #include "EntriesView.h"
 #include "FeedController.h"
+#include "FeedListView.h"
 #include "FeedsView.h"
 #include "Notifier.h"
 #include "UpdatesView.h"
@@ -49,9 +50,10 @@ MainWindow::MessageReceived(BMessage *msg)
 {
 	switch (msg->what)
 	{
-		case kFeedsAddButton:
-		case kFeedsRemoveButton:
-		case kFeedsEditButton:
+		case kFeedsAddNew:
+		case kFeedsEnqueueSelected:
+		case kFeedsRemoveSelected:
+		case kFeedsEditSelected:
 		case kFeedsSelected:
 		case kFeedsEdited:
 		case kDownloadStart:

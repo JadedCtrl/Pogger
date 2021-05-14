@@ -21,6 +21,7 @@
 #include "FeedController.h"
 #include "FeedEditWindow.h"
 #include "FeedListItem.h"
+#include "FeedListView.h"
 #include "Notifier.h"
 #include "SourceListItem.h"
 #include "SourceManager.h"
@@ -43,23 +44,28 @@ FeedsView::MessageReceived(BMessage* msg)
 {
 	switch (msg->what)
 	{
-		case kFeedsAddButton:
+		case kFeedsEnqueueSelected:
+		{
+			_UpdateSelected();
+			break;
+		}
+		case kFeedsRemoveSelected:
+		{
+			if (_RemoveSelected() == true)
+				_PopulateFeedList();
+			break;
+		}
+		case kFeedsEditSelected:
+		{
+			if (fFeedsListView->CurrentSelection() >= 0)
+				_EditSelected();
+			break;
+		}
+		case kFeedsAddNew:
 		{
 			FeedEditWindow* edit = new FeedEditWindow();
 			edit->Show();
 			edit->Activate();
-			break;
-		}
-		case kFeedsRemoveButton:
-		{
-			_RemoveSelectedFeed();
-			_PopulateFeedList();
-			break;
-		}
-		case kFeedsEditButton:
-		{
-			if (fFeedsListView->CurrentSelection() >= 0)
-				_EditSelectedFeed();
 			break;
 		}
 		case kFeedsSelected:
@@ -116,23 +122,24 @@ void
 FeedsView::_InitInterface()
 {
 	// Feeds list
-	fFeedsListView = new BOutlineListView("feedsList");
+	fFeedsListView = new FeedListView("feedsList");
 	fFeedsScrollView = new BScrollView("feedsScroll", fFeedsListView,
 		B_WILL_DRAW, false, true);
 	fFeedsListView->SetSelectionMessage(new BMessage(kFeedsSelected));
-	fFeedsListView->SetInvocationMessage(new BMessage(kFeedsEditButton));
+	fFeedsListView->SetInvocationMessage(new BMessage(kFeedsEditSelected));
 
 	_PopulateFeedList();
 
 	fProgressLabel = new BStringView("progressLabel", "");
 
 	// Add, Remove, Edit
-	fAddButton = new BButton("addFeed", "+", new BMessage(kFeedsAddButton));
-	fRemoveButton = new BButton("removeFeed", "-", new BMessage(kFeedsRemoveButton));
+	fAddButton = new BButton("addFeed", "+", new BMessage(kFeedsAddNew));
+	fRemoveButton = new BButton("removeFeed", "-",
+		new BMessage(kFeedsRemoveSelected));
 	fAddButton->SetToolTip(B_TRANSLATE("Add new feed"));
 	fRemoveButton->SetToolTip(B_TRANSLATE("Remove selected feed"));
 	fEditButton = new BButton("editFeed", B_TRANSLATE("Edit…"),
-		new BMessage(kFeedsEditButton));
+		new BMessage(kFeedsEditSelected));
 
 	font_height fontHeight;
 	GetFontHeight(&fontHeight);
@@ -184,22 +191,62 @@ FeedsView::_InitInterface()
 		.End();
 }
 
-
 void
-FeedsView::_EditSelectedFeed()
+FeedsView::_UpdateSelected()
 {
 	int32 selIndex = fFeedsListView->CurrentSelection();
-	FeedListItem* selected = (FeedListItem*)fFeedsListView->ItemAt(selIndex);
-	FeedEditWindow* edit = new FeedEditWindow(selected->FeedIdentifier(),
-		selected->FeedSource());
 
-	edit->Show();
-	edit->Activate();
+	// Enqueue single feed
+	if (fFeedsListView->Superitem(fFeedsListView->ItemAt(selIndex)) != NULL) {
+		FeedListItem* selected = (FeedListItem*)fFeedsListView->ItemAt(selIndex);
+
+		BMessage enqueue(kEnqueueFeed);
+		enqueue.AddString("feed_identifiers", selected->FeedIdentifier());
+		enqueue.AddString("feed_sources", selected->FeedSource());
+
+		((App*)be_app)->MessageReceived(&enqueue);
+	}
+	// Enqueue feeds from a source
+	else {
+		BMessage enqueue(kEnqueueFeed);
+		SourceListItem* selected = (SourceListItem*)fFeedsListView->ItemAt(selIndex);
+		BObjectList<Feed> feeds = selected->FeedSource()->Feeds();
+
+		for (int i = 0; i < feeds.CountItems(); i++) {
+			Feed* selected = feeds.ItemAt(i);
+			enqueue.AddString("feed_identifiers", selected->Identifier());
+			enqueue.AddString("feed_sources", selected->Source());
+		}
+		((App*)be_app)->MessageReceived(&enqueue);
+	}
 }
 
 
 void
-FeedsView::_RemoveSelectedFeed()
+FeedsView::_EditSelected()
+{
+	int32 selIndex = fFeedsListView->CurrentSelection();
+		
+	if (fFeedsListView->Superitem(fFeedsListView->ItemAt(selIndex)) != NULL) {
+		FeedListItem* selected = (FeedListItem*)fFeedsListView->ItemAt(selIndex);
+
+		FeedEditWindow* edit = new FeedEditWindow(selected->FeedIdentifier(),
+			selected->FeedSource());
+
+		edit->Show();
+		edit->Activate();
+	}
+	else {
+		SourceListItem* selected = (SourceListItem*)fFeedsListView->ItemAt(selIndex);
+		Source* source = selected->FeedSource();
+//		if (source->IsConfigurable() == true)
+			// … Do something about that
+	}
+}
+
+
+bool
+FeedsView::_RemoveSelected()
 {
 	BAlert* alert = new BAlert(B_TRANSLATE("Confirm removal"),
 		B_TRANSLATE("Are you sure you want to remove the selected feed?"),
@@ -209,13 +256,17 @@ FeedsView::_RemoveSelectedFeed()
 	alert->SetShortcut(1, B_ESCAPE);
 	int32 button = alert->Go();
 	if (button != 0)
-		return;
+		return false;
 
 	int32 selIndex = fFeedsListView->CurrentSelection();
 	FeedListItem* selected = (FeedListItem*)fFeedsListView->ItemAt(selIndex);
 
+	if (fFeedsListView->Superitem(selected) == NULL) 
+		return false;
+
 	SourceManager::RemoveFeed(SourceManager::GetFeed(selected->FeedIdentifier(),
 		selected->FeedSource()));
+	return true;
 }
 
 

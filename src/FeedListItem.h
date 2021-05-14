@@ -31,6 +31,7 @@ public:
 	BUrl FeedUrl();
 	const char* FeedIdentifier();
 	const char* FeedSource();
+	Feed* GetFeed();
 
 	void SetStatus(int8 status);
 
@@ -39,6 +40,7 @@ private:
 	BUrl fFeedUrl;
 	BString fFeedIdentifier;
 	BString fFeedSource;
+	Feed* fFeed;
 };
 
 

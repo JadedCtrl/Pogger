@@ -24,6 +24,7 @@ FeedListItem::FeedListItem(Feed* feed)
 	fFeedIdentifier(feed->Identifier()),
 	fFeedSource(feed->Source())
 {
+	fFeed = feed;
 	if (feed->Title().IsEmpty() == true)
 		SetText(B_TRANSLATE("Untitled Feed"));
 }
@@ -84,6 +85,13 @@ void
 FeedListItem::SetStatus(int8 status)
 {
 	fStatus = status;
+}
+
+
+Feed*
+FeedListItem::GetFeed()
+{
+	return fFeed;
 }
 
 

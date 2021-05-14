@@ -10,18 +10,16 @@
 #include <GroupView.h>
 
 class BMessage;
-class BOutlineListView;
+class FeedListView;
 class BScrollView;
 class BStringView;
 
 
 enum
 {
-	kFeedsAddButton		= 'sadd',
-	kFeedsRemoveButton	= 'srem',
-	kFeedsEditButton	= 'sedt',
-	kFeedsSelected		= 'flsl',
-	kFeedsEdited		= 'fedd'
+	kFeedsAddNew			= 'sadd',
+	kFeedsSelected			= 'flsl',
+	kFeedsEdited			= 'fedd'
 };
 
 
@@ -34,8 +32,9 @@ public:
 private:
 	void _InitInterface();
 
-	void _EditSelectedFeed();
-	void _RemoveSelectedFeed();
+	void _UpdateSelected();
+	void _EditSelected();
+	bool _RemoveSelected();
 
 	void _PopulateFeedList();
 
@@ -45,7 +44,7 @@ private:
 	BButton* fRemoveButton;
 	BButton* fEditButton;
 	BStringView* fProgressLabel;
-	BOutlineListView* fFeedsListView;
+	FeedListView* fFeedsListView;
 	BScrollView* fFeedsScrollView;
 };
 

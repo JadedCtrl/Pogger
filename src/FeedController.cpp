@@ -59,13 +59,19 @@ FeedController::MessageReceived(BMessage* msg)
 		case kEnqueueFeed:
 		{
 			int i = 0;
-			const void* data;
+			BString feedID;
+			BString feedSource;
 			ssize_t size = sizeof(Feed);
 
-			while (msg->HasData("feeds", B_RAW_TYPE, i)) {
-				msg->FindData("feeds", B_RAW_TYPE, i, &data, &size);
-				fDownloadQueue->AddItem((Feed*)data);
+			while (msg->HasString("feed_identifiers", i)) {
+				msg->FindString("feed_identifiers", i, &feedID);
+				msg->FindString("feed_sources", i, &feedSource);
+
+				Feed* feed = SourceManager::GetFeed(feedID.String(),
+					feedSource.String());
+				fDownloadQueue->AddItem(feed);
 				_SendProgress();
+				i++;
 			}
 			fMessageRunner->SetCount(-1);
 			break;
