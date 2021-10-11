@@ -30,7 +30,7 @@ FeedEditWindow::FeedEditWindow()
 	:
 	BWindow(((App*)be_app)->fPreferences->fFeedEditRect,
 		B_TRANSLATE("New Feed"), B_TITLED_WINDOW,
-		B_NOT_RESIZABLE | B_NOT_ZOOMABLE)
+		B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS)
 {
 	_InitInterface();
 	MoveOnScreen();
