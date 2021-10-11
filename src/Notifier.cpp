@@ -11,8 +11,9 @@
 #include <StringFormat.h>
 #include <Notification.h>
 
-#include "App.h"
+#include "Daemon.h"
 #include "FeedController.h"
+#include "Preferences.h"
 
 
 #undef B_TRANSLATION_CONTEXT
@@ -128,8 +129,11 @@ Notifier::_SendUpdatedNotification()
 	notifyNew.SetContent(notifyText);
 
 	entry_ref feedsRef;
-	BEntry(((App*)be_app)->fPreferences->EntryDir()).GetRef(&feedsRef);
-	notifyNew.SetOnClickFile(&feedsRef);
+	const char* entryDir = ((App*)be_app)->fPreferences->EntryDir();
+	if (entryDir != NULL) {
+		BEntry(entryDir).GetRef(&feedsRef);
+		notifyNew.SetOnClickFile(&feedsRef);
+	}
 
 	notifyNew.Send();
 }
