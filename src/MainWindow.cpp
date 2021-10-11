@@ -19,7 +19,6 @@
 #include "FeedController.h"
 #include "FeedListView.h"
 #include "FeedsView.h"
-#include "Notifier.h"
 #include "UpdatesView.h"
 
 

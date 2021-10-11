@@ -22,7 +22,6 @@
 #include "FeedEditWindow.h"
 #include "FeedListItem.h"
 #include "FeedListView.h"
-#include "Notifier.h"
 #include "SourceListItem.h"
 #include "SourceManager.h"
 

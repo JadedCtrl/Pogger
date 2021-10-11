@@ -17,7 +17,6 @@
 #include "FeedsView.h"
 #include "MainWindow.h"
 #include "Mimetypes.h"
-#include "Notifier.h"
 #include "Preferences.h"
 #include "SourceManager.h"
 #include "Util.h"

@@ -13,7 +13,6 @@ class BMessage;
 class BMessageRunner;
 class FeedController;
 class MainWindow;
-class Notifier;
 
 
 class App : public BApplication
