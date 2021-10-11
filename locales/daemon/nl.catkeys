@@ -1,0 +1,23 @@
+1	Dutch	application/x-vnd.PoggerDaemon	3501771266
+{0, plural,=1{One new entry from %source%.}other{# new entries from %source%.}}	Notifier		{0, plural,=1{Een nieuwe inzending van %source%.}other{# nieuwe inzendingen van %source%.}}
+Channel '%source%' at %url%:\n	RssFeed		Kanaal '%source%' op %url%:\n
+Channel '%source%' at %url%:\n	AtomFeed		Kanaal '%source%' op %url%:\n
+Downloading feed from 	FeedController		Downloaden feed van 
+Settings…	DeskbarView		Instellingen…
+Couldn't open the preferences file because the path is not specified.\nThis usually means that the programmer made a mistake.\nPlease submit a bug report to the Pogger repository on GitHub.\nYour personal settings will not be loaded.	Preferences		Kan de instellingen niet openen omdat het pad niet gedefinieerd is.\nDit betekend meestal dat de programmeur een fout gemaakt heeft.\nRaporteer een bug raport bij Pogger repository op GitHub.\Je persoonlijke instellingen worden niet geladen.
+\t-%count% entries-\n	RssFeed		\t-%count% inzendingen-\n
+{0, plural,=1{Failed to update %source% and one other.}other{Failed to update %source% and # others.}}	Notifier		{0, plural,=1{Update mislukt van %source% en een andere.}other{Update mislukt %source% en # anderen.}}
+Preferences file	Preferences		Instellingen bestand
+Update now	DeskbarView		Update nu
+Feed updates	Notifier		Feed updates
+Update failure	Notifier		Update mislukt
+Untitled feed	Notifier		Feed zonder titel
+Quit Pogger	DeskbarView		Pogger afsluiten
+Open entry folder…	DeskbarView		Open inzendingen map…
+\t-%count% entries-\n	AtomFeed		\t-%count% inzendingen-\n
+There is not enough memory available on your system to load the preferences file.\nPlease try closing a few applications and restarting Pogger.	Preferences		Er is niet voldoende geheugen beschickbaar op je systeem om de instellingen te laden.\nProbeer enkele toepassingen te sluiten en Pogger te herstarten.
+Query new entries…	DeskbarView		Zoek nieuwe inzendingen…
+{0, plural,=1{%n% new entries from %source% and one other.}other{%n% new entries from %source% and # others.}}	Notifier		{0, plural,=1{%n% nieuwe inzendingen van %source% en een andere.}other{%n% nieuwe inzendingen van %source% en # anderen.}}
+Couldn't open the preferences file because permission was denied.\nThis usually means that you don't have read permissions to your settings directory.\nPlease make sure that your user has read-access to your settings directory― likely %path%.\nCheck your OS documentation for more information.	Preferences		Kon de instellingen niet openen (toegang geweigeerd).\nDit betekend meestal dat je geen lees-rechten hebt op je instellingen map.\nVerzeker jezelf ervan dat je lees-rechten hebt op deze map― waarschijnlijk %path%.\nControleer je OS documentatie voor meer informatie.
+Failed to update %source%.	Notifier		Update mislukt voor %source%.
+led to update %source%.

@@ -1,0 +1,54 @@
+1	Dutch	application/x-vnd.Pogger	3216580394
+Updates	MainWindow		Updates
+Edit…	FeedsView		Bewerken…
+OK	FeedsView		OK
+Never automatically update	UpdatesView		Nooit automatisch updaten
+Edit feed	FeedEditWindow		Feed bewerken
+Browse…	EntriesView		Bladeren…
+Entries	MainWindow		Inzendingen
+Feeds	MainWindow		Feeds
+Feed name:	FeedEditWindow		Feed naam:
+There is not enough memory available on your system to load the preferences file.\nPlease try closing a few applications and restarting Pogger.	Preferences		Er is niet voldoende geheugen beschickbaar op je systeem om de instellingen te laden.\nProbeer enkele toepassingen te sluiten en Pogger te herstarten.
+Select…	EntriesView		Selecteer…
+Confirm removal	FeedsView		Bevestig verwijdering
+Are you sure you want to remove the selected feed?	FeedsView		Ben je zeker dat je de geselecteerde feed wil verwijderen?
+Scheduling	UpdatesView		Plannen
+Open as:	EntriesView		Open als:
+Couldn't open the preferences file because permission was denied.\nThis usually means that you don't have read permissions to your settings directory.\nPlease make sure that your user has read-access to your settings directory― likely %path%.\nCheck your OS documentation for more information.	Preferences		Kon de instellingen niet openen (toegang geweigeerd).\nDit betekend meestal dat je geen lees-rechten hebt op je instellingen map.\nVerzeker jezelf ervan dat je lees-rechten hebt op deze map― waarschijnlijk %path%.\nControleer je OS documentatie voor meer informatie.
+Pogger	System name		Pogger
+Update every 30 minutes	UpdatesView		Elke 30 minuten
+Cancel	FeedsView		Annuleer
+Invalid feed	FeedEditWindow		Ongeldige feed
+Notify about new entries	UpdatesView		Waarschuw bij nieuwe inzendingen
+{0, plural,=1{Update every hour}other{Update every # hours}}	UpdatesView		{0, plural,=1{Update Elk uur}other{Elke # uren}}
+OK	EntriesView		OK
+Couldn't open this folder because no path was specified.\nPlease select a new folder.	EntriesView		Kan deze map niet openen omdat er geen pad ingesteld was.\nSelecteer een nieuwe map.
+Cancel	MainWindow		Annuleer
+Entries directory	EntriesView		Inzendingen map
+Saving	EntriesView		Opslaan
+Couldn't open the preferences file because the path is not specified.\nThis usually means that the programmer made a mistake.\nPlease submit a bug report to the Pogger repository on GitHub.\nYour personal settings will not be loaded.	Preferences		Kan de instellingen niet openen omdat het pad niet gedefinieerd is.\nDit betekend meestal dat de programmeur een fout gemaakt heeft.\nRaporteer een bug raport bij Pogger repository op GitHub.\Je persoonlijke instellingen worden niet geladen.
+Update daily	UpdatesView		Update dagelijks
+HTML	EntriesView		HTML
+Notify about update failures	UpdatesView		Waarschuw bij mislukte updates
+The path you selected isn't a folder― please choose another path.	EntriesView		Het pad dat je selecteerde is geen map― gelieve een ander pad op te geven.
+Update now	MainWindow		Update nu
+24 hours	UpdatesView		24 uur
+There is not enough memory available on your system to access the given path.\nPlease try closing a few applications and restarting Pogger.	EntriesView		Er is niet voldoende geheugen beschikbaar om het opgegeven pad te bereiken.\nProbeer enkele toepassingen te sluiten en Pogger te herstarten.
+Untitled Feed	FeedListItem		Feed zonder titel
+Never	UpdatesView		Nooit
+Feed URL:	FeedEditWindow		Feed URL:
+New Feed	FeedEditWindow		Nieuwe Feed
+Remove selected feed	FeedsView		Geselecteerde feed verwijderen
+Please enter a URL.	FeedEditWindow		Gelieve een URl in te geven.
+OK	FeedEditWindow		OK
+URL	EntriesView		URL
+Preferences file	Preferences		Instellingen bestand
+Notifications	UpdatesView		Meldingen
+Add new feed	FeedsView		Nieuwe feed toevoegen
+Fetching %source%…	FeedsView		Binnenhalen %source%…
+Cancel	FeedEditWindow		Annuleer
+Opening	EntriesView		Open
+The given URL is invalid. Please make sure you typed it in correctly.	FeedEditWindow		URL is ongeldig. Verzeker jezelf dat er geen typefouten zijn.
+Entry folder:	EntriesView		Map ingang:
+Couldn't open this folder because permission was denied.\nThis usually means that you don't have read permissions.\nPlease make sure that your user has read-access to this folder.\nCheck your OS documentation for more information.	EntriesView		Kon de map niet openen (toegang geweigeerd).\nDit betekend meestal dat je geen lees-rechten hebt.\nVerzeker jezelf ervan dat je lees-rechten hebt op deze map.\nControleer je OS documentatie voor meer informatie.
+Open with:	EntriesView		Open met:
