@@ -141,7 +141,7 @@ SourceManager::EditFeed(Feed* updated)
 void
 SourceManager::RemoveFeed(Feed* mortonta)
 {
-	return GetSource(mortonta)->EditFeed(mortonta);
+	return GetSource(mortonta)->RemoveFeed(mortonta);
 }
 
 

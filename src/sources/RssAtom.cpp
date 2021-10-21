@@ -44,6 +44,13 @@ RssAtom::Name()
 }
 
 
+const char*
+RssAtom::Config()
+{
+	return fConfigPath.String();
+}
+
+
 BObjectList<Feed>
 RssAtom::Feeds()
 {

@@ -146,8 +146,11 @@ FeedEditWindow::_SaveFeed()
 		fFeed->SetTitle(title.String());
 	fFeed->SetUrl(BUrl(urlString));
 
-	if (BString(fFeed->Identifier()).IsEmpty() == true)
+	if (BString(fFeed->Identifier()).IsEmpty() == true) {
+		Source* source = SourceManager::GetSourceOfType("RssAtom");
+		fFeed->SetSource(source->Config());
 		SourceManager::AddFeed(fFeed);
+	}
 	else
 		SourceManager::EditFeed(fFeed);
 

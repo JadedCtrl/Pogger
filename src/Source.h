@@ -43,6 +43,7 @@ public:
 
 	virtual const char* Type() { return "Source"; };
 	virtual const char* Name() { return "Generic"; };
+	virtual const char* Config() { return NULL; };
 
 	BString fConfigPath;
 };

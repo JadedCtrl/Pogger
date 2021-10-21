@@ -20,6 +20,7 @@ public:
 
 	const char* Type();
 	const char* Name();
+	const char* Config();
 
 	BObjectList<Feed> Feeds();
 
@@ -33,6 +34,8 @@ public:
 	void RemoveFeed(Feed* mortonta);
 
 	bool IsUpdated(Feed* feed);
+
+	BString fConfigPath;
 
 private:
 	bool _IsAtom(Feed* feed);
@@ -71,7 +74,6 @@ private:
 	BPath _SubscriptionPath();
 
 	BString fTitle;
-	BString fConfigPath;
 };
 
 
