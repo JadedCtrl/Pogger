@@ -1,11 +1,8 @@
-1	English	application/x-vnd.PoggerDaemon	3501771266
+1	English	application/x-vnd.PoggerDaemon	931636984
 {0, plural,=1{One new entry from %source%.}other{# new entries from %source%.}}	Notifier		{0, plural,=1{One new entry from %source%.}other{# new entries from %source%.}}
-Channel '%source%' at %url%:\n	RssFeed		Channel '%source%' at %url%:\n
-Channel '%source%' at %url%:\n	AtomFeed		Channel '%source%' at %url%:\n
 Downloading feed from 	FeedController		Downloading feed from 
 Settings…	DeskbarView		Settings…
 Couldn't open the preferences file because the path is not specified.\nThis usually means that the programmer made a mistake.\nPlease submit a bug report to the Pogger repository on GitHub.\nYour personal settings will not be loaded.	Preferences		Couldn't open the preferences file because the path is not specified.\nThis usually means that the programmer made a mistake.\nPlease submit a bug report to the Pogger repository on GitHub.\nYour personal settings will not be loaded.
-\t-%count% entries-\n	RssFeed		\t-%count% entries-\n
 {0, plural,=1{Failed to update %source% and one other.}other{Failed to update %source% and # others.}}	Notifier		{0, plural,=1{Failed to update %source% and one other.}other{Failed to update %source% and # others.}}
 Preferences file	Preferences		Preferences file
 Update now	DeskbarView		Update now
@@ -14,7 +11,6 @@ Update failure	Notifier		Update failure
 Untitled feed	Notifier		Untitled feed
 Quit Pogger	DeskbarView		Quit Pogger
 Open entry folder…	DeskbarView		Open entry folder…
-\t-%count% entries-\n	AtomFeed		\t-%count% entries-\n
 There is not enough memory available on your system to load the preferences file.\nPlease try closing a few applications and restarting Pogger.	Preferences		There is not enough memory available on your system to load the preferences file.\nPlease try closing a few applications and restarting Pogger.
 Query new entries…	DeskbarView		Query new entries…
 {0, plural,=1{%n% new entries from %source% and one other.}other{%n% new entries from %source% and # others.}}	Notifier		{0, plural,=1{%n% new entries from %source% and one other.}other{%n% new entries from %source% and # others.}}

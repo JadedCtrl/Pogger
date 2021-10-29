@@ -1,25 +1,30 @@
-1	English	application/x-vnd.Pogger	3216580394
+1	English	application/x-vnd.Pogger	3697078007
 Updates	MainWindow		Updates
 Edit…	FeedsView		Edit…
 OK	FeedsView		OK
+Default entry program	EntriesView		Default entry program
 Never automatically update	UpdatesView		Never automatically update
 Edit feed	FeedEditWindow		Edit feed
 Browse…	EntriesView		Browse…
 Entries	MainWindow		Entries
+Make default	EntriesView		Make default
 Feeds	MainWindow		Feeds
 Feed name:	FeedEditWindow		Feed name:
+Update feed	FeedListView		Update feed
 There is not enough memory available on your system to load the preferences file.\nPlease try closing a few applications and restarting Pogger.	Preferences		There is not enough memory available on your system to load the preferences file.\nPlease try closing a few applications and restarting Pogger.
 Select…	EntriesView		Select…
 Confirm removal	FeedsView		Confirm removal
-Are you sure you want to remove the selected feed?	FeedsView		Are you sure you want to remove the selected feed?
 Scheduling	UpdatesView		Scheduling
+Are you sure you want to remove the selected feed?	FeedsView		Are you sure you want to remove the selected feed?
 Open as:	EntriesView		Open as:
 Couldn't open the preferences file because permission was denied.\nThis usually means that you don't have read permissions to your settings directory.\nPlease make sure that your user has read-access to your settings directory― likely %path%.\nCheck your OS documentation for more information.	Preferences		Couldn't open the preferences file because permission was denied.\nThis usually means that you don't have read permissions to your settings directory.\nPlease make sure that your user has read-access to your settings directory― likely %path%.\nCheck your OS documentation for more information.
+Ignore	EntriesView		Ignore
 Pogger	System name		Pogger
 Update every 30 minutes	UpdatesView		Update every 30 minutes
 Cancel	FeedsView		Cancel
-Invalid feed	FeedEditWindow		Invalid feed
 Notify about new entries	UpdatesView		Notify about new entries
+This program will only be used to open entry files if they are first opened with Pogger.\nCurrently, Pogger isn't set as the default to open feed entries.	EntriesView		This program will only be used to open entry files if they are first opened with Pogger.\nCurrently, Pogger isn't set as the default to open feed entries.
+Invalid feed	FeedEditWindow		Invalid feed
 {0, plural,=1{Update every hour}other{Update every # hours}}	UpdatesView		{0, plural,=1{Update every hour}other{Update every # hours}}
 OK	EntriesView		OK
 Couldn't open this folder because no path was specified.\nPlease select a new folder.	EntriesView		Couldn't open this folder because no path was specified.\nPlease select a new folder.
@@ -31,21 +36,24 @@ Update daily	UpdatesView		Update daily
 HTML	EntriesView		HTML
 Notify about update failures	UpdatesView		Notify about update failures
 The path you selected isn't a folder― please choose another path.	EntriesView		The path you selected isn't a folder― please choose another path.
+Update source	FeedListView		Update source
 Update now	MainWindow		Update now
 24 hours	UpdatesView		24 hours
 There is not enough memory available on your system to access the given path.\nPlease try closing a few applications and restarting Pogger.	EntriesView		There is not enough memory available on your system to access the given path.\nPlease try closing a few applications and restarting Pogger.
+Edit feed…	FeedListView		Edit feed…
 Untitled Feed	FeedListItem		Untitled Feed
 Never	UpdatesView		Never
 Feed URL:	FeedEditWindow		Feed URL:
 New Feed	FeedEditWindow		New Feed
 Remove selected feed	FeedsView		Remove selected feed
-Please enter a URL.	FeedEditWindow		Please enter a URL.
 OK	FeedEditWindow		OK
 URL	EntriesView		URL
+Please enter a URL.	FeedEditWindow		Please enter a URL.
 Preferences file	Preferences		Preferences file
 Notifications	UpdatesView		Notifications
 Add new feed	FeedsView		Add new feed
 Fetching %source%…	FeedsView		Fetching %source%…
+Remove feed…	FeedListView		Remove feed…
 Cancel	FeedEditWindow		Cancel
 Opening	EntriesView		Opening
 The given URL is invalid. Please make sure you typed it in correctly.	FeedEditWindow		The given URL is invalid. Please make sure you typed it in correctly.
