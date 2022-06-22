@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, Jaidyn Levesque <jadedctrl@teknik.io>
+ * Copyright 2020-2021, Jaidyn Levesque <jadedctrl@teknik.io>
  * Copyight 2017 Akshay Agarwal, agarwal.akshay.akshay8@gmail.com
  * All rights reserved. Distributed under the terms of the MIT license.
  */
@@ -252,8 +252,13 @@ loadVectorIcon(const char* name, int32 iconSize, int32 cropSize)
 	if (data != NULL
 		&& BIconUtils::GetVectorIcon((uint8*)data, length, temp)
 			== B_OK
-		&& dest->ImportBits(temp, BPoint(0, 0), BPoint(0, 0),
-			cropSize, cropSize) == B_OK)  {
+		&& dest->ImportBits(
+#if B_HAIKU_VERSION	>= B_HAIKU_VERSION_1_PRE_BETA_4
+			   temp, BPoint(0, 0), BPoint(0, 0), BSize(cropSize, cropSize))
+#else
+			   temp, BPoint(0, 0), BPoint(0, 0), cropSize, cropSize)
+#endif
+			== B_OK) {
 			delete temp;
 			return dest;
 	}
